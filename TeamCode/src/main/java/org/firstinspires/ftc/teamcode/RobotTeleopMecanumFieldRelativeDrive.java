@@ -28,12 +28,16 @@
  */
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 /*
@@ -50,35 +54,37 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  *
  */
+@Config
 @TeleOp(name = "Robot: Field Relative Mecanum Drive", group = "Robot")
 public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
+    public static double maxSpeed = 1.0;  // make this slower for outreaches
+
+
+
     // This declares the four motors needed
     DcMotor frontLeftDrive;
     DcMotor frontRightDrive;
     DcMotor backLeftDrive;
     DcMotor backRightDrive;
-
+    Servo leftClaw;
+    Servo rightClaw;
+    Servo DUNKER;
     // This declares the IMU needed to get the current direction the robot is facing
     IMU imu;
 
     @Override
     public void init() {
-        frontLeftDrive = hardwareMap.get(DcMotor.class, "FL Drive");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "FR Drive");
-        backLeftDrive = hardwareMap.get(DcMotor.class, "BL Drive");
-        backRightDrive = hardwareMap.get(DcMotor.class, "BR Drive");
 
-        // We set the left motors in reverse which is needed for drive trains where the left
-        // motors are opposite to the right ones.
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        RobotConfiguration robotConfiguration = new RobotConfiguration(hardwareMap);
 
-        // This uses RUN_USING_ENCODER to be more accurate.   If you don't have the encoder
-        // wires, you should remove these
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        frontLeftDrive = robotConfiguration.getFrontLeftDrive();
+        frontRightDrive = robotConfiguration.getFrontRightDrive();
+        backLeftDrive = robotConfiguration.getBackLeftDrive();
+        backRightDrive = robotConfiguration.getBackRightDrive();
+        leftClaw = hardwareMap.get(Servo.class, "Left Clawimen");
+        rightClaw = hardwareMap.get(Servo.class, "Right Specclaw");
+        DUNKER = hardwareMap.get(Servo.class, "DUNKER");
 
         imu = hardwareMap.get(IMU.class, "imu");
         // This needs to be changed to match the orientation on your robot
@@ -142,7 +148,6 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
         double backLeftPower = forward - right + rotate;
 
         double maxPower = 1.0;
-        double maxSpeed = 1.0;  // make this slower for outreaches
 
         // This is needed to make sure we don't pass > 1.0 to any wheel
         // It allows us to keep all of the motors in proportion to what they should
@@ -159,5 +164,19 @@ public class RobotTeleopMecanumFieldRelativeDrive extends OpMode {
         frontRightDrive.setPower(maxSpeed * (frontRightPower / maxPower));
         backLeftDrive.setPower(maxSpeed * (backLeftPower / maxPower));
         backRightDrive.setPower(maxSpeed * (backRightPower / maxPower));
+
+        telemetry.addData("FL speed",maxSpeed * (frontLeftPower / maxPower));
+        if (gamepad2.x) {
+            leftClaw.setPosition(0.8);
+            rightClaw.setPosition(0.2);
+        } else {
+            leftClaw.setPosition(1);
+            rightClaw.setPosition(0);
     }
+        if (gamepad2.b) {
+            DUNKER.setPosition(.23);
+        }else {
+            DUNKER.setPosition(0);
+        }
+}
 }
