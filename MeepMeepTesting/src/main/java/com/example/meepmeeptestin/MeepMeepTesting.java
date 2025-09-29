@@ -25,8 +25,10 @@ public class MeepMeepTesting {
                 .lineToX(0)
                 .lineToY(35)
                 .turn(Math.toRadians(35))
-                .lineToX(0)
-                .lineToY(36)
+                .turn(Math.toRadians(719))
+
+                        .lineToX(0)
+                        .lineToY(50)
 
                 .build());
 //needs to go to 0,50 back and forth
