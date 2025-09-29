@@ -16,14 +16,20 @@ public class MeepMeepTesting {
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-60, 30, 0))
                 .lineToX(-30)
-                .turn(Math.toRadians(-45))
+                .turn(Math.toRadians(-225))
                 .lineToY(15)
                 .turn(Math.toRadians(180))
                 .lineToX(-30)
                 .lineToY(15)
+                .turn(Math.toRadians(-260))
+                .lineToX(0)
+                .lineToY(35)
+                .turn(Math.toRadians(35))
+                .lineToX(0)
+                .lineToY(36)
 
                 .build());
-
+//needs to go to 0,50 back and forth
         meepMeep.setBackground(MeepMeep.Background.FIELD_DECODE_OFFICIAL)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
