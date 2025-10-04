@@ -163,13 +163,13 @@ public class SensorHuskyLens extends LinearOpMode {
                  * These values have Java type int (integer).
                  */
             }
-            if (blocks(1)){
-                telemetry.addData("pattern", "PPG");
-            } else if (blocks(2)) {
-                telemetry.addData("pattern", "GPP");
-            } else {
-                telemetry.addData("pattern", "PGP");
-            }
+            //if (blocks(1)){
+            //    telemetry.addData("pattern", "PPG");
+            //} else if (blocks(2)) {
+            //    telemetry.addData("pattern", "GPP");
+            //} else {
+            //    telemetry.addData("pattern", "PGP");
+            //}
 
             telemetry.update();
         }

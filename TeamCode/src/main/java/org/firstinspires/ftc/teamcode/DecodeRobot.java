@@ -9,7 +9,7 @@ public class DecodeRobot {
     private DcMotor flMotor;
     private DcMotor brMotor;
     private DcMotor blMotor;
-    private DcMotor singleLauncher;
+    //private DcMotor singleLauncher;
     public void  init(HardwareMap hwMap) {
         //DC motor
         frMotor = hwMap.get(DcMotor.class, "front_right_motor");
@@ -24,13 +24,16 @@ public class DecodeRobot {
         blMotor = hwMap.get(DcMotor.class, "back_left_motor");
         blMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        singleLauncher = hwMap.get(DcMotor.class, "single_launcher");
-        singleLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //singleLauncher = hwMap.get(DcMotor.class, "single_launcher");
+        //singleLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
     public void setMotorSpeed(double speed) {
          // accepts values from -1.0 -> 1.0
         frMotor.setPower(speed);
+        brMotor.setPower(speed);
+        flMotor.setPower(speed);
+        blMotor.setPower(speed);
     }
 }
