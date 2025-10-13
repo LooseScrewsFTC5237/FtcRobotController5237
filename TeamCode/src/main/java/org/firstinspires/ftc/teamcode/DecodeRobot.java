@@ -9,7 +9,7 @@ public class DecodeRobot {
     private DcMotor frMotor;
     private DcMotor flMotor;
     private DcMotor brMotor;
-  //  private DcMotor blMotor;
+    private DcMotor blMotor;
     private DcMotor singleLauncher;
     private double ticksPerRev; // revolution
 
@@ -24,8 +24,8 @@ public class DecodeRobot {
         brMotor = hwMap.get(DcMotor.class, "back_right_motor");
         brMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-       // blMotor = hwMap.get(DcMotor.class, "back_left_motor");
-        //blMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        blMotor = hwMap.get(DcMotor.class, "back_left_motor");
+        blMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         singleLauncher = hwMap.get(DcMotor.class, "single_launcher");
         singleLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -45,7 +45,7 @@ public class DecodeRobot {
         frMotor.setPower(speed);
         brMotor.setPower(speed);
         flMotor.setPower(speed);
-      //  blMotor.setPower(speed);
+        blMotor.setPower(speed);
         singleLauncher.setPower(speed);
     }
 

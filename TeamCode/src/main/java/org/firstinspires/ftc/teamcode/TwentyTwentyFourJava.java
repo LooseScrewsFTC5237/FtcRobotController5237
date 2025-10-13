@@ -64,16 +64,16 @@ public class TwentyTwentyFourJava extends OpMode {
     DcMotor frontRightDrive;
     DcMotor backLeftDrive;
     DcMotor backRightDrive;
-    DcMotor leftlift;
-    DcMotor rightlift;
-    TouchSensor leftlift0;
-    TouchSensor rightlift0;
-    Servo left_claw;
-    Servo right_claw;
-    Servo dunker;
-    Servo intakepivot;
-    Servo rightgrapplehook;
-    Servo leftgrapplehook;
+    // DcMotor leftlift;
+    // DcMotor rightlift;
+    // TouchSensor leftlift0;
+    // TouchSensor rightlift0;
+    // Servo left_claw;
+    // Servo right_claw;
+    // Servo dunker;
+    // Servo intakepivot;
+    // Servo rightgrapplehook;
+    // Servo leftgrapplehook;
 
     private final int READ_PERIOD = 1;
 
@@ -86,23 +86,23 @@ public class TwentyTwentyFourJava extends OpMode {
         frontRightDrive = hardwareMap.get(DcMotor.class, "FR Drive");
         backLeftDrive = hardwareMap.get(DcMotor.class, "BL Drive");
         backRightDrive = hardwareMap.get(DcMotor.class, "BR Drive");
-        leftlift = hardwareMap.get(DcMotor.class, "left lift");
-        rightlift = hardwareMap.get(DcMotor.class, "right lift");
-        rightlift0 = hardwareMap.get(TouchSensor.class, "right lift 0");
-        leftlift0 = hardwareMap.get(TouchSensor.class,"left lift 0");
-        left_claw = hardwareMap.get(Servo.class, "Left Clawimen");
-        right_claw = hardwareMap.get(Servo.class, "Right Specclaw");
-        dunker = hardwareMap.get(Servo.class, "DUNKER");
-        intakepivot = hardwareMap.get(Servo.class, "intake pivot");
-        rightgrapplehook = hardwareMap.get(Servo.class, "Right Rapple Grook");
-        leftgrapplehook = hardwareMap.get(Servo.class, "Left Rrapple Gook");
+        // leftlift = hardwareMap.get(DcMotor.class, "left lift");
+        // rightlift = hardwareMap.get(DcMotor.class, "right lift");
+        // rightlift0 = hardwareMap.get(TouchSensor.class, "right lift 0");
+        // leftlift0 = hardwareMap.get(TouchSensor.class,"left lift 0");
+        // left_claw = hardwareMap.get(Servo.class, "Left Clawimen");
+        // right_claw = hardwareMap.get(Servo.class, "Right Specclaw");
+        // dunker = hardwareMap.get(Servo.class, "DUNKER");
+        // intakepivot = hardwareMap.get(Servo.class, "intake pivot");
+        // rightgrapplehook = hardwareMap.get(Servo.class, "Right Rapple Grook");
+        // leftgrapplehook = hardwareMap.get(Servo.class, "Left Rrapple Gook");
 
 
         // We set the left motors in reverse which is needed for drive trains where the left
         // motors are opposite to the right ones.
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightlift.setDirection(DcMotor.Direction.REVERSE);
+        // frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        // rightlift.setDirection(DcMotor.Direction.REVERSE);
 
         // This uses RUN_USING_ENCODER to be more accurate.   If you don't have the encoder
         // wires, you should remove these
@@ -110,14 +110,14 @@ public class TwentyTwentyFourJava extends OpMode {
         frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightlift.setTargetPosition(0);
-        leftlift.setTargetPosition(0);
-        rightlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftlift.setPower(0.9);
-        rightlift.setPower(0.9);
-        leftlift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        rightlift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        // rightlift.setTargetPosition(0);
+        // leftlift.setTargetPosition(0);
+        // rightlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        // leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        // leftlift.setPower(0.9);
+        // rightlift.setPower(0.9);
+        // leftlift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        // rightlift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         imu = hardwareMap.get(IMU.class, "imu");
         // This needs to be changed to match the orientation on your robot
@@ -206,6 +206,7 @@ public class TwentyTwentyFourJava extends OpMode {
         } else if (gamepad2.dpad_right) {
             lift_height = 500;
         }
+        /*
         if(leftlift0.isPressed()) {
             leftlift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -228,18 +229,20 @@ public class TwentyTwentyFourJava extends OpMode {
         } else if (leftlift.getTargetPosition() < 25 && leftlift.getCurrentPosition() < 25) {
             leftlift.setPower(0);
         }
-        rightlift.setTargetPosition(lift_height);
-        leftlift.setTargetPosition(lift_height);
+        */
+        // rightlift.setTargetPosition(lift_height);
+        // leftlift.setTargetPosition(lift_height);
         telemetry.addData("Lift Height", lift_height);
-        telemetry.addData("left lift",leftlift.getCurrentPosition());
-        telemetry.addData("right lift",rightlift.getCurrentPosition());
-        telemetry.addData("right lift power",rightlift.getPower());
-        telemetry.addData("left lift power",leftlift.getPower());
+        // telemetry.addData("left lift",leftlift.getCurrentPosition());
+        // telemetry.addData("right lift",rightlift.getCurrentPosition());
+        // telemetry.addData("right lift power",rightlift.getPower());
+        // telemetry.addData("left lift power",leftlift.getPower());
         if ((lift_height <= 750) && (gamepad2.right_stick_y < 0)) {
             lift_height -= gamepad2.right_stick_y * 50;
         } else if (gamepad2.right_stick_y > 0) {
             lift_height -= gamepad2.right_stick_y * 50;
         }
+        /*
         if (gamepad2.x) {
             left_claw.setPosition(0.8);
             right_claw.setPosition(0.2);
@@ -262,7 +265,7 @@ public class TwentyTwentyFourJava extends OpMode {
             leftgrapplehook.setPosition(1);
             rightgrapplehook.setPosition(0);
         }
-
+        */
 
 
     }
