@@ -32,14 +32,10 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.internal.system.Deadline;
-
-import java.util.concurrent.TimeUnit;
 
 /*
  * This OpMode illustrates how to program your robot to drive field relative.  This means
@@ -55,8 +51,8 @@ import java.util.concurrent.TimeUnit;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  *
  */
-@TeleOp(name = "TwentyTwentyFourJava", group = "Robot")
-public class TwentyTwentyFourJava extends OpMode {
+@TeleOp(name = "TwentyTwentyFiveJava", group = "Robot")
+public class TwentyTwentyFiveJava extends OpMode {
     // This declares the four motors needed
     int lift_height = 0;
 
@@ -64,17 +60,9 @@ public class TwentyTwentyFourJava extends OpMode {
     DcMotor frontRightDrive;
     DcMotor backLeftDrive;
     DcMotor backRightDrive;
-    // DcMotor leftlift;
-    // DcMotor rightlift;
-    // TouchSensor leftlift0;
-    // TouchSensor rightlift0;
-    // Servo left_claw;
-    // Servo right_claw;
-    // Servo dunker;
-    // Servo intakepivot;
-    // Servo rightgrapplehook;
-    // Servo leftgrapplehook;
-
+    DcMotor intake;
+    DcMotor feeder;
+    DcMotorEx shooter;
     private final int READ_PERIOD = 1;
 
     // This declares the IMU needed to get the current direction the robot is facing
@@ -82,42 +70,31 @@ public class TwentyTwentyFourJava extends OpMode {
 
     @Override
     public void init() {
-        frontLeftDrive = hardwareMap.get(DcMotor.class, "FL Drive");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "FR Drive");
-        backLeftDrive = hardwareMap.get(DcMotor.class, "BL Drive");
-        backRightDrive = hardwareMap.get(DcMotor.class, "BR Drive");
-        // leftlift = hardwareMap.get(DcMotor.class, "left lift");
-        // rightlift = hardwareMap.get(DcMotor.class, "right lift");
-        // rightlift0 = hardwareMap.get(TouchSensor.class, "right lift 0");
-        // leftlift0 = hardwareMap.get(TouchSensor.class,"left lift 0");
-        // left_claw = hardwareMap.get(Servo.class, "Left Clawimen");
-        // right_claw = hardwareMap.get(Servo.class, "Right Specclaw");
-        // dunker = hardwareMap.get(Servo.class, "DUNKER");
-        // intakepivot = hardwareMap.get(Servo.class, "intake pivot");
-        // rightgrapplehook = hardwareMap.get(Servo.class, "Right Rapple Grook");
-        // leftgrapplehook = hardwareMap.get(Servo.class, "Left Rrapple Gook");
-
-
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "FLDrive");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "FRDrive");
+        backLeftDrive = hardwareMap.get(DcMotor.class, "BLDrive");
+        backRightDrive = hardwareMap.get(DcMotor.class, "BRDrive");
+        intake = hardwareMap.get(DcMotor.class, "Intake");
+        feeder = hardwareMap.get(DcMotor.class, "Shooter Feeder");
+        shooter = hardwareMap.get(DcMotorEx.class, "Shooter");
         // We set the left motors in reverse which is needed for drive trains where the left
         // motors are opposite to the right ones.
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        // frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        // rightlift.setDirection(DcMotor.Direction.REVERSE);
+        feeder.setDirection(DcMotor.Direction.REVERSE);
+        intake.setDirection(DcMotor.Direction.REVERSE);
+
 
         // This uses RUN_USING_ENCODER to be more accurate.   If you don't have the encoder
         // wires, you should remove these
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        // rightlift.setTargetPosition(0);
-        // leftlift.setTargetPosition(0);
-        // rightlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        // leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        // leftlift.setPower(0.9);
-        // rightlift.setPower(0.9);
-        // leftlift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        // rightlift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        feeder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
         imu = hardwareMap.get(IMU.class, "imu");
         // This needs to be changed to match the orientation on your robot
@@ -137,6 +114,7 @@ public class TwentyTwentyFourJava extends OpMode {
         telemetry.addLine("Hold left bumper to drive in robot relative");
         telemetry.addLine("The left joystick sets the robot direction");
         telemetry.addLine("Moving the right joystick left and right turns the robot");
+        telemetry.addData("Shooter RPM: ", shooter.getVelocity());
 
         // If you press the A button, then you reset the Yaw to be zero from the way
         // the robot is currently pointing
@@ -149,6 +127,25 @@ public class TwentyTwentyFourJava extends OpMode {
             drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
         } else {
             driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+        }
+        if (gamepad2.right_trigger > 0) {
+            intake.setPower(1);
+        }  else if (gamepad2.left_trigger > 0) {
+            intake.setPower(-1);
+        } else {
+            intake.setPower(0);
+        }
+
+        if (gamepad2.right_bumper) {
+            feeder.setPower(1);
+        } else {
+            feeder.setPower(0);
+        }
+        if (gamepad2.x) {
+            shooter.setVelocity(2000);
+        }
+        if (gamepad2.a) {
+            shooter.setVelocity(0);
         }
     }
 
@@ -197,75 +194,8 @@ public class TwentyTwentyFourJava extends OpMode {
         frontRightDrive.setPower(maxSpeed * (frontRightPower / maxPower));
         backLeftDrive.setPower(maxSpeed * (backLeftPower / maxPower));
         backRightDrive.setPower(maxSpeed * (backRightPower / maxPower));
-        if (gamepad2.dpad_up) {
-            lift_height = 750;
-        } else if (gamepad2.dpad_down) {
-            lift_height = 0;
-        } else if (gamepad2.dpad_left) {
-            lift_height = 350;
-        } else if (gamepad2.dpad_right) {
-            lift_height = 500;
-        }
-        /*
-        if(leftlift0.isPressed()) {
-            leftlift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-        if(rightlift0.isPressed()) {
-            rightlift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            rightlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-        if (rightlift.getTargetPosition() >= 25) {
-            rightlift.setPower(0.9);
-        } else if (rightlift.getTargetPosition() < 25 && rightlift.getCurrentPosition() >= 25) {
-            rightlift.setPower(0.5);
-        } else if (rightlift.getTargetPosition() < 25 && rightlift.getCurrentPosition() < 25) {
-            rightlift.setPower(0);
-        }
-        if (leftlift.getTargetPosition() >= 25) {
-            leftlift.setPower(0.9);
-        } else if (leftlift.getTargetPosition() < 25 && leftlift.getCurrentPosition() >= 25) {
-            leftlift.setPower(0.5);
-        } else if (leftlift.getTargetPosition() < 25 && leftlift.getCurrentPosition() < 25) {
-            leftlift.setPower(0);
-        }
-        */
-        // rightlift.setTargetPosition(lift_height);
-        // leftlift.setTargetPosition(lift_height);
-        telemetry.addData("Lift Height", lift_height);
-        // telemetry.addData("left lift",leftlift.getCurrentPosition());
-        // telemetry.addData("right lift",rightlift.getCurrentPosition());
-        // telemetry.addData("right lift power",rightlift.getPower());
-        // telemetry.addData("left lift power",leftlift.getPower());
-        if ((lift_height <= 750) && (gamepad2.right_stick_y < 0)) {
-            lift_height -= gamepad2.right_stick_y * 50;
-        } else if (gamepad2.right_stick_y > 0) {
-            lift_height -= gamepad2.right_stick_y * 50;
-        }
-        /*
-        if (gamepad2.x) {
-            left_claw.setPosition(0.8);
-            right_claw.setPosition(0.2);
-        } else  {
-            left_claw.setPosition(1);
-            right_claw.setPosition(0);
-        }
-        if (gamepad2.b) {
-            dunker.setPosition(0.23);
-        } else {
-            dunker.setPosition(0);
-        }
-        if (gamepad2.y) {
-            intakepivot.setPosition(0.772);
-        }
-        if (gamepad2.a) {
-            leftgrapplehook.setPosition(0.5);
-            rightgrapplehook.setPosition(0.5);
-        } else {
-            leftgrapplehook.setPosition(1);
-            rightgrapplehook.setPosition(0);
-        }
-        */
+
+
 
 
     }
