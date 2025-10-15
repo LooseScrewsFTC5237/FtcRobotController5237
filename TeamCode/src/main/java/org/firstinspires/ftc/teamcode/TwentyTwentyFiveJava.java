@@ -28,6 +28,7 @@
  */
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -51,10 +52,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  *
  */
+@Config
 @TeleOp(name = "TwentyTwentyFiveJava", group = "Robot")
 public class TwentyTwentyFiveJava extends OpMode {
     // This declares the four motors needed
     int lift_height = 0;
+    public static int shooter_speed = 1250;
 
     DcMotor frontLeftDrive;
     DcMotor frontRightDrive;
@@ -123,11 +126,14 @@ public class TwentyTwentyFiveJava extends OpMode {
         }
         // If you press the left bumper, you get a drive from the point of view of the robot
         // (much like driving an RC vehicle)
-        if (gamepad1.left_bumper) {
-            drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
-        } else {
-            driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
-        }
+        /*  if (gamepad1.left_bumper) {
+                drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+            } else
+
+         */
+        driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+
+
         if (gamepad2.right_trigger > 0) {
             intake.setPower(1);
         }  else if (gamepad2.left_trigger > 0) {
@@ -142,7 +148,7 @@ public class TwentyTwentyFiveJava extends OpMode {
             feeder.setPower(0);
         }
         if (gamepad2.x) {
-            shooter.setVelocity(2000);
+            shooter.setVelocity(shooter_speed);
         }
         if (gamepad2.a) {
             shooter.setVelocity(0);
@@ -178,6 +184,14 @@ public class TwentyTwentyFiveJava extends OpMode {
 
         double maxPower = 1.0;
         double maxSpeed = 1.0;  // make this slower for outreaches
+
+        if (gamepad1.left_bumper) {
+            maxSpeed = 0.4;
+        } else if (gamepad1.right_bumper) {
+            maxSpeed = 1.0;
+        } else {
+            maxSpeed = 0.7;
+        }
 
         // This is needed to make sure we don't pass > 1.0 to any wheel
         // It allows us to keep all of the motors in proportion to what they should
