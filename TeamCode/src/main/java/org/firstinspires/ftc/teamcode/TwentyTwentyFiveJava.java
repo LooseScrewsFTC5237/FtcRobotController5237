@@ -57,7 +57,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 public class TwentyTwentyFiveJava extends OpMode {
     // This declares the four motors needed
     int lift_height = 0;
-    public static int shooter_speed = 1250;
+    public static int fastShooterSpeed = 2000;
+    public static int ShooterSpeed = 1250;
+    public static int slowShooterSpeed = 750;
+
 
     DcMotor frontLeftDrive;
     DcMotor frontRightDrive;
@@ -148,9 +151,12 @@ public class TwentyTwentyFiveJava extends OpMode {
             feeder.setPower(0);
         }
         if (gamepad2.x) {
-            shooter.setVelocity(shooter_speed);
-        }
-        if (gamepad2.a) {
+            shooter.setVelocity(fastShooterSpeed);
+        } else if (gamepad2.y) {
+            shooter.setVelocity(ShooterSpeed);
+        } else if (gamepad2.b) {
+            shooter.setVelocity(slowShooterSpeed);
+        } else if (gamepad2.a){
             shooter.setVelocity(0);
         }
     }
