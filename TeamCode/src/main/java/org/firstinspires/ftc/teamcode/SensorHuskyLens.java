@@ -44,6 +44,8 @@ import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
 import java.util.concurrent.TimeUnit;
 
+import java.util.List;
+
 /*
  * This OpMode illustrates how to use the DFRobot HuskyLens.
  *
@@ -162,6 +164,18 @@ public class SensorHuskyLens extends LinearOpMode {
                  *
                  * These values have Java type int (integer).
                  */
+
+                int x = blocks[i].x;
+                int y = blocks[i].y;
+
+                if (x > 0) {
+                    telemetry.addData("x: ", x);
+                } else {
+                    telemetry.addData("x: ", 0);
+                }
+
+
+
             }
             //if (blocks(1)){
             //    telemetry.addData("pattern", "PPG");
@@ -170,6 +184,12 @@ public class SensorHuskyLens extends LinearOpMode {
             //} else {
             //    telemetry.addData("pattern", "PGP");
             //}
+
+            // Get the dimensions (in pixels)
+            // int width = blocks[1].width;
+            // int height = blocks[1].width;
+            // telemetry.addData("Width (px)", width);
+            // telemetry.addData("Height (px)", height);
 
             telemetry.update();
         }
