@@ -71,6 +71,8 @@ public class TwentyTwentyFiveJava extends OpMode {
     DcMotorEx shooter;
     private final int READ_PERIOD = 1;
 
+    Hood hood = new Hood();
+
     // This declares the IMU needed to get the current direction the robot is facing
     IMU imu;
 
@@ -88,6 +90,9 @@ public class TwentyTwentyFiveJava extends OpMode {
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         feeder.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
+
+        hood.init(hardwareMap);
+        hood.setServoPos(0.5);
 
 
         // This uses RUN_USING_ENCODER to be more accurate.   If you don't have the encoder
