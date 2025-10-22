@@ -36,7 +36,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import java.util.List;
+import com.qualcomm.robotcore.util.Range;
 
 /*
  * This OpMode illustrates how to program your robot to drive field relative.  This means
@@ -61,6 +65,10 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static int fastShooterSpeed = 2000;
     public static int ShooterSpeed = 1250;
     public static int slowShooterSpeed = 750;
+    public static double DRIVE_SPEED = 0.7;
+    public static double BEARING_THRESHOLD = 0.5; // Angled towards the tag (degrees)
+    public static double TURN_GAIN   =  0.01  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+    public static double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
 
 
     DcMotor frontLeftDrive;
@@ -140,7 +148,56 @@ public class TwentyTwentyFiveJava extends OpMode {
             } else
 
          */
-        driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+
+
+
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        telemetryAprilTag(currentDetections);
+        AprilTagDetection goalTag = getGoalTag(currentDetections);
+
+        double driveSpeed, strafe, turn;
+
+        if (gamepad1.b && goalTag != null) {
+            double headingError = -goalTag.ftcPose.bearing;
+
+            driveSpeed = -gamepad1.left_stick_y * DRIVE_SPEED;
+            strafe = gamepad1.left_stick_x  * DRIVE_SPEED;
+            if  (Math.abs(headingError) < BEARING_THRESHOLD) {
+                turn = 0;
+                telemetry.addData("Auto", "Robot aligned with AprilTag!");
+            } else {
+                turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
+            }
+            telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", driveSpeed, strafe, turn);
+        } else {
+
+            driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+        }
+
+        private telemetryAprilTag(List<AprilTagDetection> currentDetections); {
+            telemetry.addData("# AprilTags Detected", currentDetections.size());
+
+            // Step through the list of detections and display info for each one.
+            for (AprilTagDetection detection : currentDetections) {
+                if (detection.metadata != null) {
+                    telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
+                    telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
+                    telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
+                    telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
+                } else {
+                    telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
+                    telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
+                }
+            }   // end for() loop
+
+            // Add "key" information to telemetry
+            telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
+            telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
+            telemetry.addLine("RBE = Range, Bearing & Elevation");
+
+        }   // end method telemetryAprilTag()
+
+
 
 
         if (gamepad2.right_trigger > 0) {
@@ -167,6 +224,29 @@ public class TwentyTwentyFiveJava extends OpMode {
         }
     }
 
+    private void telemetryAprilTag(List<AprilTagDetection> currentDetections) {
+        telemetry.addData("# AprilTags Detected", currentDetections.size());
+
+        // Step through the list of detections and display info for each one.
+        for (AprilTagDetection detection : currentDetections) {
+            if (detection.metadata != null) {
+                telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
+                telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
+                telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
+                telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
+            } else {
+                telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
+                telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
+            }
+        }   // end for() loop
+
+        // Add "key" information to telemetry
+        telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
+        telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
+        telemetry.addLine("RBE = Range, Bearing & Elevation");
+
+    }   // end method telemetryAprilTag()
+
     // This routine drives the robot field relative
     private void driveFieldRelative(double forward, double right, double rotate) {
         // First, convert direction being asked to drive to polar coordinates
@@ -184,6 +264,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         // Finally, call the drive method with robot relative forward and right amounts
         drive(newForward, newRight, rotate);
     }
+
 
     // Thanks to FTC16072 for sharing this code!!
     public void drive(double forward, double right, double rotate) {
