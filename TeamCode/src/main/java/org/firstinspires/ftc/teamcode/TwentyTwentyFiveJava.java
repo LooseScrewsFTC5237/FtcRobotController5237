@@ -28,6 +28,7 @@
  */
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -66,17 +67,34 @@ public class TwentyTwentyFiveJava extends OpMode {
     // This declares the four motors needed
     int lift_height = 0;
     public static int fastShooterSpeed = 2000;
-    public static int ShooterSpeed = 1250;
-    public static int slowShooterSpeed = 750;
+    public static int shooterSpeed = 1250;
+    public static int slowShooterSpeed = 1000;
+    public static double shooterSpeedTolerance = 0.5;
+    public static int targetVelocity = 0;
     public static double DRIVE_SPEED = 0.7;
+    public static byte shooterMode = 0;
     public static double BEARING_THRESHOLD = 0.5; // Angled towards the tag (degrees)
     public static double TURN_GAIN   =  0.01  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
     public static double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
     private AprilTagProcessor aprilTag;
-    private static final int DESIRED_TAG_ID = -1;     // Choose the tag you want to approach or set to -1 for ANY tag.
+    private static final int DESIRED_TAG_ID = -1; // Choose the tag you want to approach or set to -1 for ANY tag.
 
     // Adjust Image Decimation to trade-off detection-range for detection-rate.
     public static int  DECIMATION = 3;
+    public static float targetRPM;
+    public static double rpmDistanceMultiplier = 7.742;
+    public static int axisOffsetRPM = 784;
+
+    public static double hoodDistanceMultiplier = -0.00133;
+    public static double getAxisOffsetHood = 0.517;
+    public static int variableGoesHere;
+    public static float yRPM = 0;
+    public static float yHood;
+
+
+    /*
+    *  if gamepage1.range
+    * */
 
     DcMotor frontLeftDrive;
     DcMotor frontRightDrive;
@@ -111,7 +129,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         // Initialize the Apriltag Detection process
         initAprilTag();
 
-
+        FtcDashboard.getInstance().startCameraStream(visionPortal, 10);
 
         // We set the left motors in reverse which is needed for drive trains where the left
         // motors are opposite to the right ones.
@@ -152,15 +170,23 @@ public class TwentyTwentyFiveJava extends OpMode {
 
     @Override
     public void loop() {
-        telemetry.addLine("Press A to reset Yaw");
+        double  currentShooterVelocity = shooter.getVelocity();
+        telemetry.addLine("Press X to reset Yaw");
         telemetry.addLine("Hold left bumper to drive in robot relative");
         telemetry.addLine("The left joystick sets the robot direction");
         telemetry.addLine("Moving the right joystick left and right turns the robot");
-        telemetry.addData("Shooter RPM: ", shooter.getVelocity());
+        telemetry.addData("Actual Shooter Speed: ", currentShooterVelocity);
+        if (shooterMode == 1) {
+            telemetry.addData("Target Shooter Speed", slowShooterSpeed);
+        } else if (shooterMode == 2) {
+            telemetry.addData("Target Shooter Speed", shooterSpeed);
+        } else if (shooterMode == 3) {
+            telemetry.addData("Target Shooter Speed", fastShooterSpeed);
+        }
 
         // If you press the A button, then you reset the Yaw to be zero from the way
         // the robot is currently pointing
-        if (gamepad1.a) {
+        if (gamepad1.x) {
             imu.resetYaw();
         }
         // If you press the left bumper, you get a drive from the point of view of the robot
@@ -179,19 +205,35 @@ public class TwentyTwentyFiveJava extends OpMode {
             intake.setPower(0);
         }
 
-        if (gamepad2.right_bumper) {
+        if (gamepad2.right_bumper && shooterMode == 1 && currentShooterVelocity >= slowShooterSpeed * (1 - shooterSpeedTolerance) && currentShooterVelocity <= slowShooterSpeed * (1 + shooterSpeedTolerance)) {
             feeder.setPower(1);
-        } else {
+        } else if (gamepad2.right_bumper && shooterMode ==  2 && currentShooterVelocity >= shooterSpeed * (1 - shooterSpeedTolerance) && currentShooterVelocity <= shooterSpeed * (1 + shooterSpeedTolerance)) {
+            feeder.setPower(1);
+        } else if (gamepad2.right_bumper && shooterMode == 3 && currentShooterVelocity >= fastShooterSpeed * (1 - shooterSpeedTolerance) && currentShooterVelocity <= fastShooterSpeed * (1 + shooterSpeedTolerance)) {
+            feeder.setPower(1);
+        } else if (gamepad2.right_bumper && shooterMode == 4 && currentShooterVelocity >= targetRPM * (1 - shooterSpeedTolerance) && currentShooterVelocity <= targetRPM * (1 + shooterSpeedTolerance)) {
+            feeder.setPower(1);
+        } else if (!gamepad2.right_bumper) {
             feeder.setPower(0);
         }
-        if (gamepad2.x) {
+
+
+            if (gamepad2.dpad_up) {
             shooter.setVelocity(fastShooterSpeed);
-        } else if (gamepad2.y) {
-            shooter.setVelocity(ShooterSpeed);
-        } else if (gamepad2.b) {
+            shooterMode = 3;
+        } else if (gamepad2.dpad_down) {
             shooter.setVelocity(slowShooterSpeed);
-        } else if (gamepad2.a){
+            shooterMode = 1;
+        } else if (gamepad2.y) {
+            // shooter.setVelocity(shooterSpeed);
+            shooter.setVelocity(yRPM);
+            hood.setServoPos(yHood);
+            shooterMode = 2;
+        } else if (gamepad2.a) {
             shooter.setVelocity(0);
+            shooterMode = 0;
+        } else if (gamepad1.a) {
+            shooter.setVelocity(targetRPM);
         }
 
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
@@ -210,12 +252,14 @@ public class TwentyTwentyFiveJava extends OpMode {
         }
 
         double driveSpeed, strafe, turn;
+        driveSpeed = -gamepad1.left_stick_y * DRIVE_SPEED;
+        strafe = gamepad1.left_stick_x  * DRIVE_SPEED;
 
-        if (gamepad1.b && goalTag != null) {
+        if (gamepad1.a && goalTag != null) {
             double headingError = -goalTag.ftcPose.bearing;
-
-            driveSpeed = -gamepad1.left_stick_y * DRIVE_SPEED;
-            strafe = gamepad1.left_stick_x  * DRIVE_SPEED;
+            targetRPM = (float) (rpmDistanceMultiplier * goalTag.ftcPose.range + axisOffsetRPM);
+            hood.setServoPos(hoodDistanceMultiplier * goalTag.ftcPose.range + getAxisOffsetHood);
+            shooterMode = 4;
             if  (Math.abs(headingError) < BEARING_THRESHOLD) {
                 turn = 0;
                 telemetry.addData("Auto", "Robot aligned with AprilTag!");
@@ -224,9 +268,10 @@ public class TwentyTwentyFiveJava extends OpMode {
             }
             telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", driveSpeed, strafe, turn);
         } else {
+            turn = gamepad1.right_stick_x;
 
-            driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
         }
+        driveFieldRelative(driveSpeed, strafe, turn);
     }
 
     private void initAprilTag() {
