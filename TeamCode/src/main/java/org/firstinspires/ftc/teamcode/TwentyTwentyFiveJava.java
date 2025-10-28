@@ -184,19 +184,14 @@ public class TwentyTwentyFiveJava extends OpMode {
             telemetry.addData("Target Shooter Speed", fastShooterSpeed);
         }
 
-        // If you press the A button, then you reset the Yaw to be zero from the way
+        // If you press the X button, then you reset the Yaw to be zero from the way
         // the robot is currently pointing
         if (gamepad1.x) {
             imu.resetYaw();
         }
-        // If you press the left bumper, you get a drive from the point of view of the robot
-        // (much like driving an RC vehicle)
-        /*  if (gamepad1.left_bumper) {
-                drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
-            } else
 
-         */
 
+        // Intake Gamepad Controls
         if (gamepad2.right_trigger > 0) {
             intake.setPower(1);
         }  else if (gamepad2.left_trigger > 0) {
@@ -205,27 +200,31 @@ public class TwentyTwentyFiveJava extends OpMode {
             intake.setPower(0);
         }
 
+        // Feeder with Intake Gamepad Controls
         if (gamepad2.right_bumper && shooterMode == 1 && currentShooterVelocity >= slowShooterSpeed * (1 - shooterSpeedTolerance) && currentShooterVelocity <= slowShooterSpeed * (1 + shooterSpeedTolerance)) {
             feeder.setPower(1);
+            intake.setPower(1);
         } else if (gamepad2.right_bumper && shooterMode ==  2 && currentShooterVelocity >= shooterSpeed * (1 - shooterSpeedTolerance) && currentShooterVelocity <= shooterSpeed * (1 + shooterSpeedTolerance)) {
             feeder.setPower(1);
+            intake.setPower(1);
         } else if (gamepad2.right_bumper && shooterMode == 3 && currentShooterVelocity >= fastShooterSpeed * (1 - shooterSpeedTolerance) && currentShooterVelocity <= fastShooterSpeed * (1 + shooterSpeedTolerance)) {
             feeder.setPower(1);
+            intake.setPower(1);
         } else if (gamepad2.right_bumper && shooterMode == 4 && currentShooterVelocity >= targetRPM * (1 - shooterSpeedTolerance) && currentShooterVelocity <= targetRPM * (1 + shooterSpeedTolerance)) {
             feeder.setPower(1);
+            intake.setPower(1);
         } else if (!gamepad2.right_bumper) {
             feeder.setPower(0);
         }
 
-
-            if (gamepad2.dpad_up) {
+        // Shooter Gamepad Controls
+        if (gamepad2.dpad_up) {
             shooter.setVelocity(fastShooterSpeed);
             shooterMode = 3;
         } else if (gamepad2.dpad_down) {
             shooter.setVelocity(slowShooterSpeed);
             shooterMode = 1;
         } else if (gamepad2.y) {
-            // shooter.setVelocity(shooterSpeed);
             shooter.setVelocity(yRPM);
             hood.setServoPos(yHood);
             shooterMode = 2;
@@ -242,7 +241,7 @@ public class TwentyTwentyFiveJava extends OpMode {
 
         // Tell the driver what we see, and what to do.
         if (goalTag != null) {
-            telemetry.addData("\n>","HOLD Left-Bumper to Drive to Target\n");
+            telemetry.addData("\n>","HOLD A to Drive to Target\n");
             telemetry.addData("Found", "ID %d (%s)", goalTag.id, goalTag.metadata.name);
             telemetry.addData("Range",  "%5.1f inches", goalTag.ftcPose.range);
             telemetry.addData("Bearing","%3.0f degrees", goalTag.ftcPose.bearing);
@@ -254,6 +253,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         double driveSpeed, strafe, turn;
         driveSpeed = -gamepad1.left_stick_y * DRIVE_SPEED;
         strafe = gamepad1.left_stick_x  * DRIVE_SPEED;
+
 
         if (gamepad1.a && goalTag != null) {
             double headingError = -goalTag.ftcPose.bearing;
@@ -279,21 +279,21 @@ public class TwentyTwentyFiveJava extends OpMode {
         // Create the AprilTag processor.
         aprilTag = new AprilTagProcessor.Builder()
 
-                // The following default settings are available to un-comment and edit as needed.
-                //.setDrawAxes(false)
-                //.setDrawCubeProjection(false)
-                //.setDrawTagOutline(true)
-                //.setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
-                //.setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
-                //.setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
+        // The following default settings are available to un-comment and edit as needed.
+        //.setDrawAxes(false)
+        //.setDrawCubeProjection(false)
+        //.setDrawTagOutline(true)
+        //.setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
+        //.setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
+        //.setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
 
-                // == CAMERA CALIBRATION ==
-                // If you do not manually specify calibration parameters, the SDK will attempt
-                // to load a predefined calibration for your camera.
-                //.setLensIntrinsics(578.272, 578.272, 402.145, 221.506)
-                // ... these parameters are fx, fy, cx, cy.
+        // == CAMERA CALIBRATION ==
+        // If you do not manually specify calibration parameters, the SDK will attempt
+        // to load a predefined calibration for your camera.
+        //.setLensIntrinsics(578.272, 578.272, 402.145, 221.506)
+        // ... these parameters are fx, fy, cx, cy.
 
-                .build();
+        .build();
 
         // Adjust Image Decimation to trade-off detection-range for detection-rate.
         // eg: Some typical detection data using a Logitech C920 WebCam
@@ -436,4 +436,6 @@ public class TwentyTwentyFiveJava extends OpMode {
 
 
     }
+    
 }
+
