@@ -171,10 +171,10 @@ public class TwentyTwentyFiveJava extends OpMode {
     @Override
     public void loop() {
         double  currentShooterVelocity = shooter.getVelocity();
-        telemetry.addLine("Press X to reset Yaw");
-        telemetry.addLine("Hold left bumper to drive in robot relative");
-        telemetry.addLine("The left joystick sets the robot direction");
-        telemetry.addLine("Moving the right joystick left and right turns the robot");
+        // telemetry.addLine("Press X to reset Yaw");
+        // telemetry.addLine("Hold left bumper to drive in robot relative");
+        // telemetry.addLine("The left joystick sets the robot direction");
+        // telemetry.addLine("Moving the right joystick left and right turns the robot");
         telemetry.addData("Actual Shooter Speed: ", currentShooterVelocity);
         if (shooterMode == 1) {
             telemetry.addData("Target Shooter Speed", slowShooterSpeed);
@@ -182,8 +182,11 @@ public class TwentyTwentyFiveJava extends OpMode {
             telemetry.addData("Target Shooter Speed", shooterSpeed);
         } else if (shooterMode == 3) {
             telemetry.addData("Target Shooter Speed", fastShooterSpeed);
+        } else if (shooterMode == 4 && gamepad2.right_bumper) {
+            telemetry.addData("Target Shooter Speed", targetRPM);
+        } else if (shooterMode == 4) {
+            telemetry.addData("Target Shooter Speed", slowShooterSpeed);
         }
-
         // If you press the X button, then you reset the Yaw to be zero from the way
         // the robot is currently pointing
         if (gamepad1.x) {
@@ -231,8 +234,10 @@ public class TwentyTwentyFiveJava extends OpMode {
         } else if (gamepad2.a) {
             shooter.setVelocity(0);
             shooterMode = 0;
-        } else if (gamepad1.a) {
+        } else if (gamepad1.a && gamepad2.right_bumper) {
             shooter.setVelocity(targetRPM);
+        } else if (gamepad1.a) {
+            shooter.setVelocity(slowShooterSpeed);
         }
 
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
@@ -241,7 +246,6 @@ public class TwentyTwentyFiveJava extends OpMode {
 
         // Tell the driver what we see, and what to do.
         if (goalTag != null) {
-            telemetry.addData("\n>","HOLD A to Drive to Target\n");
             telemetry.addData("Found", "ID %d (%s)", goalTag.id, goalTag.metadata.name);
             telemetry.addData("Range",  "%5.1f inches", goalTag.ftcPose.range);
             telemetry.addData("Bearing","%3.0f degrees", goalTag.ftcPose.bearing);
@@ -340,10 +344,10 @@ public class TwentyTwentyFiveJava extends OpMode {
         // Step through the list of detections and display info for each one.
         for (AprilTagDetection detection : currentDetections) {
             if (detection.metadata != null) {
-                telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
-                telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
-                telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
-                telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
+                //telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
+                //telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
+                //telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
+                //telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
             } else {
                 telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
                 telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
@@ -351,9 +355,9 @@ public class TwentyTwentyFiveJava extends OpMode {
         }   // end for() loop
 
         // Add "key" information to telemetry
-        telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
-        telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
-        telemetry.addLine("RBE = Range, Bearing & Elevation");
+       // telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
+       // telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
+       // telemetry.addLine("RBE = Range, Bearing & Elevation");
 
     }   // end method telemetryAprilTag()
 
