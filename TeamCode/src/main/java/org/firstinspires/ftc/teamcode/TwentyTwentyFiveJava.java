@@ -69,12 +69,12 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static int fastShooterSpeed = 2000;
     public static int shooterSpeed = 1250;
     public static int slowShooterSpeed = 1000;
-    public static double shooterSpeedTolerance = 0.5;
+    public static double shooterSpeedTolerance = 0.04;
     public static int targetVelocity = 0;
     public static double DRIVE_SPEED = 0.7;
     public static byte shooterMode = 0;
-    public static double BEARING_THRESHOLD = 0.5; // Angled towards the tag (degrees)
-    public static double TURN_GAIN   =  0.01  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+    public static double BEARING_THRESHOLD = 0.005; // Angled towards the tag (degrees)
+    public static double TURN_GAIN   =  0.02  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
     public static double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
     private AprilTagProcessor aprilTag;
     private static final int DESIRED_TAG_ID = -1; // Choose the tag you want to approach or set to -1 for ANY tag.
@@ -198,7 +198,7 @@ public class TwentyTwentyFiveJava extends OpMode {
 
         // Feeder Motor
         if (gamepad2.right_bumper && currentShooterVelocity >= targetRPM * (1 - shooterSpeedTolerance) && currentShooterVelocity <= targetRPM * (1 + shooterSpeedTolerance)) {
-            feeder.setPower(1);
+            feeder.setPower(0.7);
         } else {
             feeder.setPower(0);
         }
@@ -246,8 +246,9 @@ public class TwentyTwentyFiveJava extends OpMode {
         }else if (gamepad1.a && goalTag != null){
             targetRPM = (float) (rpmDistanceMultiplier * goalTag.ftcPose.range + axisOffsetRPM);
         } else {
-            shooter.setVelocity(slowShooterSpeed);
+            targetRPM = slowShooterSpeed;
         }
+        shooter.setVelocity(targetRPM);
 
         driveFieldRelative(driveSpeed, strafe, turn);
     }
