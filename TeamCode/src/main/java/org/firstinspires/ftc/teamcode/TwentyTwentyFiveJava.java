@@ -87,9 +87,9 @@ public class TwentyTwentyFiveJava extends OpMode {
 
     public static double hoodDistanceMultiplier = -0.00133;
     public static double getAxisOffsetHood = 0.517;
-    public static int variableGoesHere;
+    /* public static int variableGoesHere;
     public static float yRPM = 0;
-    public static float yHood;
+    public static float yHood; */
 
 
     /*
@@ -194,51 +194,31 @@ public class TwentyTwentyFiveJava extends OpMode {
         }
 
 
-        // Intake Gamepad Controls
-        if (gamepad2.right_trigger > 0) {
+        // Intake Motor
+        if (gamepad2.right_trigger > 0 || gamepad2.right_bumper){
             intake.setPower(1);
-        }  else if (gamepad2.left_trigger > 0) {
+        } else if(gamepad2.left_trigger > 0){
             intake.setPower(-1);
-        } else {
-            intake.setPower(0);
         }
 
-        // Feeder with Intake Gamepad Controls
-        if (gamepad2.right_bumper && shooterMode == 1 && currentShooterVelocity >= slowShooterSpeed * (1 - shooterSpeedTolerance) && currentShooterVelocity <= slowShooterSpeed * (1 + shooterSpeedTolerance)) {
+
+        // Feeder Motor
+        if (gamepad2.right_bumper && currentShooterVelocity >= targetRPM * (1 - shooterSpeedTolerance) && currentShooterVelocity <= targetRPM * (1 + shooterSpeedTolerance)) {
             feeder.setPower(1);
-            intake.setPower(1);
-        } else if (gamepad2.right_bumper && shooterMode ==  2 && currentShooterVelocity >= shooterSpeed * (1 - shooterSpeedTolerance) && currentShooterVelocity <= shooterSpeed * (1 + shooterSpeedTolerance)) {
-            feeder.setPower(1);
-            intake.setPower(1);
-        } else if (gamepad2.right_bumper && shooterMode == 3 && currentShooterVelocity >= fastShooterSpeed * (1 - shooterSpeedTolerance) && currentShooterVelocity <= fastShooterSpeed * (1 + shooterSpeedTolerance)) {
-            feeder.setPower(1);
-            intake.setPower(1);
-        } else if (gamepad2.right_bumper && shooterMode == 4 && currentShooterVelocity >= targetRPM * (1 - shooterSpeedTolerance) && currentShooterVelocity <= targetRPM * (1 + shooterSpeedTolerance)) {
-            feeder.setPower(1);
-            intake.setPower(1);
-        } else if (!gamepad2.right_bumper) {
+        } else {
             feeder.setPower(0);
         }
 
-        // Shooter Gamepad Controls
-        if (gamepad2.dpad_up) {
-            shooter.setVelocity(fastShooterSpeed);
-            shooterMode = 3;
-        } else if (gamepad2.dpad_down) {
+        // Shooter Motor
+        if (gamepad2.dpad_down){
             shooter.setVelocity(slowShooterSpeed);
-            shooterMode = 1;
-        } else if (gamepad2.y) {
-            shooter.setVelocity(yRPM);
-            hood.setServoPos(yHood);
-            shooterMode = 2;
-        } else if (gamepad2.a) {
-            shooter.setVelocity(0);
-            shooterMode = 0;
-        } else if (gamepad1.a && gamepad2.right_bumper) {
+        }else if (gamepad1.a && gamepad2.right_bumper){
             shooter.setVelocity(targetRPM);
-        } else if (gamepad1.a) {
+            hood.setServoPos();
+        } else {
             shooter.setVelocity(slowShooterSpeed);
         }
+
 
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         telemetryAprilTag(currentDetections);
