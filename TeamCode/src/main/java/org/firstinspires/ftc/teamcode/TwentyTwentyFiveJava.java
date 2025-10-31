@@ -87,14 +87,6 @@ public class TwentyTwentyFiveJava extends OpMode {
 
     public static double hoodDistanceMultiplier = -0.00133;
     public static double getAxisOffsetHood = 0.517;
-    /* public static int variableGoesHere;
-    public static float yRPM = 0;
-    public static float yHood; */
-
-
-    /*
-    *  if gamepage1.range
-    * */
 
     DcMotor frontLeftDrive;
     DcMotor frontRightDrive;
@@ -199,6 +191,8 @@ public class TwentyTwentyFiveJava extends OpMode {
             intake.setPower(1);
         } else if(gamepad2.left_trigger > 0){
             intake.setPower(-1);
+        } else {
+            intake.setPower(0);
         }
 
 
@@ -209,15 +203,7 @@ public class TwentyTwentyFiveJava extends OpMode {
             feeder.setPower(0);
         }
 
-        // Shooter Motor
-        if (gamepad2.dpad_down){
-            shooter.setVelocity(slowShooterSpeed);
-        }else if (gamepad1.a && gamepad2.right_bumper){
-            shooter.setVelocity(targetRPM);
-            hood.setServoPos();
-        } else {
-            shooter.setVelocity(slowShooterSpeed);
-        }
+
 
 
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
@@ -241,7 +227,6 @@ public class TwentyTwentyFiveJava extends OpMode {
 
         if (gamepad1.a && goalTag != null) {
             double headingError = -goalTag.ftcPose.bearing;
-            targetRPM = (float) (rpmDistanceMultiplier * goalTag.ftcPose.range + axisOffsetRPM);
             hood.setServoPos(hoodDistanceMultiplier * goalTag.ftcPose.range + getAxisOffsetHood);
             shooterMode = 4;
             if  (Math.abs(headingError) < BEARING_THRESHOLD) {
@@ -255,8 +240,19 @@ public class TwentyTwentyFiveJava extends OpMode {
             turn = gamepad1.right_stick_x;
 
         }
+        // Shooter Motor
+        if (gamepad2.dpad_down){
+            targetRPM = (slowShooterSpeed);
+        }else if (gamepad1.a && goalTag != null){
+            targetRPM = (float) (rpmDistanceMultiplier * goalTag.ftcPose.range + axisOffsetRPM);
+        } else {
+            shooter.setVelocity(slowShooterSpeed);
+        }
+
         driveFieldRelative(driveSpeed, strafe, turn);
     }
+
+
 
     private void initAprilTag() {
 
