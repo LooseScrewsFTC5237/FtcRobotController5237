@@ -30,11 +30,13 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -44,6 +46,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
+
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 /*
@@ -83,10 +88,15 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static int  DECIMATION = 3;
     public static float targetRPM;
     public static double rpmDistanceMultiplier = 7.742;
-    public static int axisOffsetRPM = 784;
+    public static int axisOffsetRPM = 820;
 
-    public static double hoodDistanceMultiplier = -0.00133;
+    public static double hoodDistanceMultiplier = -0.00153;
     public static double getAxisOffsetHood = 0.517;
+    public static boolean UPDATE_FLYWHEEL_PID = false;
+    public static double FLYWHEEL_P = 50.0;
+    public static double FLYWHEEL_I = 3.0;
+    public static double FLYWHEEL_D = 2;
+    public static double FLYWHEEL_F = 0;
 
     DcMotor frontLeftDrive;
     DcMotor frontRightDrive;
@@ -98,6 +108,7 @@ public class TwentyTwentyFiveJava extends OpMode {
     private final int READ_PERIOD = 1;
 
     Hood hood = new Hood();
+    Hood ready = new Hood();
 
     // This declares the IMU needed to get the current direction the robot is facing
     IMU imu;
@@ -118,8 +129,10 @@ public class TwentyTwentyFiveJava extends OpMode {
         feeder = hardwareMap.get(DcMotor.class, "Shooter Feeder");
         shooter = hardwareMap.get(DcMotorEx.class, "Shooter");
 
+
         // Initialize the Apriltag Detection process
         initAprilTag();
+        telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
 
         FtcDashboard.getInstance().startCameraStream(visionPortal, 10);
 
@@ -132,6 +145,7 @@ public class TwentyTwentyFiveJava extends OpMode {
 
         hood.init(hardwareMap);
         hood.setServoPos(0.5);
+        ;
 
 
         // This uses RUN_USING_ENCODER to be more accurate.   If you don't have the encoder
@@ -143,7 +157,18 @@ public class TwentyTwentyFiveJava extends OpMode {
         backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         feeder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+        PIDFCoefficients c = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        if (!UPDATE_FLYWHEEL_PID) {
+            FLYWHEEL_P = c.p;
+            FLYWHEEL_I = c.i;
+            FLYWHEEL_D = c.d;
+            FLYWHEEL_F = c.f;
+        }
+        pidTuner();
+
 
 
         imu = hardwareMap.get(IMU.class, "imu");
@@ -159,9 +184,9 @@ public class TwentyTwentyFiveJava extends OpMode {
     }
 
 
-
     @Override
     public void loop() {
+        pidTuner();
         double  currentShooterVelocity = shooter.getVelocity();
         // telemetry.addLine("Press X to reset Yaw");
         // telemetry.addLine("Hold left bumper to drive in robot relative");
@@ -197,10 +222,16 @@ public class TwentyTwentyFiveJava extends OpMode {
 
 
         // Feeder Motor
-        if (gamepad2.right_bumper && currentShooterVelocity >= targetRPM * (1 - shooterSpeedTolerance) && currentShooterVelocity <= targetRPM * (1 + shooterSpeedTolerance)) {
+        if (gamepad2.right_bumper && (currentShooterVelocity >= targetRPM * (1 - shooterSpeedTolerance) && currentShooterVelocity <= targetRPM * (1 + shooterSpeedTolerance))) {
             feeder.setPower(0.7);
         } else {
             feeder.setPower(0);
+        }
+        if (gamepad1.a && (currentShooterVelocity >= targetRPM * (1 - shooterSpeedTolerance) && currentShooterVelocity <= targetRPM * (1 + shooterSpeedTolerance))) {
+           hood.setReadyPos(.5);
+        }
+        else {
+            hood.setReadyPos(.722);
         }
 
 
@@ -248,12 +279,24 @@ public class TwentyTwentyFiveJava extends OpMode {
         } else {
             targetRPM = slowShooterSpeed;
         }
+        telemetry.addData("Target RPM", targetRPM);
+        telemetry.addData("Current RPM", shooter.getVelocity());
         shooter.setVelocity(targetRPM);
 
         driveFieldRelative(driveSpeed, strafe, turn);
     }
 
-
+    private void pidTuner() {
+        if (UPDATE_FLYWHEEL_PID) {
+            PIDFCoefficients c = new PIDFCoefficients(FLYWHEEL_P, FLYWHEEL_I, FLYWHEEL_D, FLYWHEEL_F);
+            shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, c);
+            UPDATE_FLYWHEEL_PID = false;
+        }
+        telemetry.addData("Flywheel P", FLYWHEEL_P);
+        telemetry.addData("Flywheel I", FLYWHEEL_I);
+        telemetry.addData("Flywheel D", FLYWHEEL_D);
+        telemetry.addData("Flywheel F", FLYWHEEL_F);
+    }
 
     private void initAprilTag() {
 
