@@ -78,7 +78,7 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static int targetVelocity = 0;
     public static double DRIVE_SPEED = 0.7;
     public static byte shooterMode = 0;
-    public static double BEARING_THRESHOLD = 0.005; // Angled towards the tag (degrees)
+    public static double BEARING_THRESHOLD = 0.0025; // Angled towards the tag (degrees)
     public static double TURN_GAIN   =  0.02  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
     public static double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
     private AprilTagProcessor aprilTag;
@@ -272,9 +272,10 @@ public class TwentyTwentyFiveJava extends OpMode {
 
         }
         // Shooter Motor
-        if (gamepad2.dpad_down){
+        if (gamepad2.dpad_down) {
             targetRPM = (slowShooterSpeed);
-        }else if (gamepad1.a && goalTag != null){
+            hood.setServoPos(0.5);
+        } else if (gamepad1.a && goalTag != null){
             targetRPM = (float) (rpmDistanceMultiplier * goalTag.ftcPose.range + axisOffsetRPM);
         } else {
             targetRPM = slowShooterSpeed;
