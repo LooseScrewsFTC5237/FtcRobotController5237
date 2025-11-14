@@ -97,6 +97,9 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static double FLYWHEEL_I = 3.0;
     public static double FLYWHEEL_D = 2;
     public static double FLYWHEEL_F = 0;
+    public static double closeHoodAngle = 0.5;
+    public static double mediumHoodAngle = 0.46;
+    public static double farHoodAngle = 0.42;
 
     DcMotor frontLeftDrive;
     DcMotor frontRightDrive;
@@ -105,6 +108,7 @@ public class TwentyTwentyFiveJava extends OpMode {
     DcMotor intake;
     DcMotor feeder;
     DcMotorEx shooter;
+    DcMotorEx shooter2;
     private final int READ_PERIOD = 1;
 
     Hood hood = new Hood();
@@ -128,6 +132,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         intake = hardwareMap.get(DcMotor.class, "Intake");
         feeder = hardwareMap.get(DcMotor.class, "Shooter Feeder");
         shooter = hardwareMap.get(DcMotorEx.class, "Shooter");
+        shooter2 = hardwareMap.get(DcMotorEx.class, "Shooter2");
 
 
         // Initialize the Apriltag Detection process
@@ -142,7 +147,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         feeder.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
-
+        shooter2.setDirection(DcMotorSimple.Direction.REVERSE);
         hood.init(hardwareMap);
         hood.setServoPos(0.5);
         ;
@@ -158,9 +163,9 @@ public class TwentyTwentyFiveJava extends OpMode {
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         feeder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        shooter2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         PIDFCoefficients c = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
-
         if (!UPDATE_FLYWHEEL_PID) {
             FLYWHEEL_P = c.p;
             FLYWHEEL_I = c.i;
@@ -274,7 +279,13 @@ public class TwentyTwentyFiveJava extends OpMode {
         // Shooter Motor
         if (gamepad2.dpad_down) {
             targetRPM = (slowShooterSpeed);
-            hood.setServoPos(0.5);
+            hood.setServoPos(closeHoodAngle);
+        } else if (gamepad2.dpad_right || gamepad2.dpad_left) {
+            targetRPM = (shooterSpeed);
+            hood.setServoPos(mediumHoodAngle);
+        } else if (gamepad2.dpad_up) {
+            targetRPM = (fastShooterSpeed);
+            hood.setServoPos(farHoodAngle);
         } else if (gamepad1.a && goalTag != null){
             targetRPM = (float) (rpmDistanceMultiplier * goalTag.ftcPose.range + axisOffsetRPM);
         } else {
@@ -283,7 +294,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         telemetry.addData("Target RPM", targetRPM);
         telemetry.addData("Current RPM", shooter.getVelocity());
         shooter.setVelocity(targetRPM);
-
+        shooter2.setVelocity(targetRPM);
         driveFieldRelative(driveSpeed, strafe, turn);
     }
 
@@ -291,6 +302,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         if (UPDATE_FLYWHEEL_PID) {
             PIDFCoefficients c = new PIDFCoefficients(FLYWHEEL_P, FLYWHEEL_I, FLYWHEEL_D, FLYWHEEL_F);
             shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, c);
+            shooter2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, c);
             UPDATE_FLYWHEEL_PID = false;
         }
         telemetry.addData("Flywheel P", FLYWHEEL_P);
@@ -438,7 +450,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         } else if (gamepad1.right_bumper) {
             maxSpeed = 1.0;
         } else {
-            maxSpeed = 0.7;
+            maxSpeed = 0.85;
         }
 
         // This is needed to make sure we don't pass > 1.0 to any wheel
