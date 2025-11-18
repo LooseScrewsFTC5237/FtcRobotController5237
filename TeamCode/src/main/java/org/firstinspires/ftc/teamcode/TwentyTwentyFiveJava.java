@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -110,9 +111,10 @@ public class TwentyTwentyFiveJava extends OpMode {
     DcMotorEx shooter;
     DcMotorEx shooter2;
     private final int READ_PERIOD = 1;
-
+    private DigitalChannel laserInput;
     Hood hood = new Hood();
     Hood ready = new Hood();
+    Hood artifactIndicator = new Hood();
 
     // This declares the IMU needed to get the current direction the robot is facing
     IMU imu;
@@ -134,7 +136,8 @@ public class TwentyTwentyFiveJava extends OpMode {
         shooter = hardwareMap.get(DcMotorEx.class, "Shooter");
         shooter2 = hardwareMap.get(DcMotorEx.class, "Shooter2");
 
-
+        laserInput = hardwareMap.get(DigitalChannel.class, "LaserArtifactDetector");
+        laserInput.setMode(DigitalChannel.Mode.INPUT);
         // Initialize the Apriltag Detection process
         initAprilTag();
         telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
@@ -191,6 +194,7 @@ public class TwentyTwentyFiveJava extends OpMode {
 
     @Override
     public void loop() {
+        boolean artifactDetected = laserInput.getState();
         pidTuner();
         double  currentShooterVelocity = shooter.getVelocity();
         // telemetry.addLine("Press X to reset Yaw");
@@ -215,6 +219,12 @@ public class TwentyTwentyFiveJava extends OpMode {
             imu.resetYaw();
         }
 
+        // Artifact Indication Code
+        if (artifactDetected) {
+            artifactIndicator.setServoPos(1.0);
+        } else {
+            artifactIndicator.setServoPos(0.0);
+        }
 
         // Intake Motor
         if (gamepad2.right_trigger > 0 || gamepad2.right_bumper){

@@ -4,12 +4,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Hood {
-    private Servo servoPos, ready;
+    private Servo servoPos, ready, artifactIndicator;
 
 
     public void init(HardwareMap hwMap) {
         servoPos = hwMap.get(Servo.class, "hood");
         ready = hwMap.get(Servo.class, "ready");
+        artifactIndicator = hwMap.get(Servo.class,"Artifact Indicator");
     }
 
     public void setServoPos(double angle) {
@@ -20,4 +21,7 @@ public class Hood {
         ready.setPosition(position);
     }
 
+    public void setArtifactIndicatorPos(double position) {
+        artifactIndicator.setPosition(position);
+    }
 }
