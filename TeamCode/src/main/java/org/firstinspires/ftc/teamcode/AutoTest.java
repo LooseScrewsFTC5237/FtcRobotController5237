@@ -22,7 +22,7 @@ public class AutoTest extends LinearOpMode {
         waitForStart();
 
         if(isStopRequested()) return;
-
+/*
         Actions.runBlocking(simpleAutoPath);
         Pose2d finalPose = drive.pose;
 
@@ -32,6 +32,7 @@ public class AutoTest extends LinearOpMode {
                 .build();
 
         Actions.runBlocking(parkingPath);
+ */
     }
 }
 

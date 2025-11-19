@@ -114,7 +114,7 @@ public class TwentyTwentyFiveJava extends OpMode {
     private DigitalChannel laserInput;
     Hood hood = new Hood();
     Hood ready = new Hood();
-    Hood artifactIndicator = new Hood();
+    // Hood artifactIndicator = new Hood();
 
     // This declares the IMU needed to get the current direction the robot is facing
     IMU imu;
@@ -220,11 +220,13 @@ public class TwentyTwentyFiveJava extends OpMode {
         }
 
         // Artifact Indication Code
+        /*
         if (artifactDetected) {
             artifactIndicator.setServoPos(1.0);
         } else {
             artifactIndicator.setServoPos(0.0);
         }
+         */
 
         // Intake Motor
         if (gamepad2.right_trigger > 0 || gamepad2.right_bumper){
