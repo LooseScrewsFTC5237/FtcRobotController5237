@@ -9,6 +9,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Autonomous()
 public class AutoTest extends LinearOpMode {
+
+    protected MecanumDrive drive;
+
     @Override
     public void runOpMode() throws InterruptedException {
         Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
