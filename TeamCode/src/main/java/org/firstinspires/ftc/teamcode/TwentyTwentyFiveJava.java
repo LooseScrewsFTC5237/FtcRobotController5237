@@ -74,8 +74,8 @@ public class TwentyTwentyFiveJava extends OpMode {
     int lift_height = 0;
     public static int fastShooterSpeed = 2000;
     public static int shooterSpeed = 1250;
-    public static int slowShooterSpeed = 1000;
-    public static double shooterSpeedTolerance = 0.04;
+    public static int slowShooterSpeed = 750;
+    public static double shooterSpeedTolerance = 0.05;
     public static int targetVelocity = 0;
     public static double DRIVE_SPEED = 0.7;
     public static byte shooterMode = 0;
@@ -88,16 +88,16 @@ public class TwentyTwentyFiveJava extends OpMode {
     // Adjust Image Decimation to trade-off detection-range for detection-rate.
     public static int  DECIMATION = 3;
     public static float targetRPM;
-    public static double rpmDistanceMultiplier = 7.742;
-    public static int axisOffsetRPM = 820;
+    public static double rpmDistanceMultiplier = 3.6;
+    public static int axisOffsetRPM = 798;
 
-    public static double hoodDistanceMultiplier = -0.00153;
-    public static double getAxisOffsetHood = 0.517;
+    public static double hoodDistanceMultiplier = -0.00145;
+    public static double getAxisOffsetHood = 0.541;
     public static boolean UPDATE_FLYWHEEL_PID = false;
-    public static double FLYWHEEL_P = 50.0;
-    public static double FLYWHEEL_I = 3.0;
-    public static double FLYWHEEL_D = 2;
-    public static double FLYWHEEL_F = 0;
+    public static double FLYWHEEL_P = 70;
+    public static double FLYWHEEL_I = 0;
+    public static double FLYWHEEL_D = 5;
+    public static double FLYWHEEL_F = 21;
     public static double closeHoodAngle = 0.5;
     public static double mediumHoodAngle = 0.46;
     public static double farHoodAngle = 0.42;
@@ -113,8 +113,6 @@ public class TwentyTwentyFiveJava extends OpMode {
     private final int READ_PERIOD = 1;
     private DigitalChannel laserInput;
     Hood hood = new Hood();
-    Hood ready = new Hood();
-    // Hood artifactIndicator = new Hood();
 
     // This declares the IMU needed to get the current direction the robot is facing
     IMU imu;
@@ -220,13 +218,11 @@ public class TwentyTwentyFiveJava extends OpMode {
         }
 
         // Artifact Indication Code
-        /*
         if (artifactDetected) {
-            artifactIndicator.setServoPos(1.0);
+            hood.setArtifactIndicatorPos(0.5);
         } else {
-            artifactIndicator.setServoPos(0.0);
+            hood.setArtifactIndicatorPos(0);
         }
-         */
 
         // Intake Motor
         if (gamepad2.right_trigger > 0 || gamepad2.right_bumper){
@@ -292,7 +288,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         if (gamepad2.dpad_down) {
             targetRPM = (slowShooterSpeed);
             hood.setServoPos(closeHoodAngle);
-        } else if (gamepad2.dpad_right || gamepad2.dpad_left) {
+        } else if (gamepad2.dpad_right) {
             targetRPM = (shooterSpeed);
             hood.setServoPos(mediumHoodAngle);
         } else if (gamepad2.dpad_up) {
@@ -300,9 +296,10 @@ public class TwentyTwentyFiveJava extends OpMode {
             hood.setServoPos(farHoodAngle);
         } else if (gamepad1.a && goalTag != null){
             targetRPM = (float) (rpmDistanceMultiplier * goalTag.ftcPose.range + axisOffsetRPM);
-        } else {
-            targetRPM = slowShooterSpeed;
+        } else if (gamepad2.dpad_left) {
+            targetRPM = 0;
         }
+
         telemetry.addData("Target RPM", targetRPM);
         telemetry.addData("Current RPM", shooter.getVelocity());
         shooter.setVelocity(targetRPM);
