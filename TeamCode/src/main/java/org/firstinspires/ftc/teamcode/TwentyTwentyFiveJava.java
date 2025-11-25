@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -41,10 +42,12 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+
 
 import java.util.List;
 
@@ -123,6 +126,8 @@ public class TwentyTwentyFiveJava extends OpMode {
     // Create the vision portal by using a builder.
     VisionPortal.Builder builder = new VisionPortal.Builder();
 
+    private Limelight3A limelight;
+
     @Override
     public void init() {
         frontLeftDrive = hardwareMap.get(DcMotor.class, "FLDrive");
@@ -141,6 +146,9 @@ public class TwentyTwentyFiveJava extends OpMode {
         telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
 
         FtcDashboard.getInstance().startCameraStream(visionPortal, 10);
+
+        limelight = hardwareMap.get(Limelight3A.class, "Webcam 1");
+        limelight.pipelineSwitch(8);
 
         // We set the left motors in reverse which is needed for drive trains where the left
         // motors are opposite to the right ones.
@@ -232,7 +240,6 @@ public class TwentyTwentyFiveJava extends OpMode {
         } else {
             intake.setPower(0);
         }
-
 
         // Feeder Motor
         if (gamepad2.right_bumper && (currentShooterVelocity >= targetRPM * (1 - shooterSpeedTolerance) && currentShooterVelocity <= targetRPM * (1 + shooterSpeedTolerance))) {
@@ -353,8 +360,8 @@ public class TwentyTwentyFiveJava extends OpMode {
         // Create the vision portal by using a builder.
         VisionPortal.Builder builder = new VisionPortal.Builder();
 
-        // Set the camera
-        builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
+        // Set the camera (old logitec)
+        // builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
 
         // Choose a camera resolution. Not all cameras support all resolutions.
         //builder.setCameraResolution(new Size(640, 480));
