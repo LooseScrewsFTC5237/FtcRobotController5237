@@ -70,12 +70,12 @@ public final class MecanumDrive {
         // feedforward parameters (in tick units)
         public double kS = 1.533857609675465;
         public double kV = .00023961805032057435;
-        public double kA = 0.00015;
+        public double kA = 0.000085;
 
         // path profile parameters (in inches)
-        public double maxWheelVel = 50;
+        public double maxWheelVel = 100;
         public double minProfileAccel = -30;
-        public double maxProfileAccel = 50;
+        public double maxProfileAccel = 100;
 
         // turn profile parameters (in radians)
         public double maxAngVel = Math.PI; // shared with path
@@ -266,6 +266,7 @@ public final class MecanumDrive {
         rightBack.setPower(wheelVels.rightBack.get(0) / maxPowerMag);
         rightFront.setPower(wheelVels.rightFront.get(0) / maxPowerMag);
     }
+
 
     public final class FollowTrajectoryAction implements Action {
         public final TimeTrajectory timeTrajectory;
