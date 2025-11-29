@@ -31,7 +31,6 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -42,12 +41,10 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
 
 import java.util.List;
 
@@ -77,10 +74,10 @@ public class TwentyTwentyFiveJava extends OpMode {
     int lift_height = 0;
     public static int fastShooterSpeed = 2000;
     public static int shooterSpeed = 1250;
-    public static int slowShooterSpeed = 750;
-    public static double shooterSpeedTolerance = 0.05;
+    public static int slowShooterSpeed = 725;
+    public static double shooterSpeedTolerance = 0.075;
     public static int targetVelocity = 0;
-    public static double DRIVE_SPEED = 0.7;
+    public static double DRIVE_SPEED = 0.8;
     public static byte shooterMode = 0;
     public static double BEARING_THRESHOLD = 0.0025; // Angled towards the tag (degrees)
     public static double TURN_GAIN   =  0.02  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
@@ -92,7 +89,7 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static int  DECIMATION = 3;
     public static float targetRPM;
     public static double rpmDistanceMultiplier = 3.6;
-    public static int axisOffsetRPM = 798;
+    public static int axisOffsetRPM = 748;
 
     public static double hoodDistanceMultiplier = -0.00145;
     public static double getAxisOffsetHood = 0.541;
@@ -126,8 +123,6 @@ public class TwentyTwentyFiveJava extends OpMode {
     // Create the vision portal by using a builder.
     VisionPortal.Builder builder = new VisionPortal.Builder();
 
-    private Limelight3A limelight;
-
     @Override
     public void init() {
         frontLeftDrive = hardwareMap.get(DcMotor.class, "FLDrive");
@@ -146,9 +141,6 @@ public class TwentyTwentyFiveJava extends OpMode {
         telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
 
         FtcDashboard.getInstance().startCameraStream(visionPortal, 10);
-
-        limelight = hardwareMap.get(Limelight3A.class, "Webcam 1");
-        limelight.pipelineSwitch(8);
 
         // We set the left motors in reverse which is needed for drive trains where the left
         // motors are opposite to the right ones.
@@ -241,6 +233,7 @@ public class TwentyTwentyFiveJava extends OpMode {
             intake.setPower(0);
         }
 
+
         // Feeder Motor
         if (gamepad2.right_bumper && (currentShooterVelocity >= targetRPM * (1 - shooterSpeedTolerance) && currentShooterVelocity <= targetRPM * (1 + shooterSpeedTolerance))) {
             feeder.setPower(0.7);
@@ -248,7 +241,7 @@ public class TwentyTwentyFiveJava extends OpMode {
             feeder.setPower(0);
         }
         if (gamepad1.a && (currentShooterVelocity >= targetRPM * (1 - shooterSpeedTolerance) && currentShooterVelocity <= targetRPM * (1 + shooterSpeedTolerance))) {
-           hood.setReadyPos(.5);
+            hood.setReadyPos(.5);
         }
         else {
             hood.setReadyPos(.722);
@@ -332,21 +325,21 @@ public class TwentyTwentyFiveJava extends OpMode {
         // Create the AprilTag processor.
         aprilTag = new AprilTagProcessor.Builder()
 
-        // The following default settings are available to un-comment and edit as needed.
-        //.setDrawAxes(false)
-        //.setDrawCubeProjection(false)
-        //.setDrawTagOutline(true)
-        //.setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
-        //.setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
-        //.setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
+                // The following default settings are available to un-comment and edit as needed.
+                //.setDrawAxes(false)
+                //.setDrawCubeProjection(false)
+                //.setDrawTagOutline(true)
+                //.setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
+                //.setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
+                //.setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
 
-        // == CAMERA CALIBRATION ==
-        // If you do not manually specify calibration parameters, the SDK will attempt
-        // to load a predefined calibration for your camera.
-        //.setLensIntrinsics(578.272, 578.272, 402.145, 221.506)
-        // ... these parameters are fx, fy, cx, cy.
+                // == CAMERA CALIBRATION ==
+                // If you do not manually specify calibration parameters, the SDK will attempt
+                // to load a predefined calibration for your camera.
+                //.setLensIntrinsics(578.272, 578.272, 402.145, 221.506)
+                // ... these parameters are fx, fy, cx, cy.
 
-        .build();
+                .build();
 
         // Adjust Image Decimation to trade-off detection-range for detection-rate.
         // eg: Some typical detection data using a Logitech C920 WebCam
@@ -360,8 +353,8 @@ public class TwentyTwentyFiveJava extends OpMode {
         // Create the vision portal by using a builder.
         VisionPortal.Builder builder = new VisionPortal.Builder();
 
-        // Set the camera (old logitec)
-        // builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
+        // Set the camera
+        builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
 
         // Choose a camera resolution. Not all cameras support all resolutions.
         //builder.setCameraResolution(new Size(640, 480));
@@ -404,9 +397,9 @@ public class TwentyTwentyFiveJava extends OpMode {
         }   // end for() loop
 
         // Add "key" information to telemetry
-       // telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
-       // telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
-       // telemetry.addLine("RBE = Range, Bearing & Elevation");
+        // telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
+        // telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
+        // telemetry.addLine("RBE = Range, Bearing & Elevation");
 
     }   // end method telemetryAprilTag()
 
@@ -489,6 +482,6 @@ public class TwentyTwentyFiveJava extends OpMode {
 
 
     }
-    
+
 }
 
