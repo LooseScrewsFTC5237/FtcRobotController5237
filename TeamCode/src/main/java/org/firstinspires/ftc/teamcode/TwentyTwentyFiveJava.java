@@ -235,7 +235,7 @@ public class TwentyTwentyFiveJava extends OpMode {
 
 
         // Feeder Motor
-        if (gamepad2.right_bumper && (currentShooterVelocity >= targetRPM * (1 - shooterSpeedTolerance) && currentShooterVelocity <= targetRPM * (1 + shooterSpeedTolerance))) {
+        if (gamepad2.right_bumper && (`currentShooterVelocity` >= targetRPM * (1 - shooterSpeedTolerance) && currentShooterVelocity <= targetRPM * (1 + shooterSpeedTolerance))) {
             feeder.setPower(0.7);
         } else {
             feeder.setPower(0);
