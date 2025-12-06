@@ -1,8 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.IdentityPoseMap;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Pose2dDual;
+import com.acmerobotics.roadrunner.PoseMap;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
+import com.acmerobotics.roadrunner.Vector2dDual;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -11,11 +15,31 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-//  DcMotorEx shooter;
-// DcMotorEx shooter2;
 @Config
-@Autonomous()
-public class RedFarAuto extends LinearOpMode {
+public class FarAuto extends LinearOpMode {
+
+    @Autonomous()
+    public static class RedFarAuto extends FarAuto {
+        public RedFarAuto() {
+            super(new Pose2d(60, 30, Math.toRadians(180)), new IdentityPoseMap());
+        }
+    }
+
+    @Autonomous()
+    public static class BlueFarAuto extends FarAuto {
+        public BlueFarAuto() {
+            super(
+                    new Pose2d(60, -30, Math.toRadians(180)),
+                    pose -> new Pose2dDual<>(
+                           new Vector2dDual<>(
+                                   pose.position.x,
+                                   pose.position.y.unaryMinus()
+                           ),
+                            pose.heading.inverse()
+                    )
+            );
+        }
+    }
 
     protected MecanumDrive drive;
 
@@ -30,6 +54,13 @@ public class RedFarAuto extends LinearOpMode {
     public static double FLYWHEEL_I = 0;
     public static double FLYWHEEL_D = 5;
     public static double FLYWHEEL_F = 21;
+    PoseMap poseMap;
+    Pose2d startingPose;
+
+    public FarAuto(Pose2d startingPose, PoseMap poseMap) {
+        this.poseMap = poseMap;
+        this.startingPose = startingPose;
+    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -55,14 +86,14 @@ public class RedFarAuto extends LinearOpMode {
         }
         pidTuner();
 
-        Pose2d beginPose = new Pose2d(60, 30, Math.toRadians(180));
+        Pose2d beginPose = startingPose;// new Pose2d(60, 30, Math.toRadians(180));
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
         waitForStart();
         pidTuner();
 
         Actions.runBlocking(
-                drive.actionBuilder(beginPose)
+                drive.actionBuilder(beginPose, poseMap)
                         .stopAndAdd(() -> {
                             // These motors turn on the moment 'Start' is pressed
                             intake.setPower(1.0); // Assuming you want the intake on too
