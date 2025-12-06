@@ -29,7 +29,7 @@ public class FarAuto6Ball extends LinearOpMode {
     public static class BlueFarAuto extends FarAuto {
         public BlueFarAuto() {
             super(
-                    new Pose2d(60, -35, Math.toRadians(180)),
+                    new Pose2d(60, -30, Math.toRadians(180)),
                     pose -> new Pose2dDual<>(
                             new Vector2dDual<>(
                                     pose.position.x,
