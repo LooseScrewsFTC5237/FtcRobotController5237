@@ -57,7 +57,7 @@ public class FarAuto6Ball extends LinearOpMode {
     PoseMap poseMap;
     Pose2d startingPose;
 
-    public FarAuto(Pose2d startingPose, PoseMap poseMap) {
+    public FarAuto6Ball(Pose2d startingPose, PoseMap poseMap) {
         this.poseMap = poseMap;
         this.startingPose = startingPose;
     }
