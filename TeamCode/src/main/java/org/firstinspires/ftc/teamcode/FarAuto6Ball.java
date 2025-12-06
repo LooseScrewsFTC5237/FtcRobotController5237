@@ -19,15 +19,15 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 public class FarAuto6Ball extends LinearOpMode {
 
     @Autonomous()
-    public static class RedFarAuto extends FarAuto {
-        public RedFarAuto() {
+    public static class RedFarAuto6Ball extends FarAuto6Ball {
+        public RedFarAuto6Ball() {
             super(new Pose2d(60, 30, Math.toRadians(180)), new IdentityPoseMap());
         }
     }
 
     @Autonomous()
-    public static class BlueFarAuto extends FarAuto {
-        public BlueFarAuto() {
+    public static class BlueFarAuto6Ball extends FarAuto6Ball {
+        public BlueFarAuto6Ball() {
             super(
                     new Pose2d(60, -30, Math.toRadians(180)),
                     pose -> new Pose2dDual<>(
@@ -120,44 +120,24 @@ public class FarAuto6Ball extends LinearOpMode {
                         .waitSeconds(0.111)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
                         .waitSeconds(0.4)
-//
-//                        .splineToLinearHeading(new Pose2d(35, 20, Math.toRadians(90)), Math.toRadians(0))
-//                        .waitSeconds(0)
-//                        .lineToY(
-//                                55, // Target Y-coordinate
-//                                new TranslationalVelConstraint(15), // **New Max Velocity (e.g., 15 in/s)**
-//                                null // Use default acceleration constraint
-//                        )
-//                        .splineToLinearHeading(new Pose2d(56, 20, Math.toRadians(155.5)), Math.toRadians(0))
-//
-//                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
-//                        .waitSeconds(0.111)
-//                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-//
-//                        .waitSeconds(0.4)
-//                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (2nd time)
-//                        .waitSeconds(0.111)
-//                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-//                        .waitSeconds(0.4)
-//
-//                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (3rd time)
-//                        .waitSeconds(0.111)
-//                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-//                        .waitSeconds(0.4)
-//
 
-                        .splineToLinearHeading(new Pose2d(40, 60, Math.toRadians(20)), Math.toRadians(0))
+                        .splineToLinearHeading(new Pose2d(60, 34, Math.toRadians(-270)), Math.toRadians(0))
                         .waitSeconds(0)
-                        .lineToX(
-                                62, // Target Y-coordinate
+                        .lineToY(
+                                60, // Target Y-coordinate
+                                new TranslationalVelConstraint(15
+                                ),
+                                null // Use default acceleration constraint
+                        )
+                        .lineToY(
+                                34, // Target Y-coordinate
                                 new TranslationalVelConstraint(15
                                 ),
                                 null // Use default acceleration constraint
                         )
                         .waitSeconds(0)
-                        .splineToLinearHeading(new Pose2d(38, 50, Math.toRadians(0)), Math.toRadians(0))
-                        .waitSeconds(0)
                         .splineToLinearHeading(new Pose2d(56, 20, Math.toRadians(155.5)), Math.toRadians(0))
+                        .waitSeconds(0)
 
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
                         .waitSeconds(0.111)
@@ -173,9 +153,12 @@ public class FarAuto6Ball extends LinearOpMode {
                         .waitSeconds(0.111)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
                         .waitSeconds(0.4)
+                        
+                        .splineToLinearHeading(new Pose2d(60, 34, Math.toRadians(-270)), Math.toRadians(0))
 
+                        .waitSeconds(0)
+                        .lineToY(60)
 
-                        .splineToLinearHeading(new Pose2d(40, 20, Math.toRadians(75)), Math.toRadians(0))
                         .build());
 
 
