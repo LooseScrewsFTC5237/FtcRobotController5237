@@ -15,7 +15,7 @@ public class MeepMeepTestingRedFarAutoThree {
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(60, 30, Math.toRadians(180)))
-                .splineToLinearHeading(new Pose2d(56, 20, Math.toRadians(150)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(56, 23, Math.toRadians(155.5)), Math.toRadians(0))
                 .waitSeconds(2)
                 .splineToLinearHeading(new Pose2d(35, 20, Math.toRadians(90)), Math.toRadians(0))
                 .waitSeconds(0)

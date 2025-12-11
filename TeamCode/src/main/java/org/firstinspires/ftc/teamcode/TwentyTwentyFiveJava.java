@@ -79,12 +79,13 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static int fastShooterSpeed = 2000;
     public static int shooterSpeed = 1250;
     public static int slowShooterSpeed = 725;
-    public static double shooterSpeedTolerance = 0.06;
+    public static double shooterSpeedTolerance = 40;
     public static int targetVelocity = 0;
     public static double DRIVE_SPEED = 0.8;
     public static byte shooterMode = 0;
-    public static double BEARING_THRESHOLD = 0.0025; // Angled towards the tag (degrees)
-    public static double TURN_GAIN   =  0.02  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+    public static double BEARING_THRESHOLD = 1; // Angled towards the tag (degrees)
+    public static double TURN_GAIN   =  0.08  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+    public static double TURN_STATIC = 0.1;
     public static double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
     //private AprilTagProcessor aprilTag;
     private Limelight3A limelight;
@@ -95,17 +96,21 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static float targetRPM;
     public static double rpmDistanceMultiplier = 6.452;
     public static int axisOffsetRPM = 630;
-
+    public static double Blueoffset = 1;
+    public static double Redoffset = 5;
     public static double hoodDistanceMultiplier = -0.00188;
     public static double getAxisOffsetHood = 0.535;
     public static boolean UPDATE_FLYWHEEL_PID = false;
-    public static double FLYWHEEL_P = 70;
-    public static double FLYWHEEL_I = 0;
+    public static double FLYWHEEL_P = 12;
+    public static double FLYWHEEL_I = 5;
     public static double FLYWHEEL_D = 5;
     public static double FLYWHEEL_F = 21;
     public static double closeHoodAngle = 0.5;
     public static double mediumHoodAngle = 0.46;
     public static double farHoodAngle = 0.42;
+    public static double FarRPMBump = 60;
+    public static double FarHoodBump = -0.04;
+    public static double headingOffset = 0;
 
     DcMotor frontLeftDrive;
     DcMotor frontRightDrive;
@@ -243,16 +248,10 @@ public class TwentyTwentyFiveJava extends OpMode {
 
 
         // Feeder Motor
-        if (gamepad2.right_bumper && (currentShooterVelocity >= targetRPM * (1 - shooterSpeedTolerance) && currentShooterVelocity <= targetRPM * (1 + shooterSpeedTolerance))) {
+        if (gamepad2.right_bumper && (currentShooterVelocity >= targetRPM - shooterSpeedTolerance) && (currentShooterVelocity <= targetRPM + shooterSpeedTolerance)) {
             feeder.setPower(0.7);
         } else {
             feeder.setPower(0);
-        }
-        if (gamepad1.a && (currentShooterVelocity >= targetRPM * (1 - shooterSpeedTolerance) && currentShooterVelocity <= targetRPM * (1 + shooterSpeedTolerance))) {
-            hood.setReadyPos(.5);
-        }
-        else {
-            hood.setReadyPos(.722);
         }
 
 
@@ -276,7 +275,9 @@ public class TwentyTwentyFiveJava extends OpMode {
         double driveSpeed, strafe, turn;
         driveSpeed = -gamepad1.left_stick_y * DRIVE_SPEED;
         strafe = gamepad1.left_stick_x  * DRIVE_SPEED;
-        double headingError = (llResult.getTx() + 0.3);
+        double headingError = llResult.getTx();
+        telemetry.addData("heading error", headingError);
+        telemetry.addData("tx", llResult.getTx());
         LLResultTypes.FiducialResult goalTag = null;
 
         for (LLResultTypes.FiducialResult fiducial : llResult.getFiducialResults()) {
@@ -290,18 +291,32 @@ public class TwentyTwentyFiveJava extends OpMode {
         Position p = null;
         if (goalTag != null) {
             p = goalTag.getTargetPoseCameraSpace().getPosition();
+            headingOffset = goalTag.getFiducialId() == 20 ? Blueoffset : goalTag.getFiducialId() == 24 ? Redoffset : 0.0;
+            telemetry.addData("heading offset", headingOffset);
         }
 
-
-        if (gamepad1.a && p != null) {
-
-            hood.setServoPos(hoodDistanceMultiplier * (Math.hypot(p.x, p.z) * 39.3701) + getAxisOffsetHood);
+        if ((gamepad1.a && p != null)) {
+            double offsetError = headingError + headingOffset;
+            if ((Math.hypot(p.x, p.z) * 39.3701) > 50){
+                hood.setServoPos(hoodDistanceMultiplier * (Math.hypot(p.x, p.z) * 39.3701) + getAxisOffsetHood + FarHoodBump);
+            }
+            else {
+                hood.setServoPos(hoodDistanceMultiplier * (Math.hypot(p.x, p.z) * 39.3701) + getAxisOffsetHood);
+            }
             shooterMode = 4;
-            if  (Math.abs(headingError) < BEARING_THRESHOLD) {
+            if  (Math.abs(offsetError) < BEARING_THRESHOLD) {
                 turn = 0;
                 telemetry.addData("Auto", "Robot aligned with AprilTag!");
+                if (gamepad1.a && (currentShooterVelocity <= (targetRPM + shooterSpeedTolerance) && currentShooterVelocity >= (targetRPM - shooterSpeedTolerance))) {
+                    hood.setReadyPos(.5);
+                }
+                else {
+                    hood.setReadyPos(.722);
+                }
             } else {
-                turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
+                turn = Range.clip((offsetError + (Math.signum(offsetError) * TURN_STATIC)) * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
+                hood.setReadyPos(1);
+                telemetry.addData("heading Error + heading offset", headingError+headingOffset);
             }
             telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", driveSpeed, strafe, turn);
         } else {
@@ -318,7 +333,10 @@ public class TwentyTwentyFiveJava extends OpMode {
         } else if (gamepad2.dpad_up) {
             targetRPM = (fastShooterSpeed);
             hood.setServoPos(farHoodAngle);
-        } else if (gamepad1.a && p != null){
+        } else if (gamepad1.a && p != null && (Math.hypot(p.x, p.z) * 39.3701) > 50) {
+            targetRPM = (float) ((rpmDistanceMultiplier * (Math.hypot(p.x, p.z) * 39.3701) + axisOffsetRPM) + FarRPMBump);
+            telemetry.addData("Range", (Math.hypot(p.x, p.z) * 39.3701));
+        } else if (gamepad1.a && p != null && (Math.hypot(p.x, p.z) * 39.3701) < 50){
             targetRPM = (float) (rpmDistanceMultiplier * (Math.hypot(p.x, p.z) * 39.3701) + axisOffsetRPM);
             telemetry.addData("Range",(Math.hypot(p.x, p.z) * 39.3701));
         } else if (gamepad2.dpad_left) {
