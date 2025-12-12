@@ -25,20 +25,20 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.Range;
 
 @Config
-public class FarAuto3Ball extends LinearOpMode {
+public class FarAuto9Ball extends LinearOpMode {
 
     boolean isRed = false;
     @Autonomous()
-    public static class RedFarAuto3Ball extends FarAuto3Ball {
-        public RedFarAuto3Ball() {
+    public static class RedFarAuto9Ball extends FarAuto9Ball {
+        public RedFarAuto9Ball() {
             super(new Pose2d(60, 30, Math.toRadians(180)), new IdentityPoseMap());
             isRed = true;
         }
     }
 
     @Autonomous()
-    public static class BlueFarAuto3Ball extends FarAuto3Ball {
-        public BlueFarAuto3Ball() {
+    public static class BlueFarAuto9Ball extends FarAuto9Ball {
+        public BlueFarAuto9Ball() {
             super(
                     new Pose2d(60, -30, Math.toRadians(180)),
                     pose -> new Pose2dDual<>(
@@ -105,7 +105,7 @@ public class FarAuto3Ball extends LinearOpMode {
         };
     }
 
-    public FarAuto3Ball(Pose2d startingPose, PoseMap poseMap) {
+    public FarAuto9Ball(Pose2d startingPose, PoseMap poseMap) {
         this.poseMap = poseMap;
         this.startingPose = startingPose;
     }
@@ -156,6 +156,8 @@ public class FarAuto3Ball extends LinearOpMode {
                         .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(155.5))
                         .stopAndAdd(autoAimAction())
 
+                        //.waitSeconds(2)
+
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
                         .waitSeconds(0.15)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
@@ -171,43 +173,61 @@ public class FarAuto3Ball extends LinearOpMode {
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
                         .waitSeconds(0.6)
 
-                        .splineToLinearHeading(new Pose2d(60, 34, Math.toRadians(-270)), Math.toRadians(0))
+                        .strafeToLinearHeading(new Vector2d(35, 20), Math.toRadians(90))
                         .waitSeconds(0)
+                        .lineToY(
+                                50, // Target Y-coordinate
+                                new TranslationalVelConstraint(15
+                                ),
+                                null // Use default acceleration constraint
+                        )
+
+                        .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(155.5))
+                        .stopAndAdd(autoAimAction())
+
+                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
+                        .waitSeconds(0.15)
+                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
+
+                        .waitSeconds(0.6)
+                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (2nd time)
+                        .waitSeconds(0.15)
+                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
+                        .waitSeconds(0.6)
+
+                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (3rd time)
+                        .waitSeconds(0.15)
+                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
+                        .waitSeconds(0.6)
+
+                        .strafeToLinearHeading(new Vector2d(60, 34), Math.toRadians(-270))
+
+                        .waitSeconds(0)
+
                         .lineToY(
                                 60, // Target Y-coordinate
                                 new TranslationalVelConstraint(15
                                 ),
                                 null // Use default acceleration constraint
                         )
-                        .lineToY(
-                                34, // Target Y-coordinate
-                                new TranslationalVelConstraint(15
-                                ),
-                                null // Use default acceleration constraint
-                        )
-                        .waitSeconds(2)
-//                        .splineToLinearHeading(new Pose2d(56, 20, Math.toRadians(155.5)), Math.toRadians(0))
-//                        .waitSeconds(0)
-//
-//                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
-//                        .waitSeconds(0.15)
-//                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-//
-//                        .waitSeconds(0.6)
-//                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (2nd time)
-//                        .waitSeconds(0.15)
-//                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-//                        .waitSeconds(0.6)
-//
-//                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (3rd time)
-//                        .waitSeconds(0.15)
-//                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-//                        .waitSeconds(0.6)
-//
-//                        .splineToLinearHeading(new Pose2d(60, 34, Math.toRadians(-270)), Math.toRadians(0))
-//
-//                        .waitSeconds(0)
-//                        .lineToY(60)
+                        .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(155.5))
+                        .stopAndAdd(autoAimAction())
+
+                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
+                        .waitSeconds(0.15)
+                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
+
+                        .waitSeconds(0.6)
+                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (2nd time)
+                        .waitSeconds(0.15)
+                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
+                        .waitSeconds(0.6)
+
+                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (3rd time)
+                        .waitSeconds(0.15)
+                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
+                        .waitSeconds(0.6)
+                        .strafeToLinearHeading(new Vector2d(40, 20), Math.toRadians(75))
 
                         .build());
 
