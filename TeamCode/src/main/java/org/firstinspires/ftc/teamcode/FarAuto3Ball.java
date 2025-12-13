@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.TwentyTwentyFiveJava.shooterSpeed;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -67,11 +69,13 @@ public class FarAuto3Ball extends LinearOpMode {
     public static double FLYWHEEL_D = 5;
     public static double FLYWHEEL_F = 21;
     public static double Redoffset = 5;
-    public static double Blueoffset = 1;
+    public static double Blueoffset = -1;
     public static double BEARING_THRESHOLD = 0.25; // Angled towards the tag (degrees)
     public static double TURN_GAIN   =  0.04  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
     public static double TURN_STATIC = 0.1;
     public static double MAX_AUTO_TURN  = 0.3;
+
+    public static double feederOnTime = 0.125;
     PoseMap poseMap;
     Pose2d startingPose;
 
@@ -105,6 +109,32 @@ public class FarAuto3Ball extends LinearOpMode {
         };
     }
 
+    Action shooterCheckAction() {
+        return new Action() {
+
+            long startTimeMillis = 0;
+            double currentShooterVelocity;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                long now = System.currentTimeMillis();
+                if (startTimeMillis == 0) {
+                    startTimeMillis = now;
+                }
+
+                currentShooterVelocity = shooter.getVelocity();
+                telemetryPacket.put("Current Velocity", currentShooterVelocity);
+                telemetryPacket.put("Target Velocity", shooterSpeed);
+                if (Math.abs(currentShooterVelocity - shooterSpeed) < 50  ) {
+                    return false;
+                }
+
+                return (now - startTimeMillis < 1_000);
+
+            }
+        };
+    }
+
     public FarAuto3Ball(Pose2d startingPose, PoseMap poseMap) {
         this.poseMap = poseMap;
         this.startingPose = startingPose;
@@ -122,7 +152,7 @@ public class FarAuto3Ball extends LinearOpMode {
         intake.setDirection(DcMotor.Direction.REVERSE);
         hood.init(hardwareMap);
         hood.setServoPos(0.42);
-        double shooterSpeed = 1140;
+        double shooterSpeed = 1110;
         double currentShooterVelocity = shooter.getVelocity();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(8);
@@ -139,80 +169,53 @@ public class FarAuto3Ball extends LinearOpMode {
         Pose2d beginPose = startingPose;// new Pose2d(60, 30, Math.toRadians(180));
         drive = new MecanumDrive(hardwareMap, beginPose);
         limelight.start();
-
+        telemetry.addData("Current Velocity", 0);
+        telemetry.addData("Target Velocity", 0);
+        telemetry.addData("Feeder Speed", 0);
         waitForStart();
         pidTuner();
 
         Actions.runBlocking(
                 drive.actionBuilder(beginPose, poseMap)
+
+                        // Turn on motors
                         .stopAndAdd(() -> {
-                            // These motors turn on the moment 'Start' is pressed
-                            intake.setPower(1.0); // Assuming you want the intake on too
+                            intake.setPower(1.0);
                             feeder.setPower(0.0);
                             shooter.setVelocity(shooterSpeed);
                             shooter2.setVelocity(shooterSpeed);
                         })
 
+                        // Prep First Three Shots
                         .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(155.5))
                         .stopAndAdd(autoAimAction())
 
+                        // Take First Three Shots
+                        .stopAndAdd(shooterCheckAction())
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
-                        .waitSeconds(0.15)
+                        .waitSeconds(feederOnTime)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-
-                        .waitSeconds(0.6)
+                        .stopAndAdd(shooterCheckAction())
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (2nd time)
-                        .waitSeconds(0.15)
+                        .waitSeconds(feederOnTime)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-                        .waitSeconds(0.6)
-
+                        .stopAndAdd(shooterCheckAction())
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (3rd time)
-                        .waitSeconds(0.15)
+                        .waitSeconds(feederOnTime)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-                        .waitSeconds(0.6)
 
-                        .splineToLinearHeading(new Pose2d(60, 34, Math.toRadians(-270)), Math.toRadians(0))
-                        .waitSeconds(0)
-                        .lineToY(
-                                60, // Target Y-coordinate
-                                new TranslationalVelConstraint(15
-                                ),
-                                null // Use default acceleration constraint
-                        )
-                        .lineToY(
-                                34, // Target Y-coordinate
-                                new TranslationalVelConstraint(15
-                                ),
-                                null // Use default acceleration constraint
-                        )
-                        .waitSeconds(2)
-//                        .splineToLinearHeading(new Pose2d(56, 20, Math.toRadians(155.5)), Math.toRadians(0))
-//                        .waitSeconds(0)
-//
-//                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
-//                        .waitSeconds(0.15)
-//                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-//
-//                        .waitSeconds(0.6)
-//                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (2nd time)
-//                        .waitSeconds(0.15)
-//                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-//                        .waitSeconds(0.6)
-//
-//                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (3rd time)
-//                        .waitSeconds(0.15)
-//                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-//                        .waitSeconds(0.6)
-//
-//                        .splineToLinearHeading(new Pose2d(60, 34, Math.toRadians(-270)), Math.toRadians(0))
-//
-//                        .waitSeconds(0)
-//                        .lineToY(60)
+                        // Intake Corner Artifacts
+                        .waitSeconds(0.6)
+                        .turnTo(Math.toRadians(-280))
+                        .strafeToLinearHeading(new Vector2d(60, 34), Math.toRadians(-280))
+                        .lineToX(72 /*, new TranslationalVelConstraint(21), null */)
+                        .lineToX(67 /*, new TranslationalVelConstraint(21), null */)
+                        .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
+
+                        // Park
+                        .strafeToLinearHeading(new Vector2d(40, 20), Math.toRadians(75))
 
                         .build());
-
-
-
 
         if(isStopRequested()) return;
 
@@ -220,8 +223,6 @@ public class FarAuto3Ball extends LinearOpMode {
         feeder.setPower(0);
         shooter.setPower(0);
         shooter2.setPower(0);
-
-
     }
     private void pidTuner() {
         if (UPDATE_FLYWHEEL_PID) {

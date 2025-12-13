@@ -74,6 +74,8 @@ public class FarAuto9Ball extends LinearOpMode {
     public static double TURN_GAIN   =  0.04  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
     public static double TURN_STATIC = 0.1;
     public static double MAX_AUTO_TURN  = 0.3;
+
+    public static double feederOnTime = 0.125;
     PoseMap poseMap;
     Pose2d startingPose;
 
@@ -175,85 +177,87 @@ public class FarAuto9Ball extends LinearOpMode {
 
         Actions.runBlocking(
                 drive.actionBuilder(beginPose, poseMap)
+
+                        // Turn on motors
                         .stopAndAdd(() -> {
-                            // These motors turn on the moment 'Start' is pressed
-                            intake.setPower(1.0); // Assuming you want the intake on too
+                            intake.setPower(1.0);
                             feeder.setPower(0.0);
                             shooter.setVelocity(shooterSpeed);
                             shooter2.setVelocity(shooterSpeed);
                         })
 
+                        // Prep First Three Shots
                         .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(155.5))
                         .stopAndAdd(autoAimAction())
 
+                        // Take First Three Shots
                         .stopAndAdd(shooterCheckAction())
-
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
-                        .waitSeconds(0.125)
+                        .waitSeconds(feederOnTime)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
                         .stopAndAdd(shooterCheckAction())
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (2nd time)
-                        .waitSeconds(0.125)
+                        .waitSeconds(feederOnTime)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
                         .stopAndAdd(shooterCheckAction())
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (3rd time)
-                        .waitSeconds(0.125)
+                        .waitSeconds(feederOnTime)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
 
+                        // First Intake
                         .strafeToLinearHeading(new Vector2d(35, 20), Math.toRadians(90))
                         .waitSeconds(0)
                         .lineToY(50 /* , new TranslationalVelConstraint(15), null */)
 
+                        // Prep Second Three Shots
                         .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(155.5))
                         .stopAndAdd(autoAimAction())
 
+                        // Take Second Three Shots
                         .stopAndAdd(shooterCheckAction())
-
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
-                        .waitSeconds(0.125)
+                        .waitSeconds(feederOnTime)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
                         .stopAndAdd(shooterCheckAction())
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (2nd time)
-                        .waitSeconds(0.125)
+                        .waitSeconds(feederOnTime)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
                         .stopAndAdd(shooterCheckAction())
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (3rd time)
-                        .waitSeconds(0.125)
+                        .waitSeconds(feederOnTime)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
+
+                        // Second Intake
                         .waitSeconds(0.6)
                         .turnTo(Math.toRadians(-280))
-                        //.strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(-260))
                         .strafeToLinearHeading(new Vector2d(60, 34), Math.toRadians(-280))
-
                         .lineToX(72 /*, new TranslationalVelConstraint(21), null */)
                         .lineToX(67 /*, new TranslationalVelConstraint(21), null */)
+                        .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
 
-                        .stopAndAdd( () -> intake.setPower(0))
-
+                        // Pre Third Three Shots
                         .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(155.5))
-
                         .stopAndAdd(autoAimAction())
                         .stopAndAdd(shooterCheckAction())
+                        .stopAndAdd(() -> intake.setPower(1)) // Turn intake back on
 
-                        .stopAndAdd( () -> intake.setPower(1))
+                        // Take Third Three Shots
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
-                        .waitSeconds(0.125)
+                        .waitSeconds(feederOnTime)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
                         .stopAndAdd(shooterCheckAction())
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (2nd time)
-                        .waitSeconds(0.125)
+                        .waitSeconds(feederOnTime)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
                         .stopAndAdd(shooterCheckAction())
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (3rd time)
-                        .waitSeconds(0.125)
+                        .waitSeconds(feederOnTime)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
 
+                        // Park
                         .strafeToLinearHeading(new Vector2d(40, 20), Math.toRadians(75))
 
                         .build());
-
-
-
 
         if(isStopRequested()) return;
 
@@ -261,8 +265,6 @@ public class FarAuto9Ball extends LinearOpMode {
         feeder.setPower(0);
         shooter.setPower(0);
         shooter2.setPower(0);
-
-
     }
     private void pidTuner() {
         if (UPDATE_FLYWHEEL_PID) {
