@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.TwentyTwentyFiveJava.shooterSpeed;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -67,7 +69,7 @@ public class FarAuto9Ball extends LinearOpMode {
     public static double FLYWHEEL_D = 5;
     public static double FLYWHEEL_F = 21;
     public static double Redoffset = 5;
-    public static double Blueoffset = 1;
+    public static double Blueoffset = -1;
     public static double BEARING_THRESHOLD = 0.25; // Angled towards the tag (degrees)
     public static double TURN_GAIN   =  0.04  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
     public static double TURN_STATIC = 0.1;
@@ -105,6 +107,32 @@ public class FarAuto9Ball extends LinearOpMode {
         };
     }
 
+    Action shooterCheckAction() {
+        return new Action() {
+
+            long startTimeMillis = 0;
+            double currentShooterVelocity;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                long now = System.currentTimeMillis();
+                if (startTimeMillis == 0) {
+                    startTimeMillis = now;
+                }
+
+                currentShooterVelocity = shooter.getVelocity();
+                telemetryPacket.put("Current Velocity", currentShooterVelocity);
+                telemetryPacket.put("Target Velocity", shooterSpeed);
+                if (Math.abs(currentShooterVelocity - shooterSpeed) < 50  ) {
+                    return false;
+                }
+
+                return (now - startTimeMillis < 1_000);
+
+            }
+        };
+    }
+
     public FarAuto9Ball(Pose2d startingPose, PoseMap poseMap) {
         this.poseMap = poseMap;
         this.startingPose = startingPose;
@@ -122,7 +150,7 @@ public class FarAuto9Ball extends LinearOpMode {
         intake.setDirection(DcMotor.Direction.REVERSE);
         hood.init(hardwareMap);
         hood.setServoPos(0.42);
-        double shooterSpeed = 1140;
+        double shooterSpeed = 1110;
         double currentShooterVelocity = shooter.getVelocity();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(8);
@@ -139,7 +167,9 @@ public class FarAuto9Ball extends LinearOpMode {
         Pose2d beginPose = startingPose;// new Pose2d(60, 30, Math.toRadians(180));
         drive = new MecanumDrive(hardwareMap, beginPose);
         limelight.start();
-
+        telemetry.addData("Current Velocity", 0);
+        telemetry.addData("Target Velocity", 0);
+        telemetry.addData("Feeder Speed", 0);
         waitForStart();
         pidTuner();
 
@@ -156,77 +186,68 @@ public class FarAuto9Ball extends LinearOpMode {
                         .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(155.5))
                         .stopAndAdd(autoAimAction())
 
-                        //.waitSeconds(2)
+                        .stopAndAdd(shooterCheckAction())
 
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
-                        .waitSeconds(0.15)
+                        .waitSeconds(0.125)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-
-                        .waitSeconds(0.6)
+                        .stopAndAdd(shooterCheckAction())
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (2nd time)
-                        .waitSeconds(0.15)
+                        .waitSeconds(0.125)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-                        .waitSeconds(0.6)
-
+                        .stopAndAdd(shooterCheckAction())
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (3rd time)
-                        .waitSeconds(0.15)
+                        .waitSeconds(0.125)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-                        .waitSeconds(0.6)
 
                         .strafeToLinearHeading(new Vector2d(35, 20), Math.toRadians(90))
                         .waitSeconds(0)
-                        .lineToY(
-                                50, // Target Y-coordinate
-                                new TranslationalVelConstraint(15
-                                ),
-                                null // Use default acceleration constraint
-                        )
+                        .lineToY(50 /* , new TranslationalVelConstraint(15), null */)
 
                         .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(155.5))
                         .stopAndAdd(autoAimAction())
 
+                        .stopAndAdd(shooterCheckAction())
+
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
-                        .waitSeconds(0.15)
+                        .waitSeconds(0.125)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-
-                        .waitSeconds(0.6)
+                        .stopAndAdd(shooterCheckAction())
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (2nd time)
-                        .waitSeconds(0.15)
+                        .waitSeconds(0.125)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-                        .waitSeconds(0.6)
-
+                        .stopAndAdd(shooterCheckAction())
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (3rd time)
-                        .waitSeconds(0.15)
+                        .waitSeconds(0.125)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
                         .waitSeconds(0.6)
+                        .turnTo(Math.toRadians(-280))
+                        //.strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(-260))
+                        .strafeToLinearHeading(new Vector2d(60, 34), Math.toRadians(-280))
 
-                        .strafeToLinearHeading(new Vector2d(60, 34), Math.toRadians(-270))
+                        .lineToX(72 /*, new TranslationalVelConstraint(21), null */)
+                        .lineToX(67 /*, new TranslationalVelConstraint(21), null */)
 
-                        .waitSeconds(0)
+                        .stopAndAdd( () -> intake.setPower(0))
 
-                        .lineToY(
-                                60, // Target Y-coordinate
-                                new TranslationalVelConstraint(15
-                                ),
-                                null // Use default acceleration constraint
-                        )
                         .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(155.5))
+
                         .stopAndAdd(autoAimAction())
+                        .stopAndAdd(shooterCheckAction())
 
+                        .stopAndAdd( () -> intake.setPower(1))
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
-                        .waitSeconds(0.15)
+                        .waitSeconds(0.125)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-
-                        .waitSeconds(0.6)
+                        .stopAndAdd(shooterCheckAction())
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (2nd time)
-                        .waitSeconds(0.15)
+                        .waitSeconds(0.125)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-                        .waitSeconds(0.6)
-
+                        .stopAndAdd(shooterCheckAction())
                         .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (3rd time)
-                        .waitSeconds(0.15)
+                        .waitSeconds(0.125)
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-                        .waitSeconds(0.6)
+
                         .strafeToLinearHeading(new Vector2d(40, 20), Math.toRadians(75))
 
                         .build());

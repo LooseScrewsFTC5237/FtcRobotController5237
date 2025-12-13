@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
+@Disabled
 public class MecanumFieldOrientatedOpMode extends OpMode {
 
     DcMotorPractice.MecanumDrivePractice drive = new DcMotorPractice.MecanumDrivePractice();
