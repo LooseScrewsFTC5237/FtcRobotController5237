@@ -40,7 +40,7 @@ public class MeepMeepTesting {
                 .waitSeconds(0.5)
                 .splineToLinearHeading(new Pose2d(-30, 30, Math.toRadians(90)), Math.toRadians(0))
                 .build());
-        meepMeep.setBackground(MeepMeep.Background.FIELD_DECODE_OFFICIAL)
+        meepMeep.setBackground(MeepMeep.Background.FIELD_DECODE_JUICE_LIGHT)
                 .setDarkMode(true)
                 .setBackgroundAlpha(1.0f)
                 .addEntity(myBot)

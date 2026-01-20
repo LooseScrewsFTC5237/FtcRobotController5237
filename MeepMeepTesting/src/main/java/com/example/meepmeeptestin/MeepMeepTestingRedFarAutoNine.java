@@ -5,7 +5,7 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-public class MeepMeepTestingRedFarAutoThree {
+public class MeepMeepTestingRedFarAutoNine {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
@@ -25,6 +25,11 @@ public class MeepMeepTestingRedFarAutoThree {
                 .splineToLinearHeading(new Pose2d(40, 60, Math.toRadians(0)), Math.toRadians(0))
                 .waitSeconds(0)
                 .lineToX(58)
+                .lineToX(54)
+                .lineToX(58)
+                .lineToX(54)
+                .lineToX(58)
+                .lineToX(54)
                 .waitSeconds(0)
                 .splineToLinearHeading(new Pose2d(38, 50, Math.toRadians(0)), Math.toRadians(0))
                 .waitSeconds(0)
