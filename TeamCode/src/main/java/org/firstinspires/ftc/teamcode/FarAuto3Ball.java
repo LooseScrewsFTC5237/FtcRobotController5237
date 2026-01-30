@@ -213,7 +213,7 @@ public class FarAuto3Ball extends LinearOpMode {
                         .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
 
                         // Park
-                        .strafeToLinearHeading(new Vector2d(40, 20), Math.toRadians(75))
+                        .strafeToLinearHeading(new Vector2d(56, 36), Math.toRadians(75))
 
                         .build());
 

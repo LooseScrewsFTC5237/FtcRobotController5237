@@ -215,6 +215,7 @@ public class FarAuto6Ball extends LinearOpMode {
                         // Prep Second Three Shots
                         .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(155.5))
                         .stopAndAdd(autoAimAction())
+                        .stopAndAdd(() -> intake.setPower(1)) // Turn intake back on
 
                         // Take Second Three Shots
                         .stopAndAdd(shooterCheckAction())
@@ -231,7 +232,7 @@ public class FarAuto6Ball extends LinearOpMode {
                         .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
 
                         // Park
-                        .strafeToLinearHeading(new Vector2d(40, 20), Math.toRadians(75))
+                        .strafeToLinearHeading(new Vector2d(56, 36), Math.toRadians(75))
 
                         .build());
 

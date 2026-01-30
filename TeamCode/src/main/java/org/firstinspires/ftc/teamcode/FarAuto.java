@@ -20,6 +20,8 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 public class FarAuto extends LinearOpMode {
 
     @Autonomous()
+    @Disabled
+
     public static class RedFarAuto extends FarAuto {
         public RedFarAuto() {
             super(new Pose2d(60, 30, Math.toRadians(180)), new IdentityPoseMap());
@@ -27,6 +29,8 @@ public class FarAuto extends LinearOpMode {
     }
 
     @Autonomous()
+    @Disabled
+
     public static class BlueFarAuto extends FarAuto {
         public BlueFarAuto() {
             super(

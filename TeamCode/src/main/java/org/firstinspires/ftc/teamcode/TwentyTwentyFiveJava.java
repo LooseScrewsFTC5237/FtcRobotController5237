@@ -111,6 +111,8 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static double FarRPMBump = 60;
     public static double FarHoodBump = -0.04;
     public static double headingOffset = 0;
+    public static int artifactCounter = 0;
+    public static boolean artifactPresent = false;
 
     DcMotor frontLeftDrive;
     DcMotor frontRightDrive;
@@ -231,10 +233,10 @@ public class TwentyTwentyFiveJava extends OpMode {
         }
 
         // Artifact Indication Code
-        if (artifactDetected) {
+        if (artifactCounter >= 3) {
             hood.setArtifactIndicatorPos(0.5);
         } else {
-            hood.setArtifactIndicatorPos(0);
+            hood.setArtifactIndicatorPos(.611);
         }
 
         // Intake Motor
@@ -246,31 +248,40 @@ public class TwentyTwentyFiveJava extends OpMode {
             intake.setPower(0);
         }
 
-
         // Feeder Motor
         if (gamepad2.right_bumper && (currentShooterVelocity >= targetRPM - shooterSpeedTolerance) && (currentShooterVelocity <= targetRPM + shooterSpeedTolerance)) {
-            feeder.setPower(0.7);
+            feeder.setPower(1);
+            artifactCounter = 0;
         } else {
             feeder.setPower(0);
         }
 
+        // Artifact Counter
+        if (artifactDetected & !artifactPresent) {
+            artifactCounter++;
+            artifactPresent = true;
+        }
+
+        if (!artifactDetected) {
+            artifactPresent = false;
+        }
+        telemetry.addData("Artifact counter", artifactCounter);
 
 
-
-       // List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-       // telemetryAprilTag(currentDetections);
-       // AprilTagDetection goalTag = getGoalTag(currentDetections);
+       /* List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+       telemetryAprilTag(currentDetections);
+       AprilTagDetection goalTag = getGoalTag(currentDetections); */
         LLResult llResult = limelight.getLatestResult();
 
-        // Tell the driver what we see, and what to do.
-        //if (goalTag != null) {
-           // telemetry.addData("Found", "ID %d (%s)", goalTag.id, goalTag.metadata.name);
-           // telemetry.addData("Range",  "%5.1f inches", goalTag.ftcPose.range);
-           // telemetry.addData("Bearing","%3.0f degrees", goalTag.ftcPose.bearing);
-          //  telemetry.addData("Yaw","%3.0f degrees", goalTag.ftcPose.yaw);
-        //} else {
-           // telemetry.addData("\n>","Drive using joysticks to find valid target\n");
-        //}
+        /* Tell the driver what we see, and what to do.
+        if (goalTag != null) {
+            telemetry.addData("Found", "ID %d (%s)", goalTag.id, goalTag.metadata.name);
+            telemetry.addData("Range",  "%5.1f inches", goalTag.ftcPose.range);
+            telemetry.addData("Bearing","%3.0f degrees", goalTag.ftcPose.bearing);
+            telemetry.addData("Yaw","%3.0f degrees", goalTag.ftcPose.yaw);
+        } else {
+            telemetry.addData("\n>","Drive using joysticks to find valid target\n");
+        }*/
 
         double driveSpeed, strafe, turn;
         driveSpeed = -gamepad1.left_stick_y * DRIVE_SPEED;
@@ -311,11 +322,11 @@ public class TwentyTwentyFiveJava extends OpMode {
                     hood.setReadyPos(.5);
                 }
                 else {
-                    hood.setReadyPos(.722);
+                    hood.setReadyPos(.277);
                 }
             } else {
                 turn = Range.clip((offsetError + (Math.signum(offsetError) * TURN_STATIC)) * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
-                hood.setReadyPos(1);
+                hood.setReadyPos(.277);
                 telemetry.addData("heading Error + heading offset", headingError+headingOffset);
             }
             telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", driveSpeed, strafe, turn);
