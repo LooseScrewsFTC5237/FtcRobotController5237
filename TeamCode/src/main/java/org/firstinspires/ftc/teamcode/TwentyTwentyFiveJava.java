@@ -94,8 +94,8 @@ public class TwentyTwentyFiveJava extends OpMode {
     // Adjust Image Decimation to trade-off detection-range for detection-rate.
     public static int  DECIMATION = 3;
     public static float targetRPM;
-    public static double rpmDistanceMultiplier = 6.452;
-    public static int axisOffsetRPM = 630;
+    public static double rpmDistanceMultiplier = 7.61765;
+    public static double axisOffsetRPM = 776.59769;
     public static double Blueoffset = 1;
     public static double Redoffset = 5;
     public static double hoodDistanceMultiplier = -0.00188;
@@ -165,9 +165,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         intake.setDirection(DcMotor.Direction.REVERSE);
         shooter2.setDirection(DcMotorSimple.Direction.REVERSE);
         hood.init(hardwareMap);
-        hood.setServoPos(0.5);
-        ;
-
+        hood.setServoPos(0);
 
         // This uses RUN_USING_ENCODER to be more accurate.   If you don't have the encoder
         // wires, you should remove these
