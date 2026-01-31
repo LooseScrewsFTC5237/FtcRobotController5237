@@ -78,7 +78,7 @@ public class TwentyTwentyFiveJava extends OpMode {
     int lift_height = 0;
     public static int fastShooterSpeed = 2000;
     public static int shooterSpeed = 1250;
-    public static int slowShooterSpeed = 725;
+    public static int slowShooterSpeed = 960;
     public static double shooterSpeedTolerance = 40;
     public static int targetVelocity = 0;
     public static double DRIVE_SPEED = 0.8;
@@ -105,7 +105,7 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static double FLYWHEEL_I = 5;
     public static double FLYWHEEL_D = 5;
     public static double FLYWHEEL_F = 21;
-    public static double closeHoodAngle = 0.5;
+    public static double closeHoodAngle = 0;
     public static double mediumHoodAngle = 0.46;
     public static double farHoodAngle = 0.42;
     public static double FarRPMBump = 60;
