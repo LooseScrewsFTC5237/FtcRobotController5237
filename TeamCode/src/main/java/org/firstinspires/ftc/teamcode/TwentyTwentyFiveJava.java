@@ -306,12 +306,9 @@ public class TwentyTwentyFiveJava extends OpMode {
 
         if ((gamepad1.a && p != null)) {
             double offsetError = headingError + headingOffset;
-            if ((Math.hypot(p.x, p.z) * 39.3701) > 50){
-                hood.setServoPos(hoodDistanceMultiplier * (Math.hypot(p.x, p.z) * 39.3701) + getAxisOffsetHood + FarHoodBump);
-            }
-            else {
-                hood.setServoPos(hoodDistanceMultiplier * (Math.hypot(p.x, p.z) * 39.3701) + getAxisOffsetHood);
-            }
+            double dist = Math.hypot(p.x, p.z) * 39.3701;
+            hood.setServoPos(0.143343 / (1 + (Math.exp((-0.27572 * dist) +9.10875))));
+
             shooterMode = 4;
             if  (Math.abs(offsetError) < BEARING_THRESHOLD) {
                 turn = 0;
@@ -342,12 +339,15 @@ public class TwentyTwentyFiveJava extends OpMode {
         } else if (gamepad2.dpad_up) {
             targetRPM = (fastShooterSpeed);
             hood.setServoPos(farHoodAngle);
-        } else if (gamepad1.a && p != null && (Math.hypot(p.x, p.z) * 39.3701) > 50) {
-            targetRPM = (float) ((rpmDistanceMultiplier * (Math.hypot(p.x, p.z) * 39.3701) + axisOffsetRPM) + FarRPMBump);
-            telemetry.addData("Range", (Math.hypot(p.x, p.z) * 39.3701));
-        } else if (gamepad1.a && p != null && (Math.hypot(p.x, p.z) * 39.3701) < 50){
-            targetRPM = (float) (rpmDistanceMultiplier * (Math.hypot(p.x, p.z) * 39.3701) + axisOffsetRPM);
-            telemetry.addData("Range",(Math.hypot(p.x, p.z) * 39.3701));
+        } else if (gamepad1.a && p != null) {
+            double dist = Math.hypot(p.x, p.z) * 39.3701;
+            targetRPM = (float) (
+                    (-0.0000870312 * Math.pow(dist,4))
+                            + (0.0212072 * Math.pow(dist,3))
+                            - (1.86738 * Math.pow(dist,2))
+                            + (77.4626 * dist)
+                            + 5.58843);
+            telemetry.addData("Range", dist);
         } else if (gamepad2.dpad_left) {
             targetRPM = 0;
         }

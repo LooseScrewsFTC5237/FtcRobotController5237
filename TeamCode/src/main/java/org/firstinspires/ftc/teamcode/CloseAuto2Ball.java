@@ -184,7 +184,9 @@ public class CloseAuto2Ball extends LinearOpMode {
                             feeder.setPower(0.0);
                             shooter.setVelocity(shooterSpeed);
                             shooter2.setVelocity(shooterSpeed);
-                        })
+                        });
 
                 // Preparing for whatever the movement is
-} */
+;}
+
+}*/
