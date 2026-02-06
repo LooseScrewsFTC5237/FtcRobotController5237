@@ -50,10 +50,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 //import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-import java.util.List;
-
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 /**
@@ -101,10 +98,10 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static double hoodDistanceMultiplier = -0.00188;
     public static double getAxisOffsetHood = 0.535;
     public static boolean UPDATE_FLYWHEEL_PID = false;
-    public static double FLYWHEEL_P = 12;
-    public static double FLYWHEEL_I = 5;
-    public static double FLYWHEEL_D = 5;
-    public static double FLYWHEEL_F = 21;
+    public static double FLYWHEEL_P = 135;
+    public static double FLYWHEEL_I = 0;
+    public static double FLYWHEEL_D = 0;
+    public static double FLYWHEEL_F = 12.928;
     public static double closeHoodAngle = 0;
     public static double mediumHoodAngle = 0.46;
     public static double farHoodAngle = 0.42;
@@ -113,7 +110,9 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static double headingOffset = 0;
     public static int artifactCounter = 0;
     public static boolean artifactPresent = false;
+    public static boolean velocityCheck;
 
+    public static boolean velocityCheck2;
     DcMotor frontLeftDrive;
     DcMotor frontRightDrive;
     DcMotor backLeftDrive;
@@ -247,7 +246,8 @@ public class TwentyTwentyFiveJava extends OpMode {
         }
 
         // Feeder Motor
-        if (gamepad2.right_bumper && (currentShooterVelocity >= targetRPM - shooterSpeedTolerance) && (currentShooterVelocity <= targetRPM + shooterSpeedTolerance)) {
+        // velocityCheck =  (currentShooterVelocity >= targetRPM - shooterSpeedTolerance) && (currentShooterVelocity <= targetRPM + shooterSpeedTolerance);
+        if (gamepad2.right_bumper ) {
             feeder.setPower(1);
             artifactCounter = 0;
         } else {
@@ -310,10 +310,11 @@ public class TwentyTwentyFiveJava extends OpMode {
             hood.setServoPos(0.143343 / (1 + (Math.exp((-0.27572 * dist) +9.10875))));
 
             shooterMode = 4;
+           // velocityCheck2 = currentShooterVelocity <= (targetRPM + shooterSpeedTolerance) && currentShooterVelocity >= (targetRPM - shooterSpeedTolerance);
             if  (Math.abs(offsetError) < BEARING_THRESHOLD) {
                 turn = 0;
                 telemetry.addData("Auto", "Robot aligned with AprilTag!");
-                if (gamepad1.a && (currentShooterVelocity <= (targetRPM + shooterSpeedTolerance) && currentShooterVelocity >= (targetRPM - shooterSpeedTolerance))) {
+                if (gamepad1.a) {
                     hood.setReadyPos(.5);
                 }
                 else {

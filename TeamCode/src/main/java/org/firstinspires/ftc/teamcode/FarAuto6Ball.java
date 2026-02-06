@@ -64,10 +64,7 @@ public class FarAuto6Ball extends LinearOpMode {
     private Limelight3A limelight;
 
     public static boolean UPDATE_FLYWHEEL_PID = false;
-    public static double FLYWHEEL_P = 70;
-    public static double FLYWHEEL_I = 0;
-    public static double FLYWHEEL_D = 5;
-    public static double FLYWHEEL_F = 21;
+
     public static double Redoffset = 5;
     public static double Blueoffset = -1;
     public static double BEARING_THRESHOLD = 0.25; // Angled towards the tag (degrees)
@@ -159,10 +156,10 @@ public class FarAuto6Ball extends LinearOpMode {
 
         PIDFCoefficients c = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
         if (!UPDATE_FLYWHEEL_PID) {
-            FLYWHEEL_P = c.p;
-            FLYWHEEL_I = c.i;
-            FLYWHEEL_D = c.d;
-            FLYWHEEL_F = c.f;
+            TwentyTwentyFiveJava.FLYWHEEL_P = c.p;
+            TwentyTwentyFiveJava.FLYWHEEL_I = c.i;
+            TwentyTwentyFiveJava.FLYWHEEL_D = c.d;
+            TwentyTwentyFiveJava.FLYWHEEL_F = c.f;
         }
         pidTuner();
 
@@ -245,15 +242,15 @@ public class FarAuto6Ball extends LinearOpMode {
     }
     private void pidTuner() {
         if (UPDATE_FLYWHEEL_PID) {
-            PIDFCoefficients c = new PIDFCoefficients(FLYWHEEL_P, FLYWHEEL_I, FLYWHEEL_D, FLYWHEEL_F);
+            PIDFCoefficients c = new PIDFCoefficients(TwentyTwentyFiveJava.FLYWHEEL_P, TwentyTwentyFiveJava.FLYWHEEL_I, TwentyTwentyFiveJava.FLYWHEEL_D, TwentyTwentyFiveJava.FLYWHEEL_F);
             shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, c);
             shooter2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, c);
             UPDATE_FLYWHEEL_PID = false;
         }
-        telemetry.addData("Flywheel P", FLYWHEEL_P);
-        telemetry.addData("Flywheel I", FLYWHEEL_I);
-        telemetry.addData("Flywheel D", FLYWHEEL_D);
-        telemetry.addData("Flywheel F", FLYWHEEL_F);
+        telemetry.addData("Flywheel P", TwentyTwentyFiveJava.FLYWHEEL_P);
+        telemetry.addData("Flywheel I", TwentyTwentyFiveJava.FLYWHEEL_I);
+        telemetry.addData("Flywheel D", TwentyTwentyFiveJava.FLYWHEEL_D);
+        telemetry.addData("Flywheel F", TwentyTwentyFiveJava.FLYWHEEL_F);
     }
 
 }
