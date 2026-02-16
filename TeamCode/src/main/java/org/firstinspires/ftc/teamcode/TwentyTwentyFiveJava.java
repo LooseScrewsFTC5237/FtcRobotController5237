@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -73,8 +74,8 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
     // This declares the four motors needed
     int lift_height = 0;
-    public static int fastShooterSpeed = 2000;
-    public static int shooterSpeed = 1250;
+    public static int fastShooterSpeed = 1500;
+    public static int shooterSpeed = 1200;
     public static int slowShooterSpeed = 960;
     public static double shooterSpeedTolerance = 40;
     public static int targetVelocity = 0;
@@ -103,13 +104,15 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static double FLYWHEEL_D = 0;
     public static double FLYWHEEL_F = 12.928;
     public static double closeHoodAngle = 0;
-    public static double mediumHoodAngle = 0.46;
-    public static double farHoodAngle = 0.42;
+    public static double mediumHoodAngle = 0.06;
+    public static double farHoodAngle = 0.12;
     public static double FarRPMBump = 60;
     public static double FarHoodBump = -0.04;
     public static double headingOffset = 0;
     public static int artifactCounter = 0;
     public static boolean artifactPresent = false;
+
+    public static double testHoodAngle = 0;
     public static boolean velocityCheck;
 
     public static boolean velocityCheck2;
@@ -237,10 +240,11 @@ public class TwentyTwentyFiveJava extends OpMode {
         }
 
         // Intake Motor
-        if (gamepad2.right_trigger > 0 || gamepad2.right_bumper){
+        if (gamepad2.right_trigger > 0 && artifactCounter < 3 || gamepad2.right_bumper){
             intake.setPower(1);
         } else if(gamepad2.left_trigger > 0){
             intake.setPower(-1);
+            artifactCounter = 0;
         } else {
             intake.setPower(0);
         }
@@ -307,7 +311,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         if ((gamepad1.a && p != null)) {
             double offsetError = headingError + headingOffset;
             double dist = Math.hypot(p.x, p.z) * 39.3701;
-            hood.setServoPos(0.143343 / (1 + (Math.exp((-0.27572 * dist) +9.10875))));
+            hood.setServoPos(-4.42373E-8 * Math.pow(dist,4) + .0000120342 * Math.pow(dist,3) - .00114364 * Math.pow(dist,2) + .0455678 * dist - .595175);
 
             shooterMode = 4;
            // velocityCheck2 = currentShooterVelocity <= (targetRPM + shooterSpeedTolerance) && currentShooterVelocity >= (targetRPM - shooterSpeedTolerance);
@@ -343,11 +347,11 @@ public class TwentyTwentyFiveJava extends OpMode {
         } else if (gamepad1.a && p != null) {
             double dist = Math.hypot(p.x, p.z) * 39.3701;
             targetRPM = (float) (
-                    (-0.0000870312 * Math.pow(dist,4))
-                            + (0.0212072 * Math.pow(dist,3))
-                            - (1.86738 * Math.pow(dist,2))
-                            + (77.4626 * dist)
-                            + 5.58843);
+                    (-0.0000215225 * Math.pow(dist,4))
+                            + (0.00607313 * Math.pow(dist,3))
+                            - (.570502 * Math.pow(dist,2))
+                            + (26.36195 * dist)
+                            + 571.02925);
             telemetry.addData("Range", dist);
         } else if (gamepad2.dpad_left) {
             targetRPM = 0;
