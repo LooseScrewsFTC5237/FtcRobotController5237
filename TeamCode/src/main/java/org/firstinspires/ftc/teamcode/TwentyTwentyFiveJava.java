@@ -100,8 +100,8 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static double getAxisOffsetHood = 0.535;
     public static boolean UPDATE_FLYWHEEL_PID = false;
     public static double FLYWHEEL_P = 135;
-    public static double FLYWHEEL_I = 0;
-    public static double FLYWHEEL_D = 0;
+    public static double FLYWHEEL_I = 4;
+    public static double FLYWHEEL_D = 1;
     public static double FLYWHEEL_F = 12.928;
     public static double closeHoodAngle = 0;
     public static double mediumHoodAngle = 0.06;
@@ -182,7 +182,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         shooter2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         PIDFCoefficients c = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
-        if (!UPDATE_FLYWHEEL_PID) {
+        if (UPDATE_FLYWHEEL_PID) {
             FLYWHEEL_P = c.p;
             FLYWHEEL_I = c.i;
             FLYWHEEL_D = c.d;
