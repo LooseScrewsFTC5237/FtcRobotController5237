@@ -180,13 +180,13 @@ public class TwentyTwentyFiveJava extends OpMode {
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         shooter2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
-        PIDFCoefficients c = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
-        if (!UPDATE_FLYWHEEL_PID) {
-            FLYWHEEL_P = c.p;
-            FLYWHEEL_I = c.i;
-            FLYWHEEL_D = c.d;
-            FLYWHEEL_F = c.f;
-        }
+//        PIDFCoefficients c = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+//        if (!UPDATE_FLYWHEEL_PID) {
+//            FLYWHEEL_P = c.p;
+//            FLYWHEEL_I = c.i;
+//            FLYWHEEL_D = c.d;
+//            FLYWHEEL_F = c.f;
+//        }
         pidTuner();
 
 
