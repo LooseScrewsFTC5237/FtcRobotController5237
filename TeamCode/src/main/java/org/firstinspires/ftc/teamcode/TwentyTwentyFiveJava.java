@@ -98,11 +98,11 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static double Redoffset = 5;
     public static double hoodDistanceMultiplier = -0.00188;
     public static double getAxisOffsetHood = 0.535;
-    public static boolean UPDATE_FLYWHEEL_PID = false;
-    public static double FLYWHEEL_P = 135;
-    public static double FLYWHEEL_I = 4;
-    public static double FLYWHEEL_D = 1;
-    public static double FLYWHEEL_F = 12.928;
+    public static boolean UPDATE_FLYWHEEL_PID = true;
+    public static double FLYWHEEL_P = 140;
+    public static double FLYWHEEL_I = 0;
+    public static double FLYWHEEL_D = 0;
+    public static double FLYWHEEL_F = 12.86;
     public static double closeHoodAngle = 0;
     public static double mediumHoodAngle = 0.06;
     public static double farHoodAngle = 0.12;
@@ -112,7 +112,6 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static int artifactCounter = 0;
     public static boolean artifactPresent = false;
 
-    public static double testHoodAngle = 0;
     public static boolean velocityCheck;
 
     public static boolean velocityCheck2;
@@ -182,7 +181,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         shooter2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         PIDFCoefficients c = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
-        if (UPDATE_FLYWHEEL_PID) {
+        if (!UPDATE_FLYWHEEL_PID) {
             FLYWHEEL_P = c.p;
             FLYWHEEL_I = c.i;
             FLYWHEEL_D = c.d;
@@ -311,7 +310,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         if ((gamepad1.a && p != null)) {
             double offsetError = headingError + headingOffset;
             double dist = Math.hypot(p.x, p.z) * 39.3701;
-            hood.setServoPos(-4.42373E-8 * Math.pow(dist,4) + .0000120342 * Math.pow(dist,3) - .00114364 * Math.pow(dist,2) + .0455678 * dist - .595175);
+            hood.setServoPos(-1.57333E-8 * Math.pow(dist,4) + .00000477067 * Math.pow(dist,3) - .000504967 * Math.pow(dist,2) + .0228883 * dist - .3125);
 
             shooterMode = 4;
            // velocityCheck2 = currentShooterVelocity <= (targetRPM + shooterSpeedTolerance) && currentShooterVelocity >= (targetRPM - shooterSpeedTolerance);
@@ -347,11 +346,11 @@ public class TwentyTwentyFiveJava extends OpMode {
         } else if (gamepad1.a && p != null) {
             double dist = Math.hypot(p.x, p.z) * 39.3701;
             targetRPM = (float) (
-                    (-0.0000215225 * Math.pow(dist,4))
-                            + (0.00607313 * Math.pow(dist,3))
-                            - (.570502 * Math.pow(dist,2))
-                            + (26.36195 * dist)
-                            + 571.02925);
+                    (-0.0000267733 * Math.pow(dist,4))
+                            + (0.00762133 * Math.pow(dist,3))
+                            - (.728067 * Math.pow(dist,2))
+                            + (32.69667 * dist)
+                            + 515);
             telemetry.addData("Range", dist);
         } else if (gamepad2.dpad_left) {
             targetRPM = 0;
