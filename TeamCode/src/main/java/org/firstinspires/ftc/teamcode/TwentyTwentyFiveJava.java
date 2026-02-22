@@ -94,8 +94,8 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static float targetRPM;
     public static double rpmDistanceMultiplier = 7.61765;
     public static double axisOffsetRPM = 776.59769;
-    public static double Blueoffset = 1;
-    public static double Redoffset = 5;
+    public static double Blueoffset = -2.5;
+    public static double Redoffset = 0;
     public static double hoodDistanceMultiplier = -0.00188;
     public static double getAxisOffsetHood = 0.535;
     public static boolean UPDATE_FLYWHEEL_PID = true;
@@ -239,7 +239,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         }
 
         // Intake Motor
-        if (gamepad2.right_trigger > 0 && artifactCounter < 3 || gamepad2.right_bumper){
+        if (gamepad2.right_trigger > 0 && artifactCounter < 4 || gamepad2.right_bumper){
             intake.setPower(1);
         } else if(gamepad2.left_trigger > 0){
             intake.setPower(-1);
