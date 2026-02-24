@@ -16,15 +16,16 @@ public class MeepMeepCloseRedBallDump {
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-60, 37, Math.toRadians(0)))
                 //First Shot
-                .splineToLinearHeading(new Pose2d(-16, 16, Math.toRadians(90)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-16, 16, Math.toRadians(135)), Math.toRadians(0))
                 .waitSeconds(2)
                 .setTangent(0)
                 //Intake Middle Line
+                .turn(Math.toRadians(-90))
                 .splineToLinearHeading(new Pose2d(12, 50,Math.toRadians(90)), Math.toRadians(90))
                 .waitSeconds(0)
                 //Second Shot
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(-16, 16,Math.toRadians(90)), Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(-16, 16,Math.toRadians(135)), Math.toRadians(180))
                 .waitSeconds(1)
                 //Dump'N Intake
                 .setTangent(Math.toRadians(0))
@@ -32,12 +33,15 @@ public class MeepMeepCloseRedBallDump {
                 .waitSeconds(1)
                 //Third Shot
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(-16, 16, Math.toRadians(90)), Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(-16, 16, Math.toRadians(135)), Math.toRadians(180))
                 .waitSeconds(1)
                 //Intake Goal Side Line
-                .lineToY(50)
+                .turn(Math.toRadians(-45))
+                .setTangent(Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(-16, 50, Math.toRadians(90)), Math.toRadians(270))
                 //Fourth Shot
-                .lineToY(16)
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(-16, 16, Math.toRadians(135)), Math.toRadians(90))
                 .waitSeconds(1)
                 //Dump'N Intake2
                 .setTangent(Math.toRadians(0))
@@ -45,10 +49,10 @@ public class MeepMeepCloseRedBallDump {
                 .waitSeconds(1)
                 //Fifth Shot
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(-16, 16, Math.toRadians(90)), Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(-16, 16, Math.toRadians(135)), Math.toRadians(180))
                 .waitSeconds(1)
                 //Park
-                .lineToY(38)
+                .splineToLinearHeading(new Pose2d(-16, 35, Math.toRadians(90)), Math.toRadians(90))
                 .build());
         meepMeep.setBackground(MeepMeep.Background.FIELD_DECODE_OFFICIAL)
                 .setDarkMode(true)
