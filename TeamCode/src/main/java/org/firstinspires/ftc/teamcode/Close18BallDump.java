@@ -1,7 +1,4 @@
 package org.firstinspires.ftc.teamcode;
-
-import static org.firstinspires.ftc.teamcode.TwentyTwentyFiveJava.shooterSpeed;
-
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -61,11 +58,13 @@ public class Close18BallDump extends LinearOpMode {
     DcMotorEx shooter2;
     Hood hood = new Hood();
     private Limelight3A limelight;
+    private double shooterSpeed = 1170;
 
-    public static boolean UPDATE_FLYWHEEL_PID = false;
+    public static boolean
+            UPDATE_FLYWHEEL_PID = true;
 
-    public static double Redoffset = 5;
-    public static double Blueoffset = -1;
+    public static double Redoffset = 0;
+    public static double Blueoffset = -2.5;
     public static double BEARING_THRESHOLD = 0.25; // Angled towards the tag (degrees)
     public static double TURN_GAIN   =  0.04  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
     public static double TURN_STATIC = 0.1;
@@ -147,16 +146,19 @@ public class Close18BallDump extends LinearOpMode {
         feeder.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
         hood.init(hardwareMap);
-        hood.setServoPos(0.015);
-        double shooterSpeed = 1110;
+        hood.setServoPos(0.0675);
+        double shooterSpeed = 1170;
         double currentShooterVelocity = shooter.getVelocity();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(8);
+        Pose2d dumpPose = new Pose2d(12.5, 65, Math.toRadians(120));
+        double dumpTangent = Math.toRadians(90);
+        Pose2d shootPose = new Pose2d(-16, 16, Math.toRadians(135));
 
         PIDFCoefficients c = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
         if (!UPDATE_FLYWHEEL_PID) {
             TwentyTwentyFiveJava.FLYWHEEL_P = c.p;
-            TwentyTwentyFiveJava.FLYWHEEL_I = c.i;
+         TwentyTwentyFiveJava.FLYWHEEL_I = c.i;
             TwentyTwentyFiveJava.FLYWHEEL_D = c.d;
             TwentyTwentyFiveJava.FLYWHEEL_F = c.f;
         }
@@ -181,71 +183,78 @@ public class Close18BallDump extends LinearOpMode {
                             shooter2.setVelocity(shooterSpeed);
                         })
                         //First Shot
-                        .splineToLinearHeading(new Pose2d(-16, 16, Math.toRadians(135)), Math.toRadians(0))
-                        .stopAndAdd(() -> feeder.setPower(1.0))
+                        .splineToLinearHeading(shootPose, Math.toRadians(0))
+                        .stopAndAdd(() -> intake.setPower(1))
+                        .stopAndAdd(() -> feeder.setPower(1))
                         .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> feeder.setPower(.0))
+                        .stopAndAdd(() -> feeder.setPower(0))
                         //Intake Middle Line
                         .setTangent(0)
-                        .stopAndAdd(() -> intake.setPower(1))
-                        .splineToLinearHeading(new Pose2d(12, 50,Math.toRadians(90)), Math.toRadians(90))
+                        .splineToLinearHeading(new Pose2d(12, 16,Math.toRadians(90)), Math.toRadians(0))
+                        .setTangent(Math.toRadians(90))
+                        .splineToLinearHeading(new Pose2d(12, 49,Math.toRadians(90)), Math.toRadians(90))
                         .stopAndAdd(() -> intake.setPower(0))
                         //Second Shot
                         .setTangent(Math.toRadians(270))
-                        .splineToLinearHeading(new Pose2d(-16, 16,Math.toRadians(135)), Math.toRadians(180))
+                        .splineToLinearHeading(shootPose, Math.toRadians(180))
                         .stopAndAdd(shooterCheckAction())
-                        .stopAndAdd(() -> feeder.setPower(1.0))
-                        .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> feeder.setPower(.0))
-                        //Dump'N Intake
                         .stopAndAdd(() -> intake.setPower(1))
+                        .stopAndAdd(() -> feeder.setPower(1))
+                        .waitSeconds(feederOnTime)
+                        .stopAndAdd(() -> feeder.setPower(0))
+                        //Dump'N Intake
                         .setTangent(Math.toRadians(0))
-                        .splineToLinearHeading(new Pose2d(10, 55, Math.toRadians(120)), Math.toRadians(90))
+                        .splineToLinearHeading(dumpPose, dumpTangent)
+                        .waitSeconds(1)
                         .stopAndAdd(() -> intake.setPower(0))
                         //Third Shot
-                        .setTangent(Math.toRadians(270))
-                        .splineToLinearHeading(new Pose2d(-16, 16, Math.toRadians(135)), Math.toRadians(180))
+                        .setTangent(Math.toRadians(315))
+                        .splineToLinearHeading(shootPose, Math.toRadians(180))
                         .stopAndAdd(shooterCheckAction())
-                        .stopAndAdd(() -> feeder.setPower(1.0))
-                        .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> feeder.setPower(.0))
-                        .splineToLinearHeading(new Pose2d(-16, 16, Math.toRadians(135)), Math.toRadians(0))
-                        .stopAndAdd(shooterCheckAction())
-                        .stopAndAdd(() -> feeder.setPower(1.0))
-                        .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> feeder.setPower(.0))
-                        //Intake Goal Side Line
                         .stopAndAdd(() -> intake.setPower(1))
-                        .turn(Math.toRadians(-45))
+                        .stopAndAdd(() -> feeder.setPower(1))
+                        .waitSeconds(feederOnTime)
+                        .stopAndAdd(() -> feeder.setPower(0))
+                        //Intake Goal Side Line
+                        .setTangent(Math.toRadians(0))
+                        .splineToLinearHeading(new Pose2d(-10, 16, Math.toRadians(90)), Math.toRadians(0))
                         .setTangent(Math.toRadians(90))
-                        .splineToLinearHeading(new Pose2d(-16, 50, Math.toRadians(90)), Math.toRadians(270))
+                        .splineToLinearHeading(new Pose2d(-10, 49, Math.toRadians(90)), Math.toRadians(90))
                         .stopAndAdd(() -> intake.setPower(0))
                         //Fourth Shot
                         .setTangent(Math.toRadians(270))
-                        .splineToLinearHeading(new Pose2d(-16, 16, Math.toRadians(135)), Math.toRadians(90))
-                        .stopAndAdd(() -> feeder.setPower(1.0))
-                        .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> feeder.setPower(0.0))
+                        .splineToLinearHeading(shootPose, Math.toRadians(90))
+                        .stopAndAdd(() -> feeder.setPower(1))
                         .stopAndAdd(() -> intake.setPower(1))
+                        .waitSeconds(feederOnTime)
+                        .stopAndAdd(() -> feeder.setPower(0))
                         //Dump'N Intake2
                         .setTangent(Math.toRadians(0))
-                        .splineToLinearHeading(new Pose2d(10, 55, Math.toRadians(120)), Math.toRadians(90))
+                        .splineToLinearHeading(dumpPose, dumpTangent)
                         .waitSeconds(1)
                         .stopAndAdd(() -> intake.setPower(0))
                         //Fifth Shot
-                        .setTangent(Math.toRadians(270))
-                        .splineToLinearHeading(new Pose2d(-16, 16, Math.toRadians(135)), Math.toRadians(180))
-                        .waitSeconds(1)
+                        .setTangent(Math.toRadians(315))
+                        .splineToLinearHeading(shootPose, Math.toRadians(180))
+                        .stopAndAdd(() -> feeder.setPower(1))
+                        .stopAndAdd(() -> intake.setPower(1))
+                        .waitSeconds(feederOnTime)
+                        .stopAndAdd(() -> feeder.setPower(0))
                         //Dump'N Intake3
                         .setTangent(Math.toRadians(0))
-                        .splineToLinearHeading(new Pose2d(10, 55, Math.toRadians(120)), Math.toRadians(90))
+                        .splineToLinearHeading(dumpPose, dumpTangent)
                         .waitSeconds(1)
                         .stopAndAdd(() -> intake.setPower(0))
                         //Sixth Shot
-                        .setTangent(Math.toRadians(270))
-                        .splineToLinearHeading(new Pose2d(-16, 16, Math.toRadians(135)), Math.toRadians(180))
+                        .setTangent(Math.toRadians(315))
+                        .splineToLinearHeading(shootPose, Math.toRadians(180))
+                        .stopAndAdd(() -> feeder.setPower(1))
+                        .stopAndAdd(() -> intake.setPower(1))
+                        .waitSeconds(feederOnTime)
+                        .stopAndAdd(() -> feeder.setPower(0))
                         .waitSeconds(1)
                         //Park
+                        .stopAndAdd(() -> intake.setPower(0))
                         .splineToLinearHeading(new Pose2d(-16, 35, Math.toRadians(90)), Math.toRadians(90))
                         .build());
 

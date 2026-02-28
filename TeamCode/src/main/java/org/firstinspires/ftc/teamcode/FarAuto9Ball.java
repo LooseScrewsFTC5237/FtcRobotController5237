@@ -63,10 +63,10 @@ public class FarAuto9Ball extends LinearOpMode {
     Hood hood = new Hood();
     private Limelight3A limelight;
 
-    public static boolean UPDATE_FLYWHEEL_PID = false;
+    public static boolean UPDATE_FLYWHEEL_PID = true;
 
-    public static double Redoffset = 5;
-    public static double Blueoffset = -1;
+    public static double Redoffset = -2.5;
+    public static double Blueoffset = 0;
     public static double BEARING_THRESHOLD = 0.25; // Angled towards the tag (degrees)
     public static double TURN_GAIN   =  0.04  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
     public static double TURN_STATIC = 0.1;
@@ -148,8 +148,8 @@ public class FarAuto9Ball extends LinearOpMode {
         feeder.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
         hood.init(hardwareMap);
-        hood.setServoPos(0.42);
-        double shooterSpeed = 1110;
+        hood.setServoPos(0.16);
+        double shooterSpeed = 1580;
         double currentShooterVelocity = shooter.getVelocity();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(8);
