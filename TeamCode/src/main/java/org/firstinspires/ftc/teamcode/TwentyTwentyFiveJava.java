@@ -213,7 +213,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         PIDFCoefficients currentPIDF = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
         telemetry.addData("Flywheel P", currentPIDF.p);
         telemetry.addData("Flywheel F", currentPIDF.f);
-        telemetry.update();
+
 
 
         double  currentShooterVelocity = shooter.getVelocity();
@@ -247,7 +247,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         }
 
         // Intake Motor
-        if (gamepad2.right_trigger > 0 && artifactCounter < 4 || gamepad2.right_bumper){
+        if (gamepad2.right_trigger > 0 && artifactCounter < 3 || gamepad2.right_bumper){
             intake.setPower(1);
         } else if(gamepad2.left_trigger > 0){
             intake.setPower(-1);

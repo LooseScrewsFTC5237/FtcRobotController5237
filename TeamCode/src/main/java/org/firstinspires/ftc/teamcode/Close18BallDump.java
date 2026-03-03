@@ -151,18 +151,23 @@ public class Close18BallDump extends LinearOpMode {
         double currentShooterVelocity = shooter.getVelocity();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(8);
-        Pose2d dumpPose = new Pose2d(12.5, 65, Math.toRadians(120));
-        double dumpTangent = Math.toRadians(90);
+        Pose2d dumpPose1 = new Pose2d(10, 55, Math.toRadians(180));
+        double dumpTangent1 = Math.toRadians(90);
         Pose2d shootPose = new Pose2d(-16, 16, Math.toRadians(135));
+        Pose2d dumpPose2 = new Pose2d(20, 65, Math.toRadians(120));
+        double dumpTangent2 = Math.toRadians(90);
 
-        PIDFCoefficients c = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
-        if (!UPDATE_FLYWHEEL_PID) {
-            TwentyTwentyFiveJava.FLYWHEEL_P = c.p;
-         TwentyTwentyFiveJava.FLYWHEEL_I = c.i;
-            TwentyTwentyFiveJava.FLYWHEEL_D = c.d;
-            TwentyTwentyFiveJava.FLYWHEEL_F = c.f;
-        }
-        pidTuner();
+//        PIDFCoefficients c = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+//        if (!UPDATE_FLYWHEEL_PID) {
+//            TwentyTwentyFiveJava.FLYWHEEL_P = c.p;
+//         TwentyTwentyFiveJava.FLYWHEEL_I = c.i;
+//            TwentyTwentyFiveJava.FLYWHEEL_D = c.d;
+//            TwentyTwentyFiveJava.FLYWHEEL_F = c.f;
+//        }
+//        pidTuner();
+        PIDFCoefficients pidfNew = new PIDFCoefficients (140, 0, 0, 12.86);
+        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
+        shooter2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,pidfNew);
 
         Pose2d beginPose = startingPose;// new Pose2d(60, 30, Math.toRadians(180));
         drive = new MecanumDrive(hardwareMap, beginPose);
@@ -171,7 +176,9 @@ public class Close18BallDump extends LinearOpMode {
         telemetry.addData("Target Velocity", 0);
         telemetry.addData("Feeder Speed", 0);
         waitForStart();
-        pidTuner();
+        PIDFCoefficients currentPIDF = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        telemetry.addData("Flywheel P", currentPIDF.p);
+        telemetry.addData("Flywheel F", currentPIDF.f);
 
         Actions.runBlocking(
                 drive.actionBuilder(beginPose, poseMap)
@@ -190,9 +197,9 @@ public class Close18BallDump extends LinearOpMode {
                         .stopAndAdd(() -> feeder.setPower(0))
                         //Intake Middle Line
                         .setTangent(0)
-                        .splineToLinearHeading(new Pose2d(12, 16,Math.toRadians(90)), Math.toRadians(0))
+                        .splineToLinearHeading(new Pose2d(17, 16,Math.toRadians(90)), Math.toRadians(0))
                         .setTangent(Math.toRadians(90))
-                        .splineToLinearHeading(new Pose2d(12, 49,Math.toRadians(90)), Math.toRadians(90))
+                        .splineToLinearHeading(new Pose2d(17, 56,Math.toRadians(90)), Math.toRadians(90))
                         .stopAndAdd(() -> intake.setPower(0))
                         //Second Shot
                         .setTangent(Math.toRadians(270))
@@ -203,8 +210,10 @@ public class Close18BallDump extends LinearOpMode {
                         .waitSeconds(feederOnTime)
                         .stopAndAdd(() -> feeder.setPower(0))
                         //Dump'N Intake
-                        .setTangent(Math.toRadians(0))
-                        .splineToLinearHeading(dumpPose, dumpTangent)
+                        .setTangent(Math.toRadians(180))
+                        .splineToLinearHeading(dumpPose1, dumpTangent1)
+                        .splineToLinearHeading(dumpPose2, dumpTangent2)
+
                         .waitSeconds(1)
                         .stopAndAdd(() -> intake.setPower(0))
                         //Third Shot
@@ -219,7 +228,7 @@ public class Close18BallDump extends LinearOpMode {
                         .setTangent(Math.toRadians(0))
                         .splineToLinearHeading(new Pose2d(-10, 16, Math.toRadians(90)), Math.toRadians(0))
                         .setTangent(Math.toRadians(90))
-                        .splineToLinearHeading(new Pose2d(-10, 49, Math.toRadians(90)), Math.toRadians(90))
+                        .splineToLinearHeading(new Pose2d(-5, 53, Math.toRadians(90)), Math.toRadians(90))
                         .stopAndAdd(() -> intake.setPower(0))
                         //Fourth Shot
                         .setTangent(Math.toRadians(270))
@@ -229,8 +238,10 @@ public class Close18BallDump extends LinearOpMode {
                         .waitSeconds(feederOnTime)
                         .stopAndAdd(() -> feeder.setPower(0))
                         //Dump'N Intake2
-                        .setTangent(Math.toRadians(0))
-                        .splineToLinearHeading(dumpPose, dumpTangent)
+                        .setTangent(Math.toRadians(180))
+                        .splineToLinearHeading(dumpPose1, dumpTangent1)
+                        .splineToLinearHeading(dumpPose2, dumpTangent2)
+
                         .waitSeconds(1)
                         .stopAndAdd(() -> intake.setPower(0))
                         //Fifth Shot
@@ -241,8 +252,10 @@ public class Close18BallDump extends LinearOpMode {
                         .waitSeconds(feederOnTime)
                         .stopAndAdd(() -> feeder.setPower(0))
                         //Dump'N Intake3
-                        .setTangent(Math.toRadians(0))
-                        .splineToLinearHeading(dumpPose, dumpTangent)
+                        .setTangent(Math.toRadians(180))
+                        .splineToLinearHeading(dumpPose1, dumpTangent2)
+                        .splineToLinearHeading(dumpPose2, dumpTangent2)
+
                         .waitSeconds(1)
                         .stopAndAdd(() -> intake.setPower(0))
                         //Sixth Shot
@@ -265,17 +278,4 @@ public class Close18BallDump extends LinearOpMode {
         shooter.setPower(0);
         shooter2.setPower(0);
     }
-    private void pidTuner() {
-        if (UPDATE_FLYWHEEL_PID) {
-            PIDFCoefficients c = new PIDFCoefficients(TwentyTwentyFiveJava.FLYWHEEL_P,TwentyTwentyFiveJava.FLYWHEEL_I, TwentyTwentyFiveJava.FLYWHEEL_D,TwentyTwentyFiveJava.FLYWHEEL_F);
-            shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, c);
-            shooter2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, c);
-            UPDATE_FLYWHEEL_PID = false;
-        }
-        telemetry.addData("Flywheel P", TwentyTwentyFiveJava.FLYWHEEL_P);
-        telemetry.addData("Flywheel I",TwentyTwentyFiveJava.FLYWHEEL_I);
-        telemetry.addData("Flywheel D", TwentyTwentyFiveJava.FLYWHEEL_D);
-        telemetry.addData("Flywheel F", TwentyTwentyFiveJava.FLYWHEEL_F);
-    }
-
 }

@@ -148,7 +148,7 @@ public class FarAuto9Ball extends LinearOpMode {
         feeder.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
         hood.init(hardwareMap);
-        hood.setServoPos(0.16);
+        hood.setServoPos(0.135);
         double shooterSpeed = 1580;
         double currentShooterVelocity = shooter.getVelocity();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
@@ -177,7 +177,7 @@ public class FarAuto9Ball extends LinearOpMode {
 
                         // Turn on motors
                         .stopAndAdd(() -> {
-                            intake.setPower(1.0);
+                            intake.setPower(0.0);
                             feeder.setPower(0.0);
                             shooter.setVelocity(shooterSpeed);
                             shooter2.setVelocity(shooterSpeed);
@@ -186,43 +186,49 @@ public class FarAuto9Ball extends LinearOpMode {
                         // Prep First Three Shots
                         .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(155.5))
                         .stopAndAdd(autoAimAction())
-
+                        .stopAndAdd(() -> intake.setPower(1))
+                        .stopAndAdd(() -> feeder.setPower(1))
+                        .waitSeconds(feederOnTime)
+                        .stopAndAdd(() -> feeder.setPower(0))
                         // Take First Three Shots
-                        .stopAndAdd(shooterCheckAction())
-                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
-                        .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-                        .stopAndAdd(shooterCheckAction())
-                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (2nd time)
-                        .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-                        .stopAndAdd(shooterCheckAction())
-                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (3rd time)
-                        .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
+                       // .stopAndAdd(shooterCheckAction())
+                        //.stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
+                        //.waitSeconds(feederOnTime)
+                        //.stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
+                        //.stopAndAdd(shooterCheckAction())
+                        //.stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (2nd time)
+                        //.waitSeconds(feederOnTime)
+                        //.stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
+                        //.stopAndAdd(shooterCheckAction())
+                        //.stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (3rd time)
+                        //.waitSeconds(feederOnTime)
+                        //.stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
 
                         // First Intake
                         .strafeToLinearHeading(new Vector2d(35, 20), Math.toRadians(90))
                         .waitSeconds(0)
                         .lineToY(50 /* , new TranslationalVelConstraint(15), null */)
-
+                        .stopAndAdd(() -> intake.setPower(0))
                         // Prep Second Three Shots
                         .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(155.5))
                         .stopAndAdd(autoAimAction())
-
+                        .stopAndAdd(() -> intake.setPower(1))
+                        .stopAndAdd(() -> feeder.setPower(1))
+                        .waitSeconds(feederOnTime)
+                        .stopAndAdd(() -> feeder.setPower(0))
                         // Take Second Three Shots
-                        .stopAndAdd(shooterCheckAction())
-                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
-                        .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-                        .stopAndAdd(shooterCheckAction())
-                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (2nd time)
-                        .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-                        .stopAndAdd(shooterCheckAction())
-                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (3rd time)
-                        .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
+                       // .stopAndAdd(shooterCheckAction())
+                       // .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
+                     //   .waitSeconds(feederOnTime)
+                      //  .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
+                      //  .stopAndAdd(shooterCheckAction())
+                     //   .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (2nd time)
+                      //  .waitSeconds(feederOnTime)
+                     //   .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
+                     //   .stopAndAdd(shooterCheckAction())
+                     //   .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (3rd time)
+                     //   .waitSeconds(feederOnTime)
+                     //   .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
 
                         // Second Intake
                         .waitSeconds(0.6)
@@ -235,21 +241,26 @@ public class FarAuto9Ball extends LinearOpMode {
                         // Pre Third Three Shots
                         .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(155.5))
                         .stopAndAdd(autoAimAction())
-                        .stopAndAdd(shooterCheckAction())
-                        .stopAndAdd(() -> intake.setPower(1)) // Turn intake back on
+                        .stopAndAdd(() -> intake.setPower(1))
+                        .stopAndAdd(() -> feeder.setPower(1))
+                        .waitSeconds(feederOnTime)
+                        .stopAndAdd(() -> feeder.setPower(0))
+                        .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
+                        //.stopAndAdd(shooterCheckAction())
+                        //.stopAndAdd(() -> intake.setPower(1)) // Turn intake back on
 
                         // Take Third Three Shots
-                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
-                        .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-                        .stopAndAdd(shooterCheckAction())
-                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (2nd time)
-                        .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
-                        .stopAndAdd(shooterCheckAction())
-                        .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (3rd time)
-                        .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
+                      //  .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
+                      //  .waitSeconds(feederOnTime)
+                      //  .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
+                      //  .stopAndAdd(shooterCheckAction())
+                      //  .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (2nd time)
+                      //  .waitSeconds(feederOnTime)
+                       // .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
+                      //  .stopAndAdd(shooterCheckAction())
+                      //  .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (3rd time)
+                      //  .waitSeconds(feederOnTime)
+                      //  .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
 
                         // Park
                         .strafeToLinearHeading(new Vector2d(40, 20), Math.toRadians(75))
