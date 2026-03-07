@@ -19,6 +19,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.Range;
 
@@ -51,7 +52,7 @@ public class Close18BallDump extends LinearOpMode {
     }
 
     protected MecanumDrive drive;
-
+    private DigitalChannel laserInput;
     DcMotor intake;
     DcMotor feeder;
     DcMotorEx shooter;
@@ -62,7 +63,9 @@ public class Close18BallDump extends LinearOpMode {
 
     public static boolean
             UPDATE_FLYWHEEL_PID = true;
+    public static boolean artifactPresent = false;
 
+    public static int artifactCounter = 0;
     public static double Redoffset = 0;
     public static double Blueoffset = -2.5;
     public static double BEARING_THRESHOLD = 0.25; // Angled towards the tag (degrees)
@@ -137,7 +140,8 @@ public class Close18BallDump extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-
+        laserInput = hardwareMap.get(DigitalChannel.class, "LaserArtifactDetector");
+        laserInput.setMode(DigitalChannel.Mode.INPUT);
         intake = hardwareMap.get(DcMotor.class, "Intake");
         feeder = hardwareMap.get(DcMotor.class, "Shooter Feeder");
         shooter = hardwareMap.get(DcMotorEx.class, "Shooter");
@@ -151,7 +155,7 @@ public class Close18BallDump extends LinearOpMode {
         double currentShooterVelocity = shooter.getVelocity();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(8);
-        Pose2d dumpPose1 = new Pose2d(10, 55, Math.toRadians(180));
+        Pose2d dumpPose1 = new Pose2d(10, 53, Math.toRadians(180));
         double dumpTangent1 = Math.toRadians(90);
         Pose2d shootPose = new Pose2d(-16, 16, Math.toRadians(135));
         Pose2d dumpPose2 = new Pose2d(20, 65, Math.toRadians(120));
@@ -199,7 +203,7 @@ public class Close18BallDump extends LinearOpMode {
                         .setTangent(0)
                         .splineToLinearHeading(new Pose2d(17, 16,Math.toRadians(90)), Math.toRadians(0))
                         .setTangent(Math.toRadians(90))
-                        .splineToLinearHeading(new Pose2d(17, 56,Math.toRadians(90)), Math.toRadians(90))
+                        .splineToLinearHeading(new Pose2d(17, 50,Math.toRadians(90)), Math.toRadians(90))
                         .stopAndAdd(() -> intake.setPower(0))
                         //Second Shot
                         .setTangent(Math.toRadians(270))
