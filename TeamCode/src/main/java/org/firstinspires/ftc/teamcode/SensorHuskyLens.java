@@ -30,8 +30,11 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -40,6 +43,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
 import java.util.concurrent.TimeUnit;
+
+import java.util.List;
 
 /*
  * This OpMode illustrates how to use the DFRobot HuskyLens.
@@ -59,19 +64,23 @@ import java.util.concurrent.TimeUnit;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
-@TeleOp(name = "Sensor: HuskyLens", group = "Sensor")
 @Disabled
+@TeleOp(name = "Sensor: HuskyLens", group = "Sensor")
+@Config
 public class SensorHuskyLens extends LinearOpMode {
 
     private final int READ_PERIOD = 1;
 
     private HuskyLens huskyLens;
 
+    FtcDashboard dashboard = FtcDashboard.getInstance();
+
     @Override
     public void runOpMode()
     {
         huskyLens = hardwareMap.get(HuskyLens.class, "huskylens");
 
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         /*
          * This sample rate limits the reads solely to allow a user time to observe
          * what is happening on the Driver Station telemetry.  Typical applications
@@ -113,8 +122,11 @@ public class SensorHuskyLens extends LinearOpMode {
          *
          * Other algorithm choices for FTC might be: OBJECT_RECOGNITION, COLOR_RECOGNITION or OBJECT_CLASSIFICATION.
          */
-        huskyLens.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
-        huskyLens.selectAlgorithm(HuskyLens.Algorithm.COLOR_RECOGNITION);
+
+            huskyLens.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
+          //  huskyLens.selectAlgorithm(HuskyLens.Algorithm.COLOR_RECOGNITION);
+
+
 
         telemetry.update();
         waitForStart();
@@ -153,9 +165,36 @@ public class SensorHuskyLens extends LinearOpMode {
                  *
                  * These values have Java type int (integer).
                  */
+
+                int x = blocks[i].x;
+                int y = blocks[i].y;
+
+                if (x > 0) {
+                    telemetry.addData("x: ", x);
+                } else {
+                    telemetry.addData("x: ", 0);
+                }
+
+
+
             }
+            //if (blocks(1)){
+            //    telemetry.addData("pattern", "PPG");
+            //} else if (blocks(2)) {
+            //    telemetry.addData("pattern", "GPP");
+            //} else {
+            //    telemetry.addData("pattern", "PGP");
+            //}
+
+            // Get the dimensions (in pixels)
+            // int width = blocks[1].width;
+            // int height = blocks[1].width;
+            // telemetry.addData("Width (px)", width);
+            // telemetry.addData("Height (px)", height);
 
             telemetry.update();
         }
     }
+
+
 }
