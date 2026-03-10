@@ -72,7 +72,7 @@ public class FarAuto9Ball extends LinearOpMode {
     public static double TURN_STATIC = 0.1;
     public static double MAX_AUTO_TURN  = 0.3;
 
-    public static double feederOnTime = 0.125;
+    public static double feederOnTime = 0.6;
     PoseMap poseMap;
     Pose2d startingPose;
 

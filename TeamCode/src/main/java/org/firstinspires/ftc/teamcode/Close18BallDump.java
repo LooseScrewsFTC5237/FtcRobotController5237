@@ -77,7 +77,7 @@ public class Close18BallDump extends LinearOpMode {
     public static double TURN_STATIC = 0.1;
     public static double MAX_AUTO_TURN  = 0.3;
 
-    public static double feederOnTime = 0.75;
+    public static double feederOnTime = 0.6;
     PoseMap poseMap;
     Pose2d startingPose;
 
@@ -205,8 +205,8 @@ public class Close18BallDump extends LinearOpMode {
                         .stopAndAdd(() -> feeder.setPower(0))
                         //Intake Middle Line
                         .setTangent(0)
-                        .splineToSplineHeading(new Pose2d(17, 20,Math.toRadians(90)), Math.toRadians(0))
-                        .splineToLinearHeading(new Pose2d(17, 52,Math.toRadians(90)), Math.toRadians(90))
+                        .splineToSplineHeading(new Pose2d(14, 20,Math.toRadians(90)), Math.toRadians(0))
+                        .splineToLinearHeading(new Pose2d(14, 52,Math.toRadians(90)), Math.toRadians(90))
                         .stopAndAdd(() -> intake.setPower(0))
                         //Second Shot
                         .setTangent(Math.toRadians(270))
@@ -258,26 +258,30 @@ public class Close18BallDump extends LinearOpMode {
                         .stopAndAdd(() -> intake.setPower(1))
                         .waitSeconds(feederOnTime)
                         .stopAndAdd(() -> feeder.setPower(0))
-                        //Dump'N Intake3
-                        .setTangent(Math.toRadians(0))
-                        .splineToSplineHeading(dumpPose1, dumpTangent2)
-                        .splineToLinearHeading(dumpPose2, dumpTangent2, new MinVelConstraint(Arrays.asList(new TranslationalVelConstraint(40))))
-                        //.splineToLinearHeading(dumpPose2, dumpTangent2)
-                        .waitSeconds(1)
-                        .stopAndAdd(() -> intake.setPower(0))
-                        //Sixth Shot
-                        .setTangent(Math.toRadians(270))
-                        .splineToSplineHeading(new Pose2d(2, 20,Math.toRadians(90)), Math.toRadians(180))
-                        .splineToLinearHeading(shootPose, Math.toRadians(180))
-                        .stopAndAdd(() -> feeder.setPower(1))
-                        .stopAndAdd(() -> intake.setPower(1))
-                        .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> feeder.setPower(0))
-                        .waitSeconds(1)
                         //Park
                         .stopAndAdd(() -> intake.setPower(0))
-                        .splineToLinearHeading(new Pose2d(-16, 35, Math.toRadians(90)), Math.toRadians(90))
+                        .splineToLinearHeading(new Pose2d(-16, 37, Math.toRadians(90)), Math.toRadians(90))
                         .build());
+                        //Dump'N Intake3
+                      //  .setTangent(Math.toRadians(0))
+                      //  .splineToSplineHeading(dumpPose1, dumpTangent2)
+                     //   .splineToLinearHeading(dumpPose2, dumpTangent2, new MinVelConstraint(Arrays.asList(new TranslationalVelConstraint(40))))
+                        //.splineToLinearHeading(dumpPose2, dumpTangent2)
+                      //  .waitSeconds(1)
+                      //  .stopAndAdd(() -> intake.setPower(0))
+                        //Sixth Shot
+                     //   .setTangent(Math.toRadians(270))
+                      //  .splineToSplineHeading(new Pose2d(2, 20,Math.toRadians(90)), Math.toRadians(180))
+                     //   .splineToLinearHeading(shootPose, Math.toRadians(180))
+                     //   .stopAndAdd(() -> feeder.setPower(1))
+                     //   .stopAndAdd(() -> intake.setPower(1))
+                    //    .waitSeconds(feederOnTime)
+                     //   .stopAndAdd(() -> feeder.setPower(0))
+                    //    .waitSeconds(1)
+                        //Park
+                      //  .stopAndAdd(() -> intake.setPower(0))
+                      //  .splineToLinearHeading(new Pose2d(-16, 35, Math.toRadians(90)), Math.toRadians(90))
+                      //  .build());
 
         if(isStopRequested()) return;
 

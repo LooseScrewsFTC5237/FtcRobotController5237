@@ -31,28 +31,23 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.IMU;
-
-//import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-//import org.firstinspires.ftc.vision.VisionPortal;
-//import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-//import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
 /**
  * This OpMode illustrates how to program your robot to drive field relative.  This means
@@ -69,8 +64,8 @@ import com.qualcomm.robotcore.util.Range;
  *
  */
 @Config
-@TeleOp(name = "TwentyTwentyFiveJava", group = "Robot")
-public class TwentyTwentyFiveJava extends OpMode {
+@TeleOp(name = "Short3WorldsJava", group = "Robot")
+public class Shorty3Worlds extends OpMode {
     public static double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
     // This declares the four motors needed
     int lift_height = 0;
@@ -109,6 +104,7 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static double FarRPMBump = 60;
     public static double FarHoodBump = -0.04;
     public static double headingOffset = 0;
+
     public static int artifactCounter = 0;
     public static boolean artifactPresent = false;
 
@@ -123,10 +119,13 @@ public class TwentyTwentyFiveJava extends OpMode {
     DcMotor feeder;
     DcMotorEx shooter;
     DcMotorEx shooter2;
+    CRServo turret;
+    DigitalChannel limitSwitchLeft;
+    DigitalChannel limitSwitchRight;
+
     private final int READ_PERIOD = 1;
     private DigitalChannel laserInput;
     Hood hood = new Hood();
-
 
     // This declares the IMU needed to get the current direction the robot is facing
     IMU imu;
@@ -147,6 +146,8 @@ public class TwentyTwentyFiveJava extends OpMode {
         feeder = hardwareMap.get(DcMotor.class, "Shooter Feeder");
         shooter = hardwareMap.get(DcMotorEx.class, "Shooter");
         shooter2 = hardwareMap.get(DcMotorEx.class, "Shooter2");
+        turret = hardwareMap.get(CRServo.class,"Turret");
+
 
         laserInput = hardwareMap.get(DigitalChannel.class, "LaserArtifactDetector");
         laserInput.setMode(DigitalChannel.Mode.INPUT);
@@ -293,7 +294,11 @@ public class TwentyTwentyFiveJava extends OpMode {
             telemetry.addData("\n>","Drive using joysticks to find valid target\n");
         }*/
 
-        double driveSpeed, strafe, turn;
+        double driveSpeed, strafe, turn, turretTurn;
+        boolean rightSwitchState, leftSwitchState;
+        rightSwitchState = limitSwitchRight.getState();
+        leftSwitchState = limitSwitchLeft.getState();
+        turretTurn = 0;
         driveSpeed = -gamepad1.left_stick_y * DRIVE_SPEED;
         strafe = gamepad1.left_stick_x  * DRIVE_SPEED;
         double headingError = llResult.getTx();
@@ -316,7 +321,7 @@ public class TwentyTwentyFiveJava extends OpMode {
             telemetry.addData("heading offset", headingOffset);
         }
 
-        if ((gamepad1.a && p != null)) {
+        if ((gamepad2.a && p != null)) {
             double offsetError = headingError + headingOffset;
             double dist = Math.hypot(p.x, p.z) * 39.3701;
             hood.setServoPos(-1.57333E-8 * Math.pow(dist,4) + .00000477067 * Math.pow(dist,3) - .000504967 * Math.pow(dist,2) + .0228883 * dist - .3125);
@@ -324,25 +329,30 @@ public class TwentyTwentyFiveJava extends OpMode {
             shooterMode = 4;
            // velocityCheck2 = currentShooterVelocity <= (targetRPM + shooterSpeedTolerance) && currentShooterVelocity >= (targetRPM - shooterSpeedTolerance);
             if  (Math.abs(offsetError) < BEARING_THRESHOLD) {
-                turn = 0;
+                turretTurn = 0;
                 telemetry.addData("Auto", "Robot aligned with AprilTag!");
-                if (gamepad1.a) {
+                if (gamepad2.a) {
                     hood.setReadyPos(.5);
                 }
                 else {
                     hood.setReadyPos(.277);
                 }
             } else {
-                turn = Range.clip((offsetError + (Math.signum(offsetError) * TURN_STATIC)) * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
-                hood.setReadyPos(.277);
-                telemetry.addData("heading Error + heading offset", headingError+headingOffset);
+               turretTurn = Range.clip(offsetError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
+               hood.setReadyPos(.277);
+               telemetry.addData("heading Error + heading offset", headingError+headingOffset);
             }
-            telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", driveSpeed, strafe, turn);
+            telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", driveSpeed, strafe, turretTurn);
+        } else if (leftSwitchState && gamepad2.right_stick_x < 0) {
+            turretTurn = 0;
+        } else if (rightSwitchState && gamepad2.right_stick_x > 0) {
+            turretTurn = 0;
         } else {
-            turn = gamepad1.right_stick_x;
+        turretTurn = gamepad2.right_stick_x;
         }
 
-
+        turret.setPower(turretTurn);
+        turn = gamepad1.right_stick_x;
         // Shooter Motor
         if (gamepad2.dpad_down) {
             targetRPM = (slowShooterSpeed);
