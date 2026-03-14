@@ -81,7 +81,7 @@ public class Shorty3Worlds extends OpMode {
     public static double TURN_STATIC = 0.1;
     public static double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
     //private AprilTagProcessor aprilTag;
-    private Limelight3A limelight;
+//    private Limelight3A limelight;
     private static final int DESIRED_TAG_ID = -1; // Choose the tag you want to approach or set to -1 for ANY tag.
 
     // Adjust Image Decimation to trade-off detection-range for detection-rate.
@@ -105,7 +105,7 @@ public class Shorty3Worlds extends OpMode {
     public static double FarHoodBump = -0.04;
     public static double headingOffset = 0;
 
-    public static int artifactCounter = 0;
+//    public static int artifactCounter = 0;
     public static boolean artifactPresent = false;
 
     public static boolean velocityCheck;
@@ -147,18 +147,20 @@ public class Shorty3Worlds extends OpMode {
         shooter = hardwareMap.get(DcMotorEx.class, "Shooter");
         shooter2 = hardwareMap.get(DcMotorEx.class, "Shooter2");
         turret = hardwareMap.get(CRServo.class,"Turret");
+        limitSwitchLeft = hardwareMap.get(DigitalChannel.class, "LimitLeft");
+        limitSwitchRight = hardwareMap.get(DigitalChannel.class, "LimitRight");
+//        laserInput = hardwareMap.get(DigitalChannel.class, "LaserArtifactDetector");
+//        laserInput.setMode(DigitalChannel.Mode.INPUT);
 
 
-        laserInput = hardwareMap.get(DigitalChannel.class, "LaserArtifactDetector");
-        laserInput.setMode(DigitalChannel.Mode.INPUT);
         // Initialize the Apriltag Detection process
         //initAprilTag();
         telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
 
         //FtcDashboard.getInstance().startCameraStream(visionPortal, 10);
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.pipelineSwitch(8);
-        limelight.start();
+//        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+//        limelight.pipelineSwitch(8);
+//        limelight.start();
 
         // We set the left motors in reverse which is needed for drive trains where the left
         // motors are opposite to the right ones.
@@ -167,6 +169,7 @@ public class Shorty3Worlds extends OpMode {
         feeder.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
         shooter2.setDirection(DcMotorSimple.Direction.REVERSE);
+        turret.setDirection(DcMotorSimple.Direction.REVERSE);
         hood.init(hardwareMap);
         hood.setServoPos(0);
 
@@ -181,6 +184,7 @@ public class Shorty3Worlds extends OpMode {
         feeder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         shooter2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        shooter.setDirection(DcMotorEx.Direction.REVERSE);
 
 //        PIDFCoefficients c = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
 //        if (!UPDATE_FLYWHEEL_PID) {
@@ -210,7 +214,7 @@ public class Shorty3Worlds extends OpMode {
 
     @Override
     public void loop() {
-        boolean artifactDetected = laserInput.getState();
+//        boolean artifactDetected = laserInput.getState();
        // pidTuner();
         PIDFCoefficients currentPIDF = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
         telemetry.addData("Flywheel P", currentPIDF.p);
@@ -242,18 +246,18 @@ public class Shorty3Worlds extends OpMode {
         }
 
         // Artifact Indication Code
-        if (artifactCounter >= 3) {
-            hood.setArtifactIndicatorPos(0.5);
-        } else {
-            hood.setArtifactIndicatorPos(.611);
-        }
+//        if (artifactCounter >= 3) {
+//            hood.setArtifactIndicatorPos(0.5);
+//        } else {
+//            hood.setArtifactIndicatorPos(.611);
+//        }
 
         // Intake Motor
-        if (gamepad2.right_trigger > 0 && artifactCounter < 3 || gamepad2.right_bumper){
+        if (gamepad2.right_trigger > 0 /* && artifactCounter < 3 */ || gamepad2.right_bumper){
             intake.setPower(1);
         } else if(gamepad2.left_trigger > 0){
             intake.setPower(-1);
-            artifactCounter = 0;
+//            artifactCounter = 0;
         } else {
             intake.setPower(0);
         }
@@ -262,27 +266,27 @@ public class Shorty3Worlds extends OpMode {
         // velocityCheck =  (currentShooterVelocity >= targetRPM - shooterSpeedTolerance) && (currentShooterVelocity <= targetRPM + shooterSpeedTolerance);
         if (gamepad2.right_bumper ) {
             feeder.setPower(1);
-            artifactCounter = 0;
+//            artifactCounter = 0;
         } else {
             feeder.setPower(0);
         }
 
         // Artifact Counter
-        if (artifactDetected & !artifactPresent) {
-            artifactCounter++;
-            artifactPresent = true;
-        }
+//        if (artifactDetected & !artifactPresent) {
+//            artifactCounter++;
+//            artifactPresent = true;
+//        }
 
-        if (!artifactDetected) {
-            artifactPresent = false;
-        }
-        telemetry.addData("Artifact counter", artifactCounter);
+//        if (!artifactDetected) {
+//            artifactPresent = false;
+//        }
+//        telemetry.addData("Artifact counter", artifactCounter);
 
 
        /* List<AprilTagDetection> currentDetections = aprilTag.getDetections();
        telemetryAprilTag(currentDetections);
        AprilTagDetection goalTag = getGoalTag(currentDetections); */
-        LLResult llResult = limelight.getLatestResult();
+//        LLResult llResult = limelight.getLatestResult();
 
         /* Tell the driver what we see, and what to do.
         if (goalTag != null) {
@@ -298,21 +302,21 @@ public class Shorty3Worlds extends OpMode {
         boolean rightSwitchState, leftSwitchState;
         rightSwitchState = limitSwitchRight.getState();
         leftSwitchState = limitSwitchLeft.getState();
-        turretTurn = 0;
+        // turretTurn = 0;
         driveSpeed = -gamepad1.left_stick_y * DRIVE_SPEED;
         strafe = gamepad1.left_stick_x  * DRIVE_SPEED;
-        double headingError = llResult.getTx();
-        telemetry.addData("heading error", headingError);
-        telemetry.addData("tx", llResult.getTx());
+//        double headingError = llResult.getTx();
+//        telemetry.addData("heading error", headingError);
+//        telemetry.addData("tx", llResult.getTx());
         LLResultTypes.FiducialResult goalTag = null;
 
-        for (LLResultTypes.FiducialResult fiducial : llResult.getFiducialResults()) {
-            telemetry.addLine(String.format("Found tag: %d - %s", fiducial.getFiducialId(), fiducial));
-            if (fiducial.getFiducialId() == 20 || fiducial.getFiducialId() == 24) {
-                telemetry.addLine(String.format("Found a goal tag! %d", fiducial.getFiducialId()));
-                goalTag = fiducial;
-            }
-        }
+//        for (LLResultTypes.FiducialResult fiducial : llResult.getFiducialResults()) {
+//            telemetry.addLine(String.format("Found tag: %d - %s", fiducial.getFiducialId(), fiducial));
+//            if (fiducial.getFiducialId() == 20 || fiducial.getFiducialId() == 24) {
+//                telemetry.addLine(String.format("Found a goal tag! %d", fiducial.getFiducialId()));
+//                goalTag = fiducial;
+//            }
+//        }
 
         Position p = null;
         if (goalTag != null) {
@@ -321,36 +325,37 @@ public class Shorty3Worlds extends OpMode {
             telemetry.addData("heading offset", headingOffset);
         }
 
-        if ((gamepad2.a && p != null)) {
-            double offsetError = headingError + headingOffset;
-            double dist = Math.hypot(p.x, p.z) * 39.3701;
-            hood.setServoPos(-1.57333E-8 * Math.pow(dist,4) + .00000477067 * Math.pow(dist,3) - .000504967 * Math.pow(dist,2) + .0228883 * dist - .3125);
+//        if ((gamepad2.a && p != null)) {
+//            double offsetError = headingError + headingOffset;
+//            double dist = Math.hypot(p.x, p.z) * 39.3701;
+//            hood.setServoPos(-1.57333E-8 * Math.pow(dist,4) + .00000477067 * Math.pow(dist,3) - .000504967 * Math.pow(dist,2) + .0228883 * dist - .3125);
+//
+//            shooterMode = 4;
+//            if  (Math.abs(offsetError) < BEARING_THRESHOLD) {
+//                turretTurn = 0;
+//                telemetry.addData("Auto", "Robot aligned with AprilTag!");
+//                if (gamepad2.a) {
+//                    hood.setReadyPos(.5);
+//                }
+//                else {
+//                    hood.setReadyPos(.277);
+//                }
+//            } else {
+//               turretTurn = Range.clip(offsetError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
+//               hood.setReadyPos(.277);
+//               telemetry.addData("heading Error + heading offset", headingError+headingOffset);
+//            }
+//            telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", driveSpeed, strafe, turretTurn);
+//        } else
 
-            shooterMode = 4;
-           // velocityCheck2 = currentShooterVelocity <= (targetRPM + shooterSpeedTolerance) && currentShooterVelocity >= (targetRPM - shooterSpeedTolerance);
-            if  (Math.abs(offsetError) < BEARING_THRESHOLD) {
-                turretTurn = 0;
-                telemetry.addData("Auto", "Robot aligned with AprilTag!");
-                if (gamepad2.a) {
-                    hood.setReadyPos(.5);
-                }
-                else {
-                    hood.setReadyPos(.277);
-                }
-            } else {
-               turretTurn = Range.clip(offsetError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
-               hood.setReadyPos(.277);
-               telemetry.addData("heading Error + heading offset", headingError+headingOffset);
-            }
-            telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", driveSpeed, strafe, turretTurn);
-        } else if (leftSwitchState && gamepad2.right_stick_x < 0) {
+        if (!leftSwitchState && gamepad2.right_stick_x < 0) {
             turretTurn = 0;
-        } else if (rightSwitchState && gamepad2.right_stick_x > 0) {
+        } else if (!rightSwitchState && gamepad2.right_stick_x > 0) {
             turretTurn = 0;
         } else {
-        turretTurn = gamepad2.right_stick_x;
+            turretTurn = gamepad2.right_stick_x;
         }
-
+        telemetry.addData("turretTurn: ", turretTurn);
         turret.setPower(turretTurn);
         turn = gamepad1.right_stick_x;
         // Shooter Motor
@@ -363,16 +368,20 @@ public class Shorty3Worlds extends OpMode {
         } else if (gamepad2.dpad_up) {
             targetRPM = (fastShooterSpeed);
             hood.setServoPos(farHoodAngle);
-        } else if (gamepad1.a && p != null) {
-            double dist = Math.hypot(p.x, p.z) * 39.3701;
-            targetRPM = (float) (
-                    (-0.0000267733 * Math.pow(dist,4))
-                            + (0.00762133 * Math.pow(dist,3))
-                            - (.728067 * Math.pow(dist,2))
-                            + (32.69667 * dist)
-                            + 515);
-            telemetry.addData("Range", dist);
-        } else if (gamepad2.dpad_left) {
+        }
+
+//        else if (gamepad1.a && p != null) {
+//            double dist = Math.hypot(p.x, p.z) * 39.3701;
+//            targetRPM = (float) (
+//                    (-0.0000267733 * Math.pow(dist,4))
+//                            + (0.00762133 * Math.pow(dist,3))
+//                            - (.728067 * Math.pow(dist,2))
+//                            + (32.69667 * dist)
+//                            + 515);
+//            telemetry.addData("Range", dist);
+//        }
+
+        else if (gamepad2.dpad_left) {
             targetRPM = 0;
         }
 

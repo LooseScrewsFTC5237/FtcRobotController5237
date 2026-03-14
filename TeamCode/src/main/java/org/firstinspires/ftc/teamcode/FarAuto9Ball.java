@@ -65,8 +65,8 @@ public class FarAuto9Ball extends LinearOpMode {
 
     public static boolean UPDATE_FLYWHEEL_PID = true;
 
-    public static double Redoffset = -2.5;
-    public static double Blueoffset = 0;
+    public static double Redoffset = 3;
+    public static double Blueoffset = -2.5;
     public static double BEARING_THRESHOLD = 0.25; // Angled towards the tag (degrees)
     public static double TURN_GAIN   =  0.04  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
     public static double TURN_STATIC = 0.1;
@@ -148,20 +148,23 @@ public class FarAuto9Ball extends LinearOpMode {
         feeder.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
         hood.init(hardwareMap);
-        hood.setServoPos(0.135);
-        double shooterSpeed = 1580;
+        hood.setServoPos(0.145);
+        double shooterSpeed = 1576;
         double currentShooterVelocity = shooter.getVelocity();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(8);
 
-        PIDFCoefficients c = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
-        if (!UPDATE_FLYWHEEL_PID) {
-            TwentyTwentyFiveJava.FLYWHEEL_P = c.p;
-            TwentyTwentyFiveJava.FLYWHEEL_I = c.i;
-            TwentyTwentyFiveJava.FLYWHEEL_D = c.d;
-            TwentyTwentyFiveJava.FLYWHEEL_F = c.f;
-        }
-        pidTuner();
+        PIDFCoefficients pidfNew = new PIDFCoefficients (140, 0, 0, 12.86);
+        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
+        shooter2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,pidfNew);
+
+       // PIDFCoefficients c = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+       // if (!UPDATE_FLYWHEEL_PID) {
+        //   TwentyTwentyFiveJava.FLYWHEEL_P = c.p;
+       //    TwentyTwentyFiveJava.FLYWHEEL_I = c.i;
+      //      TwentyTwentyFiveJava.FLYWHEEL_D = c.d;
+      //      TwentyTwentyFiveJava.FLYWHEEL_F = c.f;
+      // }pidTuner();
 
         Pose2d beginPose = startingPose;// new Pose2d(60, 30, Math.toRadians(180));
         drive = new MecanumDrive(hardwareMap, beginPose);
@@ -170,7 +173,10 @@ public class FarAuto9Ball extends LinearOpMode {
         telemetry.addData("Target Velocity", 0);
         telemetry.addData("Feeder Speed", 0);
         waitForStart();
-        pidTuner();
+        PIDFCoefficients currentPIDF = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        telemetry.addData("Flywheel P", currentPIDF.p);
+        telemetry.addData("Flywheel F", currentPIDF.f);
+        //pidTuner();
 
         Actions.runBlocking(
                 drive.actionBuilder(beginPose, poseMap)
@@ -184,7 +190,7 @@ public class FarAuto9Ball extends LinearOpMode {
                         })
 
                         // Prep First Three Shots
-                        .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(155.5))
+                        .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(150.5))
                         .stopAndAdd(autoAimAction())
                         .stopAndAdd(() -> intake.setPower(1))
                         .stopAndAdd(() -> feeder.setPower(1))
@@ -210,7 +216,7 @@ public class FarAuto9Ball extends LinearOpMode {
                         .lineToY(50 /* , new TranslationalVelConstraint(15), null */)
                         .stopAndAdd(() -> intake.setPower(0))
                         // Prep Second Three Shots
-                        .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(155.5))
+                        .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(150.5))
                         .stopAndAdd(autoAimAction())
                         .stopAndAdd(() -> intake.setPower(1))
                         .stopAndAdd(() -> feeder.setPower(1))
@@ -239,7 +245,21 @@ public class FarAuto9Ball extends LinearOpMode {
                         .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
 
                         // Pre Third Three Shots
-                        .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(155.5))
+                        .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(150.5))
+                        .stopAndAdd(autoAimAction())
+                        .stopAndAdd(() -> intake.setPower(1))
+                        .stopAndAdd(() -> feeder.setPower(1))
+                        .waitSeconds(feederOnTime)
+                        .stopAndAdd(() -> feeder.setPower(0))
+                        // Third Intake
+                        .waitSeconds(0.6)
+                        .turnTo(Math.toRadians(-280))
+                        .strafeToLinearHeading(new Vector2d(60, 34), Math.toRadians(-280))
+                        .lineToX(72 /*, new TranslationalVelConstraint(21), null */)
+                        .lineToX(67 /*, new TranslationalVelConstraint(21), null */)
+                        .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
+                        // Pre 4th shots
+                        .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(166))
                         .stopAndAdd(autoAimAction())
                         .stopAndAdd(() -> intake.setPower(1))
                         .stopAndAdd(() -> feeder.setPower(1))
@@ -273,18 +293,18 @@ public class FarAuto9Ball extends LinearOpMode {
         feeder.setPower(0);
         shooter.setPower(0);
         shooter2.setPower(0);
-    }
-    private void pidTuner() {
-        if (UPDATE_FLYWHEEL_PID) {
-            PIDFCoefficients c = new PIDFCoefficients(TwentyTwentyFiveJava.FLYWHEEL_P, TwentyTwentyFiveJava.FLYWHEEL_I, TwentyTwentyFiveJava.FLYWHEEL_D, TwentyTwentyFiveJava.FLYWHEEL_F);
-            shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, c);
-            shooter2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, c);
-            UPDATE_FLYWHEEL_PID = false;
-        }
-        telemetry.addData("Flywheel P", TwentyTwentyFiveJava.FLYWHEEL_P);
-        telemetry.addData("Flywheel I", TwentyTwentyFiveJava.FLYWHEEL_I);
-        telemetry.addData("Flywheel D", TwentyTwentyFiveJava.FLYWHEEL_D);
-        telemetry.addData("Flywheel F", TwentyTwentyFiveJava.FLYWHEEL_F);
+   // }
+   // private void pidTuner() {
+     //   if (UPDATE_FLYWHEEL_PID) {
+       //     PIDFCoefficients c = new PIDFCoefficients(TwentyTwentyFiveJava.FLYWHEEL_P, TwentyTwentyFiveJava.FLYWHEEL_I, TwentyTwentyFiveJava.FLYWHEEL_D, TwentyTwentyFiveJava.FLYWHEEL_F);
+        //    shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, c);
+        //    shooter2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, c);
+          //  UPDATE_FLYWHEEL_PID = false;
+      //  }
+        //telemetry.addData("Flywheel P", TwentyTwentyFiveJava.FLYWHEEL_P);
+      //  telemetry.addData("Flywheel I", TwentyTwentyFiveJava.FLYWHEEL_I);
+       // telemetry.addData("Flywheel D", TwentyTwentyFiveJava.FLYWHEEL_D);
+       // telemetry.addData("Flywheel F", TwentyTwentyFiveJava.FLYWHEEL_F);
     }
 
 }
