@@ -9,11 +9,12 @@ import static com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.YELLO
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 @Disabled
 public class Hood {
-    private Servo servoPos, ready, artifactIndicator/*, LEDs*/;
+    private Servo servoPos, ready, artifactIndicator /*, LEDs*/;
     private RevBlinkinLedDriver LEDs;
 
 
