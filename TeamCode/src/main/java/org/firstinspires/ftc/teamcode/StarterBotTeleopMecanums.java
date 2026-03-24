@@ -74,11 +74,11 @@ public class StarterBotTeleopMecanums extends OpMode {
     final double LAUNCHER_TARGET_VELOCITY = 1125;
     final double LAUNCHER_MIN_VELOCITY = 1075;
 
-    // Declare OpMode members.
-    //private DcMotor leftFrontDrive = null;
-    //private DcMotor rightFrontDrive = null;
-    //private DcMotor leftBackDrive = null;
-    // private DcMotor rightBackDrive = null;
+//     Declare OpMode members.
+    private DcMotor leftFrontDrive = null;
+    private DcMotor rightFrontDrive = null;
+    private DcMotor leftBackDrive = null;
+     private DcMotor rightBackDrive = null;
     private DcMotorEx launcher = null;
     //private CRServo leftFeeder = null;
     //private CRServo rightFeeder = null;
@@ -162,8 +162,8 @@ public class StarterBotTeleopMecanums extends OpMode {
          * slow down much faster when it is coasting. This creates a much more controllable
          * drivetrain. As the robot stops much quicker.
          */
-        //leftFrontDrive.setZeroPowerBehavior(BRAKE);
-        //rightFrontDrive.setZeroPowerBehavior(BRAKE);
+        leftFrontDrive.setZeroPowerBehavior(BRAKE);
+        rightFrontDrive.setZeroPowerBehavior(BRAKE);
         leftBackDrive.setZeroPowerBehavior(BRAKE);
         rightBackDrive.setZeroPowerBehavior(BRAKE);
         launcher.setZeroPowerBehavior(BRAKE);
