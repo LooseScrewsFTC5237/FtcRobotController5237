@@ -32,6 +32,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -239,7 +240,7 @@ public class Shorty3Worlds extends OpMode {
     @Override
     public void loop() {
         boolean artifactDetected = laserInput.getState();
-  //  pidTuner();
+    pidTuner();
 
         //region PIDFCoefficients
 //        PIDFCoefficients currentPIDF = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -413,13 +414,15 @@ public class Shorty3Worlds extends OpMode {
         //region More Auto Targeting
         if (p != null) {
             double dist = Math.hypot(p.x, p.z) * 39.3701;
-            targetRPM = (float) (
-                    (-0.0000267733 * Math.pow(dist,4))
-                            + (0.00762133 * Math.pow(dist,3))
-                            - (.728067 * Math.pow(dist,2))
-                            + (32.69667 * dist)
-                            + 515);
             telemetry.addData("Range", dist);
+            if (gamepad2.a) {
+                targetRPM = (float) (
+                        (-0.0000267733 * Math.pow(dist, 4))
+                                + (0.00762133 * Math.pow(dist, 3))
+                                - (.728067 * Math.pow(dist, 2))
+                                + (32.69667 * dist)
+                                + 515);
+            }
         }
         //endregion
     }

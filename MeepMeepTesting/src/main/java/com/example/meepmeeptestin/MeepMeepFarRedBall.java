@@ -24,8 +24,9 @@ public class MeepMeepFarRedBall {
                 // Second Shot
                 .waitSeconds(2)
                 //Second Intake
-                .lineToY(20)
-                .setTangent(Math.toRadians(180))
+                //.lineToY(20)
+                .setTangent(Math.toRadians(225))
+                .splineToSplineHeading(new Pose2d(52,20,Math.toRadians(90)),Math.toRadians(225))
                 .splineToLinearHeading(new Pose2d(35, 50,Math.toRadians(90)), Math.toRadians(90))
                 //Third Shot
                 .setTangent(Math.toRadians(270))
