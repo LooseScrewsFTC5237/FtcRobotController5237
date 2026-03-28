@@ -5,12 +5,10 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.IdentityPoseMap;
-import com.acmerobotics.roadrunner.MinVelConstraint;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.PoseMap;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
-import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.Vector2dDual;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -25,25 +23,23 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.Range;
 
-import java.util.Arrays;
-
 @Config
-public class FarAuto9Ball extends LinearOpMode {
+public class FarWorldsAuto extends LinearOpMode {
 
     boolean isRed = false;
     @Autonomous()
-    public static class RedFarAuto9Ball extends FarAuto9Ball {
-        public RedFarAuto9Ball() {
-            super(new Pose2d(60, 14.5, Math.toRadians(180)), new IdentityPoseMap());
+    public static class RedFarWorldsAuto extends FarWorldsAuto {
+        public RedFarWorldsAuto() {
+            super(new Pose2d(60, 30, Math.toRadians(180)), new IdentityPoseMap());
             isRed = true;
         }
     }
 
     @Autonomous()
-    public static class BlueFarAuto9Ball extends FarAuto9Ball {
-        public BlueFarAuto9Ball() {
+    public static class BlueFarWorldsAuto extends FarWorldsAuto {
+        public BlueFarWorldsAuto() {
             super(
-                    new Pose2d(60, -14.5, Math.toRadians(180)
+                    new Pose2d(60, -30, Math.toRadians(180)
                     ),
                     pose -> new Pose2dDual<>(
                             new Vector2dDual<>(
@@ -64,7 +60,7 @@ public class FarAuto9Ball extends LinearOpMode {
     DcMotorEx shooter2;
     Hood hood = new Hood();
     private Limelight3A limelight;
-    private double shooterSpeed = 1600;
+    private double shooterSpeed = 1170;
 
     public static boolean
             UPDATE_FLYWHEEL_PID = true;
@@ -138,7 +134,7 @@ public class FarAuto9Ball extends LinearOpMode {
         };
     }
 
-    public FarAuto9Ball(Pose2d startingPose, PoseMap poseMap) {
+    public FarWorldsAuto(Pose2d startingPose, PoseMap poseMap) {
         this.poseMap = poseMap;
         this.startingPose = startingPose;
     }
@@ -155,8 +151,8 @@ public class FarAuto9Ball extends LinearOpMode {
         feeder.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
         hood.init(hardwareMap);
-        hood.setServoPos(0.15);
-        double shooterSpeed = 1600;
+        hood.setServoPos(0.0675);
+        double shooterSpeed = 1170;
         double currentShooterVelocity = shooter.getVelocity();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(8);
@@ -200,57 +196,78 @@ public class FarAuto9Ball extends LinearOpMode {
                             shooter2.setVelocity(shooterSpeed);
                         })
 
-                        // 1st Shot
-                        .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(160.5))
+                        // Prep First Three Shots
+                        .strafeToLinearHeading(new Vector2d(60, 28), Math.toRadians(90))
+                        .stopAndAdd(autoAimAction())
                         .stopAndAdd(() -> intake.setPower(1))
                         .stopAndAdd(() -> feeder.setPower(1))
                         .waitSeconds(feederOnTime)
                         .stopAndAdd(() -> feeder.setPower(0))
 
-                        // 1st Intake
-                        .setTangent(Math.toRadians(180))
-                        .splineToSplineHeading(new Pose2d(35, 44,Math.toRadians(90)), Math.toRadians(90))
-                        .strafeToLinearHeading(new Vector2d(35,50),90)
+                        // First Intake
+                        .lineToY(60)
                         .stopAndAdd(() -> intake.setPower(0))
-
-                        // 2nd Shot
-                        .splineToSplineHeading(new Pose2d(56, 23, Math.toRadians(160.5)), Math.toRadians(270))
+                        .waitSeconds(0.5)
+                        .lineToY(28)
+                        // Prep Second Three Shots
+                        .strafeToLinearHeading(new Vector2d(60, 28), Math.toRadians(90))
+                        .stopAndAdd(autoAimAction())
                         .stopAndAdd(() -> intake.setPower(1))
                         .stopAndAdd(() -> feeder.setPower(1))
                         .waitSeconds(feederOnTime)
                         .stopAndAdd(() -> feeder.setPower(0))
-//
-//                        // 2nd Intake
-//                        .waitSeconds(0.6)
-//                        .splineToSplineHeading(new Pose2d(60, 40,Math.toRadians(90)), Math.toRadians(90))
-//                        .strafeToLinearHeading(new Vector2d(60,58  ),90)
-//                        .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
-//
-//                        // 3rd Shot
-//                        .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(150.5))
-//                        .stopAndAdd(() -> intake.setPower(1))
-//                        .stopAndAdd(() -> feeder.setPower(1))
-//                        .waitSeconds(feederOnTime)
-//                        .stopAndAdd(() -> feeder.setPower(0))
-//
-//                        // 3rd Intake
-//                        .waitSeconds(0.6)
+
+                        // Second Intake
+                        //I stopped here
+                        .waitSeconds(0.6)
 //                        .turnTo(Math.toRadians(-280))
 //                        .strafeToLinearHeading(new Vector2d(60, 34), Math.toRadians(-280))
-//                        .lineToX(72)
-//                        .lineToX(67)
-//                        .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
-//
-//                        // 4th shot
-//                        .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(166))
-//                        .stopAndAdd(() -> intake.setPower(1))
-//                        .stopAndAdd(() -> feeder.setPower(1))
-//                        .waitSeconds(feederOnTime)
-//                        .stopAndAdd(() -> feeder.setPower(0))
-//                        .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
-//
-//                        // Park
-//                        .strafeToLinearHeading(new Vector2d(40, 20), Math.toRadians(75))
+                        .splineToSplineHeading(new Pose2d(60, 40,Math.toRadians(90)), Math.toRadians(270))
+//                        .lineToX(72 /*, new TranslationalVelConstraint(21), null */)
+                        .strafeToLinearHeading(new Vector2d(60,67),90)
+//                        .lineToX(67 /*, new TranslationalVelConstraint(21), null */)
+                        .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
+
+                        // Pre Third Three Shots
+                        .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(150.5))
+                        .stopAndAdd(autoAimAction())
+                        .stopAndAdd(() -> intake.setPower(1))
+                        .stopAndAdd(() -> feeder.setPower(1))
+                        .waitSeconds(feederOnTime)
+                        .stopAndAdd(() -> feeder.setPower(0))
+                        // Third Intake
+                        .waitSeconds(0.6)
+                        .turnTo(Math.toRadians(-280))
+                        .strafeToLinearHeading(new Vector2d(60, 34), Math.toRadians(-280))
+                        .lineToX(72 /*, new TranslationalVelConstraint(21), null */)
+                        .lineToX(67 /*, new TranslationalVelConstraint(21), null */)
+                        .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
+                        // Pre 4th shots
+                        .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(166))
+                        .stopAndAdd(autoAimAction())
+                        .stopAndAdd(() -> intake.setPower(1))
+                        .stopAndAdd(() -> feeder.setPower(1))
+                        .waitSeconds(feederOnTime)
+                        .stopAndAdd(() -> feeder.setPower(0))
+                        .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
+                        //.stopAndAdd(shooterCheckAction())
+                        //.stopAndAdd(() -> intake.setPower(1)) // Turn intake back on
+
+                        // Take Third Three Shots
+                        //  .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (1st time)
+                        //  .waitSeconds(feederOnTime)
+                        //  .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
+                        //  .stopAndAdd(shooterCheckAction())
+                        //  .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (2nd time)
+                        //  .waitSeconds(feederOnTime)
+                        // .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
+                        //  .stopAndAdd(shooterCheckAction())
+                        //  .stopAndAdd(() -> feeder.setPower(1.0)) // Feeder ON (3rd time)
+                        //  .waitSeconds(feederOnTime)
+                        //  .stopAndAdd(() -> feeder.setPower(0.0)) // Feeder OFF
+
+                        // Park
+                        .strafeToLinearHeading(new Vector2d(40, 20), Math.toRadians(75))
 
                         .build());
 

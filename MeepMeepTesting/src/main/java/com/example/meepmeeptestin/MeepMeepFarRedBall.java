@@ -16,38 +16,50 @@ public class MeepMeepFarRedBall {
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(60, 28, Math.toRadians(90)))
                 //First Shot
-                .waitSeconds(2)
+                .waitSeconds(1)
                 //First Intake
                 .lineToY(60)
-                .waitSeconds(1)
+                .waitSeconds(.5)
                 .lineToY(28)
                 // Second Shot
-                .waitSeconds(2)
+                .lineToY(28)
+                .waitSeconds(1)
                 //Second Intake
-                //.lineToY(20)
+                //I stopped here
                 .setTangent(Math.toRadians(225))
                 .splineToSplineHeading(new Pose2d(52,20,Math.toRadians(90)),Math.toRadians(225))
                 .splineToLinearHeading(new Pose2d(35, 50,Math.toRadians(90)), Math.toRadians(90))
                 //Third Shot
                 .setTangent(Math.toRadians(270))
                 .splineToLinearHeading(new Pose2d(60, 20, Math.toRadians(90)), Math.toRadians(0))
-                .waitSeconds(2)
+                .waitSeconds(1)
                 //Third Intake
-                .setTangent(90)
-                .splineToLinearHeading(new Pose2d(60, 45, Math.toRadians(90)), Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(38, 60, Math.toRadians(180)), Math.toRadians(180))
+                .lineToY(60)
+                .waitSeconds(0.5)
                 //Forth Shot
-                .setTangent(0)
-                .splineToLinearHeading(new Pose2d(60, 20, Math.toRadians(90)), Math.toRadians(270))
-                .waitSeconds(2)
+                .lineToY(20)
+                .waitSeconds(1)
                 //Forth Intake
-                .setTangent(90)
-                .splineToLinearHeading(new Pose2d(60, 45, Math.toRadians(90)), Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(38, 60, Math.toRadians(180)), Math.toRadians(180))
+                .lineToY(60)
+                .waitSeconds(0.5)
                 //Fifth Shot
-                .setTangent(0)
-                .splineToLinearHeading(new Pose2d(60, 20, Math.toRadians(90)), Math.toRadians(270))
-                .waitSeconds(2)
+                .lineToY(20)
+                .waitSeconds(1)
+                //fifth Intake
+                .lineToY(60)
+                .waitSeconds(0.5)
+                //sixth shot
+                .lineToY(20)
+                .waitSeconds(1)
+                //sixth Intake
+                .lineToY(60)
+                .waitSeconds(0.5)
+                //seventh shot
+                .lineToY(20)
+                .waitSeconds(1)
+                //seventh Intake
+                .lineToY(60)
+                .waitSeconds(0.5)
                 //Park
                 .lineToY(40)
                 .build());

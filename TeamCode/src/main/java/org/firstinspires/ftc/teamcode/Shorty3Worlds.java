@@ -108,7 +108,7 @@ public class Shorty3Worlds extends OpMode {
     public static double FLYWHEEL_F = 13.55;
     public static double closeHoodAngle = 0;
     public static double mediumHoodAngle = 0.06;
-    public static double farHoodAngle = 0.12;
+    public static double farHoodAngle = 0.15;
     public static double FarRPMBump = 60;
     public static double FarHoodBump = -0.04;
     public static double headingOffset = 0;
