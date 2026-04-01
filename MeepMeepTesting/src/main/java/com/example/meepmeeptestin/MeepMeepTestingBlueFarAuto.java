@@ -72,7 +72,7 @@ public class MeepMeepTestingBlueFarAuto {
 
                 // 6th Intake
                 .setTangent(Math.toRadians(90))
-                .splineToSplineHeading(new Pose2d(48, -40,Math.toRadians(255)), Math.toRadians(225))
+                .splineToSplineHeading(new Pose2d(48, -40,Math.toRadians(225)), Math.toRadians(225))
                 .lineToY(-58)
                 .waitSeconds(0.6)
 

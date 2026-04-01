@@ -5,14 +5,10 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.IdentityPoseMap;
-import com.acmerobotics.roadrunner.MinVelConstraint;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.PoseMap;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
-import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.Vector2dDual;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -25,36 +21,34 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.Range;
 
-import java.util.Arrays;
-
 @Config
-public class FarAuto9Ball extends LinearOpMode {
+public class FarAutoOnlyBlue extends LinearOpMode {
 
     boolean isRed = false;
     @Autonomous()
-    public static class RedFarAuto9Ball extends FarAuto9Ball {
-        public RedFarAuto9Ball() {
-            super(new Pose2d(60, 14.5, Math.toRadians(180)), new IdentityPoseMap());
+    public static class BlueFarOnly extends FarAutoOnlyBlue {
+        public BlueFarOnly() {
+            super(new Pose2d(60, -14.5, Math.toRadians(180)), new IdentityPoseMap());
             isRed = true;
         }
     }
 
-    @Autonomous()
-    public static class BlueFarAuto9Ball extends FarAuto9Ball {
-        public BlueFarAuto9Ball() {
-            super(
-                    new Pose2d(60, -14.5, Math.toRadians(180)
-                    ),
-                    pose -> new Pose2dDual<>(
-                            new Vector2dDual<>(
-                                    pose.position.x,
-                                    pose.position.y.unaryMinus()
-                            ),
-                            pose.heading.inverse()
-                    )
-            );
-        }
-    }
+//    @Autonomous()
+//    public static class BlueFarAuto extends FarAutoOnlyRed {
+//        public BlueFarAuto() {
+//            super(
+//                    new Pose2d(60, -14.5, Math.toRadians(180)
+//                    ),
+//                    pose -> new Pose2dDual<>(
+//                            new Vector2dDual<>(
+//                                    pose.position.x,
+//                                    pose.position.y.unaryMinus()
+//                            ),
+//                            pose.heading.inverse()
+//                    )
+//            );
+//        }
+//    }
 
     protected MecanumDrive drive;
     private DigitalChannel laserInput;
@@ -138,7 +132,7 @@ public class FarAuto9Ball extends LinearOpMode {
         };
     }
 
-    public FarAuto9Ball(Pose2d startingPose, PoseMap poseMap) {
+    public FarAutoOnlyBlue(Pose2d startingPose, PoseMap poseMap) {
         this.poseMap = poseMap;
         this.startingPose = startingPose;
     }
@@ -201,7 +195,7 @@ public class FarAuto9Ball extends LinearOpMode {
                         })
 
                         // 1st Shot
-                        .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(160.5))
+                        .strafeToLinearHeading(new Vector2d(56, -23), Math.toRadians(199.5))
                         .stopAndAdd(() -> intake.setPower(1))
                         .stopAndAdd(() -> feeder.setPower(1))
                         .waitSeconds(feederOnTime)
@@ -209,12 +203,12 @@ public class FarAuto9Ball extends LinearOpMode {
 
                         // 1st Intake
                         .setTangent(Math.toRadians(180))
-                        .splineToSplineHeading(new Pose2d(35, 35,Math.toRadians(90)), Math.toRadians(90))
-                        .strafeToLinearHeading(new Vector2d(35,55),Math.toRadians(90))
+                        .splineToSplineHeading(new Pose2d(35, -35,Math.toRadians(270)), Math.toRadians(270))
+                        .strafeToLinearHeading(new Vector2d(35,-55),Math.toRadians(270))
                         .stopAndAdd(() -> intake.setPower(0))
 
                         // 2nd Shot
-                        .splineToSplineHeading(new Pose2d(56, 23, Math.toRadians(160.5)), Math.toRadians(270))
+                        .splineToSplineHeading(new Pose2d(56, -23, Math.toRadians(199.5)), Math.toRadians(90))
                         .stopAndAdd(() -> intake.setPower(1))
                         .stopAndAdd(() -> feeder.setPower(1))
                         .waitSeconds(feederOnTime)
@@ -222,12 +216,12 @@ public class FarAuto9Ball extends LinearOpMode {
 
                         // 2nd Intake
                         .waitSeconds(0.6)
-                       .splineToSplineHeading(new Pose2d(60, 40,Math.toRadians(90)), Math.toRadians(90))
-                        .lineToY(58)
+                       .splineToSplineHeading(new Pose2d(60, -40,Math.toRadians(270)), Math.toRadians(270))
+                        .lineToY(-58)
                         .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
 
                         // 3rd Shot
-                        .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(150.5))
+                        .strafeToLinearHeading(new Vector2d(56, -23), Math.toRadians(209.5))
                         .stopAndAdd(() -> intake.setPower(1))
                         .stopAndAdd(() -> feeder.setPower(1))
                         .waitSeconds(feederOnTime)
@@ -236,12 +230,12 @@ public class FarAuto9Ball extends LinearOpMode {
                         // 3rd Intake
                         .waitSeconds(0.6)
                         .setTangent(Math.toRadians(90))
-                        .splineToSplineHeading(new Pose2d(60, 40,Math.toRadians(90)), Math.toRadians(90))
-                        .lineToY(58)
+                        .splineToSplineHeading(new Pose2d(60, -40,Math.toRadians(270)), Math.toRadians(270))
+                        .lineToY(-58)
                         .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
 
                         // 4th shot
-                        .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(166))
+                        .strafeToLinearHeading(new Vector2d(56, -23), Math.toRadians(194))
                         .stopAndAdd(() -> intake.setPower(1))
                         .stopAndAdd(() -> feeder.setPower(1))
                         .waitSeconds(feederOnTime)
@@ -251,12 +245,12 @@ public class FarAuto9Ball extends LinearOpMode {
                         // 4th Intake
                         .waitSeconds(0.6)
                         .setTangent(Math.toRadians(90))
-                        .splineToSplineHeading(new Pose2d(48, 40,Math.toRadians(135)), Math.toRadians(135))
-                        .lineToY(58)
+                        .splineToSplineHeading(new Pose2d(48, -40,Math.toRadians(225)), Math.toRadians(225))
+                        .lineToY(-58)
                         .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
 
                         // 5th shot
-                        .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(166))
+                        .strafeToLinearHeading(new Vector2d(56, -23), Math.toRadians(194))
                         .stopAndAdd(() -> intake.setPower(1))
                         .stopAndAdd(() -> feeder.setPower(1))
                         .waitSeconds(feederOnTime)
@@ -266,12 +260,12 @@ public class FarAuto9Ball extends LinearOpMode {
                         // 5th Intake
                         .waitSeconds(0.6)
                         .setTangent(Math.toRadians(90))
-                        .splineToSplineHeading(new Pose2d(48, 40,Math.toRadians(135)), Math.toRadians(135))
-                        .lineToY(58)
+                        .splineToSplineHeading(new Pose2d(48, -40,Math.toRadians(225)), Math.toRadians(225))
+                        .lineToY(-58)
                         .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
 
                         // 6th shot
-                        .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(166))
+                        .strafeToLinearHeading(new Vector2d(56, -23), Math.toRadians(194))
                         .stopAndAdd(() -> intake.setPower(1))
                         .stopAndAdd(() -> feeder.setPower(1))
                         .waitSeconds(feederOnTime)
@@ -281,12 +275,12 @@ public class FarAuto9Ball extends LinearOpMode {
                         // 6th Intake
                         .waitSeconds(0.6)
                         .setTangent(Math.toRadians(90))
-                        .splineToSplineHeading(new Pose2d(48, 40,Math.toRadians(135)), Math.toRadians(135))
-                        .lineToY(58)
+                        .splineToSplineHeading(new Pose2d(48, -40,Math.toRadians(225)), Math.toRadians(225))
+                        .lineToY(-58)
                         .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
 
                         // Park
-                        .strafeToLinearHeading(new Vector2d(60, 40), Math.toRadians(90))
+                        .strafeToLinearHeading(new Vector2d(60, -40), Math.toRadians(270))
 
                         .build());
 
