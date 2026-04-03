@@ -38,6 +38,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -98,19 +99,20 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static double Redoffset = 0;
     public static double hoodDistanceMultiplier = -0.00188;
     public static double getAxisOffsetHood = 0.535;
-    public static boolean UPDATE_FLYWHEEL_PID = true;
+    public static boolean UPDATE_FLYWHEEL_PID = false;
     public static double FLYWHEEL_P = 140;
     public static double FLYWHEEL_I = 0;
     public static double FLYWHEEL_D = 0;
     public static double FLYWHEEL_F = 12.86;
-    public static double closeHoodAngle = 0;
-    public static double mediumHoodAngle = 0.06;
-    public static double farHoodAngle = 0.12;
+    public static double closeHoodAngle = .5;
+    public static double mediumHoodAngle = 0.5;
+    public static double farHoodAngle = 0.5;
     public static double FarRPMBump = 60;
     public static double FarHoodBump = -0.04;
     public static double headingOffset = 0;
     public static int artifactCounter = 0;
     public static boolean artifactPresent = false;
+    public static int parkLiftValue = 0;
 
     public static boolean velocityCheck;
 
@@ -123,14 +125,15 @@ public class TwentyTwentyFiveJava extends OpMode {
     DcMotor feeder;
     DcMotorEx shooter;
     DcMotorEx shooter2;
+
+    CRServo parkLift;
+
     private final int READ_PERIOD = 1;
     private DigitalChannel laserInput;
     Hood hood = new Hood();
 
-
     // This declares the IMU needed to get the current direction the robot is facing
     IMU imu;
-
 
     //private VisionPortal visionPortal;
 
@@ -147,6 +150,8 @@ public class TwentyTwentyFiveJava extends OpMode {
         feeder = hardwareMap.get(DcMotor.class, "Shooter Feeder");
         shooter = hardwareMap.get(DcMotorEx.class, "Shooter");
         shooter2 = hardwareMap.get(DcMotorEx.class, "Shooter2");
+
+        parkLift = hardwareMap.get(CRServo.class, "Park Lift");
 
         laserInput = hardwareMap.get(DigitalChannel.class, "LaserArtifactDetector");
         laserInput.setMode(DigitalChannel.Mode.INPUT);
@@ -167,7 +172,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         intake.setDirection(DcMotor.Direction.REVERSE);
         shooter2.setDirection(DcMotorSimple.Direction.REVERSE);
         hood.init(hardwareMap);
-        hood.setServoPos(0);
+        hood.setServoPos(.5);
 
         // This uses RUN_USING_ENCODER to be more accurate.   If you don't have the encoder
         // wires, you should remove these
@@ -181,17 +186,17 @@ public class TwentyTwentyFiveJava extends OpMode {
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         shooter2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
-//        PIDFCoefficients c = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
-//        if (!UPDATE_FLYWHEEL_PID) {
-//            FLYWHEEL_P = c.p;
-//            FLYWHEEL_I = c.i;
-//            FLYWHEEL_D = c.d;
-//            FLYWHEEL_F = c.f;
-//        }
-        //pidTuner();
-        PIDFCoefficients pidfNew = new PIDFCoefficients (140, 0, 0, 12.86);
-        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
-        shooter2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,pidfNew);
+       PIDFCoefficients c = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (!UPDATE_FLYWHEEL_PID) {
+            FLYWHEEL_P = c.p;
+           FLYWHEEL_I = c.i;
+            FLYWHEEL_D = c.d;
+           FLYWHEEL_F = c.f;
+       }
+        pidTuner();
+ //       PIDFCoefficients pidfNew = new PIDFCoefficients (140, 0, 0, 12.86);
+ //       shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
+ //       shooter2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,pidfNew);
 
 
         imu = hardwareMap.get(IMU.class, "imu");
@@ -210,10 +215,10 @@ public class TwentyTwentyFiveJava extends OpMode {
     @Override
     public void loop() {
         boolean artifactDetected = laserInput.getState();
-       // pidTuner();
-        PIDFCoefficients currentPIDF = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
-        telemetry.addData("Flywheel P", currentPIDF.p);
-        telemetry.addData("Flywheel F", currentPIDF.f);
+        pidTuner();
+  //      PIDFCoefficients currentPIDF = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+  //      telemetry.addData("Flywheel P", currentPIDF.p);
+  //      telemetry.addData("Flywheel F", currentPIDF.f);
 
 
 
@@ -366,6 +371,16 @@ public class TwentyTwentyFiveJava extends OpMode {
             targetRPM = 0;
         }
 
+        // Park Lift
+        if (gamepad2.a) {
+            parkLiftValue = 1;
+        } else if (gamepad2.y) {
+            parkLiftValue = -1;
+        } else {
+            parkLiftValue = 0;
+        }
+        parkLift.setPower(parkLiftValue);
+
         telemetry.addData("Target RPM", targetRPM);
         telemetry.addData("Current RPM", shooter.getVelocity());
         shooter.setVelocity(targetRPM);
@@ -373,18 +388,18 @@ public class TwentyTwentyFiveJava extends OpMode {
         driveFieldRelative(driveSpeed, strafe, turn);
     }
 
-   // private void pidTuner() {
-     //   if (UPDATE_FLYWHEEL_PID) {
-       //     PIDFCoefficients c = new PIDFCoefficients(FLYWHEEL_P, FLYWHEEL_I, FLYWHEEL_D, FLYWHEEL_F);
-        //    shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, c);
-        //    shooter2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, c);
-         //   UPDATE_FLYWHEEL_PID = false;
-     //   }
-      //  telemetry.addData("Flywheel P", FLYWHEEL_P);
-     //   telemetry.addData("Flywheel I", FLYWHEEL_I);
-     //   telemetry.addData("Flywheel D", FLYWHEEL_D);
-     //   telemetry.addData("Flywheel F", FLYWHEEL_F);
- //   }
+    private void pidTuner() {
+       if (UPDATE_FLYWHEEL_PID) {
+           PIDFCoefficients c = new PIDFCoefficients(FLYWHEEL_P, FLYWHEEL_I, FLYWHEEL_D, FLYWHEEL_F);
+           shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, c);
+           shooter2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, c);
+           UPDATE_FLYWHEEL_PID = false;
+        }
+       telemetry.addData("Flywheel P", FLYWHEEL_P);
+        telemetry.addData("Flywheel I", FLYWHEEL_I);
+        telemetry.addData("Flywheel D", FLYWHEEL_D);
+        telemetry.addData("Flywheel F", FLYWHEEL_F);
+   }
 
 //    private void initAprilTag() {
 //

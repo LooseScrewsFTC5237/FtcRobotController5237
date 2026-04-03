@@ -149,7 +149,7 @@ public class FarAutoOnlyBlue extends LinearOpMode {
         feeder.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
         hood.init(hardwareMap);
-        hood.setServoPos(0.15);
+        hood.setServoPos(0.5);
         double shooterSpeed = 1600;
         double currentShooterVelocity = shooter.getVelocity();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
@@ -229,7 +229,7 @@ public class FarAutoOnlyBlue extends LinearOpMode {
 
                         // 3rd Intake
                         .waitSeconds(0.6)
-                        .setTangent(Math.toRadians(90))
+                        .setTangent(Math.toRadians(270))
                         .splineToSplineHeading(new Pose2d(60, -40,Math.toRadians(270)), Math.toRadians(270))
                         .lineToY(-58)
                         .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
@@ -244,7 +244,7 @@ public class FarAutoOnlyBlue extends LinearOpMode {
 
                         // 4th Intake
                         .waitSeconds(0.6)
-                        .setTangent(Math.toRadians(90))
+                        .setTangent(Math.toRadians(270))
                         .splineToSplineHeading(new Pose2d(48, -40,Math.toRadians(225)), Math.toRadians(225))
                         .lineToY(-58)
                         .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
@@ -259,7 +259,7 @@ public class FarAutoOnlyBlue extends LinearOpMode {
 
                         // 5th Intake
                         .waitSeconds(0.6)
-                        .setTangent(Math.toRadians(90))
+                        .setTangent(Math.toRadians(270))
                         .splineToSplineHeading(new Pose2d(48, -40,Math.toRadians(225)), Math.toRadians(225))
                         .lineToY(-58)
                         .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
@@ -274,7 +274,7 @@ public class FarAutoOnlyBlue extends LinearOpMode {
 
                         // 6th Intake
                         .waitSeconds(0.6)
-                        .setTangent(Math.toRadians(90))
+                        .setTangent(Math.toRadians(270))
                         .splineToSplineHeading(new Pose2d(48, -40,Math.toRadians(225)), Math.toRadians(225))
                         .lineToY(-58)
                         .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
