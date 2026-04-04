@@ -60,7 +60,7 @@ public class FarAuto extends LinearOpMode {
     DcMotorEx shooter2;
     Hood hood = new Hood();
     private Limelight3A limelight;
-    private double shooterSpeed = 1600;
+    private double shooterSpeed = 1065;
 
     public static boolean
             UPDATE_FLYWHEEL_PID = true;
@@ -170,7 +170,7 @@ public class FarAuto extends LinearOpMode {
 //            TwentyTwentyFiveJava.FLYWHEEL_F = c.f;
 //        }
 //        pidTuner();
-        PIDFCoefficients pidfNew = new PIDFCoefficients (140, 0, 0, 12.86);
+        PIDFCoefficients pidfNew = new PIDFCoefficients (200, 0, 0, 22.16);
         shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
         shooter2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,pidfNew);
 

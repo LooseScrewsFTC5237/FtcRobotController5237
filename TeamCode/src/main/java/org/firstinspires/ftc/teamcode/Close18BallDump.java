@@ -173,7 +173,7 @@ public class Close18BallDump extends LinearOpMode {
 //            TwentyTwentyFiveJava.FLYWHEEL_F = c.f;
 //        }
 //        pidTuner();
-        PIDFCoefficients pidfNew = new PIDFCoefficients (140, 0, 0, 12.86);
+        PIDFCoefficients pidfNew = new PIDFCoefficients (200, 0, 0, 22.16);
         shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
         shooter2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,pidfNew);
 
