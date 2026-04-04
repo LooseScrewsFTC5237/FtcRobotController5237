@@ -59,7 +59,7 @@ public class Close18BallDumpOnlyBlue extends LinearOpMode {
     DcMotorEx shooter2;
     Hood hood = new Hood();
     private Limelight3A limelight;
-    private double shooterSpeed = 1170;
+    private double shooterSpeed;
 
     public static boolean
             UPDATE_FLYWHEEL_PID = true;
@@ -150,8 +150,8 @@ public class Close18BallDumpOnlyBlue extends LinearOpMode {
         feeder.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
         hood.init(hardwareMap);
-        hood.setServoPos(0.0675);
-        double shooterSpeed = 1170;
+        hood.setServoPos(0.5);
+        double shooterSpeed = 750;
         double currentShooterVelocity = shooter.getVelocity();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(8);

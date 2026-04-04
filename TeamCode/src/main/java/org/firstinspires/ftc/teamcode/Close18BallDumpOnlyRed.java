@@ -59,7 +59,7 @@ public class Close18BallDumpOnlyRed extends LinearOpMode {
     DcMotorEx shooter2;
     Hood hood = new Hood();
     private Limelight3A limelight;
-    private double shooterSpeed = 1170;
+    private double shooterSpeed;
 
     public static boolean
             UPDATE_FLYWHEEL_PID = true;
@@ -150,8 +150,8 @@ public class Close18BallDumpOnlyRed extends LinearOpMode {
         feeder.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
         hood.init(hardwareMap);
-        hood.setServoPos(0.0675);
-        double shooterSpeed = 1170;
+        hood.setServoPos(0.5);
+        double shooterSpeed = 750;
         double currentShooterVelocity = shooter.getVelocity();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(8);
@@ -169,7 +169,7 @@ public class Close18BallDumpOnlyRed extends LinearOpMode {
 //            TwentyTwentyFiveJava.FLYWHEEL_F = c.f;
 //        }
 //        pidTuner();
-        PIDFCoefficients pidfNew = new PIDFCoefficients (140, 0, 0, 12.86);
+        PIDFCoefficients pidfNew = new PIDFCoefficients (200, 0, 0, 22.16);
         shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
         shooter2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,pidfNew);
 

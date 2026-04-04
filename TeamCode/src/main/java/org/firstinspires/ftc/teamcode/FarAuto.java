@@ -151,8 +151,8 @@ public class FarAuto extends LinearOpMode {
         feeder.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
         hood.init(hardwareMap);
-        hood.setServoPos(0.5);
-        double shooterSpeed = 1600;
+        hood.setServoPos(0.42);
+        double shooterSpeed = 1065;
         double currentShooterVelocity = shooter.getVelocity();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(8);
@@ -199,6 +199,7 @@ public class FarAuto extends LinearOpMode {
                         // 1st Shot
                         .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(160.5))
                         .stopAndAdd(() -> intake.setPower(1))
+                        .waitSeconds(.25)
                         .stopAndAdd(() -> feeder.setPower(1))
                         .waitSeconds(feederOnTime)
                         .stopAndAdd(() -> feeder.setPower(0))
