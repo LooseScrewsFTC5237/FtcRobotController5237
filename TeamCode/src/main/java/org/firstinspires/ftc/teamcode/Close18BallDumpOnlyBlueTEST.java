@@ -5,13 +5,15 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.IdentityPoseMap;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.PoseMap;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.RaceAction;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.Vector2dDual;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -25,12 +27,12 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.Range;
 
 @Config
-public class Close18BallDumpOnlyBlue extends LinearOpMode {
+public class Close18BallDumpOnlyBlueTEST extends LinearOpMode {
 
     boolean isBlue = false;
     @Autonomous()
-    public static class BlueClose18BallDumpOnly extends Close18BallDumpOnlyBlue {
-        public BlueClose18BallDumpOnly() {
+    public static class BlueClose18BallDumpOnlyTEST extends Close18BallDumpOnlyBlueTEST {
+        public BlueClose18BallDumpOnlyTEST() {
             super(new Pose2d(-60, -37, Math.toRadians(0)), new IdentityPoseMap());
             isBlue = true;
         }
@@ -67,6 +69,7 @@ public class Close18BallDumpOnlyBlue extends LinearOpMode {
     public static boolean
             UPDATE_FLYWHEEL_PID = true;
     public static boolean artifactPresent = false;
+    public static boolean artifactDetected = false;
 
     public static int artifactCounter = 0;
     public static double Redoffset = 0;
@@ -154,7 +157,7 @@ public class Close18BallDumpOnlyBlue extends LinearOpMode {
         };
     }
 
-    public Close18BallDumpOnlyBlue(Pose2d startingPose, PoseMap poseMap) {
+    public Close18BallDumpOnlyBlueTEST(Pose2d startingPose, PoseMap poseMap) {
         this.poseMap = poseMap;
         this.startingPose = startingPose;
     }
@@ -182,6 +185,8 @@ public class Close18BallDumpOnlyBlue extends LinearOpMode {
         Pose2d dumpPose2 = new Pose2d(15, -63, Math.toRadians(225));
         double dumpTangent2 = Math.toRadians(0);
 
+
+
 //        PIDFCoefficients c = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
 //        if (!UPDATE_FLYWHEEL_PID) {
 //            TwentyTwentyFiveJava.FLYWHEEL_P = c.p;
@@ -205,91 +210,61 @@ public class Close18BallDumpOnlyBlue extends LinearOpMode {
         telemetry.addData("Flywheel P", currentPIDF.p);
         telemetry.addData("Flywheel F", currentPIDF.f);
 
-        Actions.runBlocking(
-                drive.actionBuilder(beginPose, poseMap)
-
-                        // Turn on motors
+        // 1. Define the Action Builders (using .fresh() to chain them)
+                TrajectoryActionBuilder setup = drive.actionBuilder(beginPose, poseMap)
                         .stopAndAdd(() -> {
                             intake.setPower(0.0);
                             feeder.setPower(0.0);
-                            shooter.setVelocity(shooterSpeed);
-                            shooter2.setVelocity(shooterSpeed);
-                        })
+                            shooter.setVelocity(0);
+                            shooter2.setVelocity(0);
+                        });
 
-                        //First Shot
-                        .splineToLinearHeading(shootPose, Math.toRadians(0))
-                        .stopAndAdd(() -> intake.setPower(1))
-                        .stopAndAdd(() -> feeder.setPower(1))
-                        .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> feeder.setPower(0))
+            TrajectoryActionBuilder firstTestAction = setup.fresh()
+                    .lineToX(50);
 
-                        //Intake Middle Line
-                        .setTangent(Math.toRadians(0))
-                        .splineToSplineHeading(new Pose2d(15, -18,Math.toRadians(270)), Math.toRadians(0))
-                        .splineToLinearHeading(new Pose2d(15, -47,Math.toRadians(270)), Math.toRadians(90))
-                        .stopAndAdd(() -> intake.setPower(0))
+        Action intakeAction = (telemetryPacket) -> {
+            // Artifact Counter Logic
+            boolean artifactDetected = laserInput.getState();
+            if (artifactDetected && !artifactPresent) {
+                artifactCounter++;
+                artifactPresent = true;
+            }
+            if (!artifactDetected) {
+                artifactPresent = false;
+            }
+            if (artifactCounter < 4) {
+                intake.setPower(1);
+            } else {
+                intake.setPower(0);
+            }
 
-                        //Second Shot
-                        .setTangent(Math.toRadians(90))
-                        .splineToLinearHeading(shootPose, Math.toRadians(180))
-                        .stopAndAdd(() -> intake.setPower(1))
-                        .stopAndAdd(() -> feeder.setPower(1))
-                        .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> feeder.setPower(0))
+            // Add to RoadRunner Dashboard/Telemetry
+            telemetryPacket.put("Artifact counter", artifactCounter);
+            telemetry.addData("Artifact counter", artifactCounter);
+            telemetry.update();
 
-                        //Dump'N Intake
-                        .setTangent(Math.toRadians(0))
-                        .splineToSplineHeading(new Pose2d(7, -25, Math.toRadians(270)), Math.toRadians(270))
-                        .splineToSplineHeading(dumpPose1, dumpTangent1)
-                        .splineToLinearHeading(dumpPose2, dumpTangent2)
-                        .waitSeconds(1)
-                        .stopAndAdd(() -> intake.setPower(0))
+            return true;
+        };
+//                    new InstantAction(() -> intake.setPower(1)),
+//                    new SleepAction(feederOnTime),
+//                    new InstantAction(() -> intake.setPower(0))
 
-                        //Third Shot
-                        .setTangent(Math.toRadians(90))
-                        .splineToSplineHeading(new Pose2d(2, -20,Math.toRadians(270)), Math.toRadians(180))
-                        .splineToLinearHeading(shootPose, Math.toRadians(180))
-                        .stopAndAdd(() -> intake.setPower(1))
-                        .stopAndAdd(() -> feeder.setPower(1))
-                        .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> feeder.setPower(0))
 
-                        //Intake Goal Side Line
-                        .setTangent(Math.toRadians(0))
-                        .splineToLinearHeading(new Pose2d(-10, -16, Math.toRadians(270)), Math.toRadians(0))
-                        .setTangent(Math.toRadians(270))
-                        .splineToLinearHeading(new Pose2d(-10, -50, Math.toRadians(270)), Math.toRadians(270))
-                        .stopAndAdd(() -> intake.setPower(0))
+        // 2. Execute everything in order
+                Actions.runBlocking(new SequentialAction(
+                        setup.build(),
+                        new RaceAction(
+                                firstTestAction.build(),
+                                intakeAction
+                        )
+                ));
 
-                        //Fourth Shot
-                        .setTangent(Math.toRadians(90))
-                        .splineToLinearHeading(shootPose, Math.toRadians(180))
-                        .stopAndAdd(() -> feeder.setPower(1))
-                        .stopAndAdd(() -> intake.setPower(1))
-                        .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> feeder.setPower(0))
+        // 3. Final Cleanup (Runs after all actions finish or if the OpMode stops)
+                intake.setPower(0);
+                feeder.setPower(0);
+                shooter.setPower(0);
+                shooter2.setPower(0);
 
-                        //Dump'N Intake2
-                        .setTangent(Math.toRadians(0))
-                        .splineToSplineHeading(new Pose2d(7, -19, Math.toRadians(270)), Math.toRadians(270))
-                        .splineToSplineHeading(dumpPose1, dumpTangent1)
-                        .splineToLinearHeading(dumpPose2, dumpTangent2)
-                        .waitSeconds(1)
-                        .stopAndAdd(() -> intake.setPower(0))
-
-                        //Fifth Shot
-                        .setTangent(Math.toRadians(90))
-                        .splineToSplineHeading(new Pose2d(2, -20,Math.toRadians(270)), Math.toRadians(180))
-                        .splineToLinearHeading(shootPose, Math.toRadians(180))
-                        .stopAndAdd(() -> feeder.setPower(1))
-                        .stopAndAdd(() -> intake.setPower(1))
-                        .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> feeder.setPower(0))
-
-                        //Park
-                        .stopAndAdd(() -> intake.setPower(0))
-                        .splineToLinearHeading(new Pose2d(-16, -37, Math.toRadians(267)), Math.toRadians(270))
-                        .build());
 
         if(isStopRequested()) return;
 
