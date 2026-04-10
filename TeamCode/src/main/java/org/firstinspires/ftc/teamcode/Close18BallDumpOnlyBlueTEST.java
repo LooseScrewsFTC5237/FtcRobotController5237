@@ -78,7 +78,6 @@ public class Close18BallDumpOnlyBlueTEST extends LinearOpMode {
     public static double TURN_GAIN   =  0.04  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
     public static double TURN_STATIC = 0.1;
     public static double MAX_AUTO_TURN  = 0.3;
-
     public static double feederOnTime = 0.6;
     PoseMap poseMap;
     Pose2d startingPose;

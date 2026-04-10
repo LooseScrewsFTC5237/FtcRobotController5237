@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.PoseMap;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.RaceAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.Vector2dDual;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -184,6 +185,53 @@ public class Close18BallDumpOnlyRed extends LinearOpMode {
         telemetry.addData("Flywheel P", currentPIDF.p);
         telemetry.addData("Flywheel F", currentPIDF.f);
 
+        Action intakeAction = (telemetryPacket) -> {
+            // Artifact Counter Logic
+            boolean artifactDetected = laserInput.getState();
+            if (artifactDetected && !artifactPresent) {
+                artifactCounter++;
+                artifactPresent = true;
+            }
+            if (!artifactDetected) {
+                artifactPresent = false;
+            }
+            if (artifactCounter < 4) {
+                intake.setPower(1);
+            } else {
+                intake.setPower(0);
+            }
+
+            // Add to RoadRunner Dashboard/Telemetry
+            telemetryPacket.put("Artifact counter", artifactCounter);
+            telemetry.addData("Artifact counter", artifactCounter);
+            telemetry.update();
+
+            return true;
+        };
+
+        Action MiddleLineAction = drive.actionBuilder(new Pose2d(-16, 16, Math.toRadians(135)))
+                .setTangent(Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(14, 35, Math.toRadians(90)), Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(14, 52, Math.toRadians(90)), Math.toRadians(90))
+                .stopAndAdd(() -> intake.setPower(0))
+                .build();
+
+        Action DumpNIntakeAction = drive.actionBuilder(new Pose2d(-16, 16, Math.toRadians(135)))
+                .setTangent(Math.toRadians(80))
+                .splineToSplineHeading(dumpPose1, dumpTangent1)
+                .splineToLinearHeading(dumpPose2, dumpTangent2)
+                .stopAndAdd(() -> intake.setPower(0))
+                .waitSeconds(1)
+                .build();
+
+        Action SideLineAction = drive.actionBuilder(new Pose2d(-16, 16, Math.toRadians(135)))
+                .setTangent(Math.toRadians(80))
+                .splineToLinearHeading(new Pose2d(-13, 33, Math.toRadians(90)), Math.toRadians(90))
+                .setTangent(Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(-12, 53, Math.toRadians(90)), Math.toRadians(90))
+                .stopAndAdd(() -> intake.setPower(0))
+                .build();
+
         Actions.runBlocking(
                 drive.actionBuilder(beginPose, poseMap)
                         // Turn on motors
@@ -201,6 +249,7 @@ public class Close18BallDumpOnlyRed extends LinearOpMode {
                         .stopAndAdd(() -> feeder.setPower(0))
 
                         //Intake Middle Line
+                        .stopAndAdd(new RaceAction(intakeAction, MiddleLineAction))
                         .setTangent(Math.toRadians(0))
                         .splineToSplineHeading(new Pose2d(14, 35,Math.toRadians(90)), Math.toRadians(90))
                         .splineToLinearHeading(new Pose2d(14, 52,Math.toRadians(90)), Math.toRadians(90))
@@ -216,6 +265,7 @@ public class Close18BallDumpOnlyRed extends LinearOpMode {
                         .stopAndAdd(() -> feeder.setPower(0))
 
                         //Dump'N Intake
+                        .stopAndAdd(new RaceAction(intakeAction, DumpNIntakeAction))
                         .setTangent(Math.toRadians(80))
                         .splineToSplineHeading(dumpPose1, dumpTangent1)
                         .splineToLinearHeading(dumpPose2, dumpTangent2)
@@ -232,6 +282,7 @@ public class Close18BallDumpOnlyRed extends LinearOpMode {
                         .stopAndAdd(() -> feeder.setPower(0))
 
                         //Intake Goal Side Line
+                        .stopAndAdd(new RaceAction(intakeAction, SideLineAction))
                         .setTangent(Math.toRadians(80))
                         .splineToLinearHeading(new Pose2d(-13, 33, Math.toRadians(90)), Math.toRadians(90))
                         .setTangent(Math.toRadians(90))
@@ -247,6 +298,7 @@ public class Close18BallDumpOnlyRed extends LinearOpMode {
                         .stopAndAdd(() -> feeder.setPower(0))
 
                         //Dump'N Intake2
+                        .stopAndAdd(new RaceAction(intakeAction, DumpNIntakeAction))
                         .setTangent(Math.toRadians(80))
                         .splineToSplineHeading(dumpPose1, dumpTangent1)
                         .splineToLinearHeading(dumpPose2, dumpTangent2)

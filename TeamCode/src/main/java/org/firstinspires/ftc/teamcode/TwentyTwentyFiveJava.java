@@ -75,9 +75,9 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
     // This declares the four motors needed
     int lift_height = 0;
-    public static int fastShooterSpeed = 1500;
-    public static int shooterSpeed = 1200;
-    public static int slowShooterSpeed = 960;
+    public static int fastShooterSpeed = 1065;
+    public static int shooterSpeed = 750;
+    public static int slowShooterSpeed = 650;
     public static double shooterSpeedTolerance = 40;
     public static int targetVelocity = 0;
     public static double DRIVE_SPEED = 0.8;
@@ -104,9 +104,9 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static double FLYWHEEL_I = 0;
     public static double FLYWHEEL_D = 0;
     public static double FLYWHEEL_F = 22.16;
-    public static double closeHoodAngle = .5;
+    public static double closeHoodAngle = .6;
     public static double mediumHoodAngle = 0.5;
-    public static double farHoodAngle = 0.5;
+    public static double farHoodAngle = 0.42;
     public static double FarRPMBump = 60;
     public static double FarHoodBump = -0.04;
     public static double headingOffset = 0;
