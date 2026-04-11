@@ -5,16 +5,11 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.IdentityPoseMap;
-import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.PoseMap;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.RaceAction;
-import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.Vector2dDual;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -28,12 +23,12 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.Range;
 
 @Config
-public class Close18BallDumpOnlyBlue extends LinearOpMode {
+public class BlueCloseAuto extends LinearOpMode {
 
     boolean isBlue = false;
     @Autonomous()
-    public static class BlueClose18BallDumpOnly extends Close18BallDumpOnlyBlue {
-        public BlueClose18BallDumpOnly() {
+    public static class BlueClose extends BlueCloseAuto {
+        public BlueClose() {
             super(new Pose2d(-60, -37, Math.toRadians(0)), new IdentityPoseMap());
             isBlue = true;
         }
@@ -156,7 +151,7 @@ public class Close18BallDumpOnlyBlue extends LinearOpMode {
         };
     }
 
-    public Close18BallDumpOnlyBlue(Pose2d startingPose, PoseMap poseMap) {
+    public BlueCloseAuto(Pose2d startingPose, PoseMap poseMap) {
         this.poseMap = poseMap;
         this.startingPose = startingPose;
     }
@@ -178,10 +173,10 @@ public class Close18BallDumpOnlyBlue extends LinearOpMode {
         double currentShooterVelocity = shooter.getVelocity();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(8);
-        Pose2d dumpPose1 = new Pose2d(7, -60, Math.toRadians(225));
+        Pose2d dumpPose1 = new Pose2d(5, -60, Math.toRadians(225));
         double dumpTangent1 = Math.toRadians(270);
         Pose2d shootPose = new Pose2d(-16, -16, Math.toRadians(217));
-        Pose2d dumpPose2 = new Pose2d(15, -63, Math.toRadians(225));
+        Pose2d dumpPose2 = new Pose2d(20, -63, Math.toRadians(225));
         double dumpTangent2 = Math.toRadians(0);
 
 //        PIDFCoefficients c = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -255,11 +250,10 @@ public class Close18BallDumpOnlyBlue extends LinearOpMode {
                                 .stopAndAdd(() -> artifactCounter = 0)
 
                                 //Intake Middle Line
-        //                       .stopAndAdd(new RaceAction(intakeAction, MiddleLineAction))
                                 .stopAndAdd(() -> intake.setPower(1))
                                 .setTangent(Math.toRadians(0))
-                                .splineToSplineHeading(new Pose2d(14, -30, Math.toRadians(270)), Math.toRadians(270))
-                                .splineToLinearHeading(new Pose2d(14, -52, Math.toRadians(270)), Math.toRadians(270))
+                                .splineToSplineHeading(new Pose2d(17, -30, Math.toRadians(270)), Math.toRadians(270))
+                                .splineToLinearHeading(new Pose2d(17, -52, Math.toRadians(270)), Math.toRadians(270))
                                 .stopAndAdd(() -> intake.setPower(0))
 
                                 //Second Shot
@@ -274,9 +268,9 @@ public class Close18BallDumpOnlyBlue extends LinearOpMode {
                                 .stopAndAdd(() -> artifactCounter = 0)
 
                                 //Dump'N Intake
-        //                        .stopAndAdd(new RaceAction(intakeAction, DumpNIntakeAction))
                                 .stopAndAdd(() -> intake.setPower(1))
-                                .setTangent(Math.toRadians(280))
+                                .setTangent(Math.toRadians(0))
+                                .splineToSplineHeading(new Pose2d(12, -20, Math.toRadians(270)), Math.toRadians(270))
                                 .splineToSplineHeading(dumpPose1, dumpTangent1)
                                 .splineToLinearHeading(dumpPose2, dumpTangent2)
                                 .waitSeconds(1)
@@ -295,12 +289,11 @@ public class Close18BallDumpOnlyBlue extends LinearOpMode {
                                 .stopAndAdd(() -> artifactCounter = 0)
 
                                 //Intake Goal Side Line
-        //                        .stopAndAdd(new RaceAction(intakeAction, SideLineAction))
                                 .stopAndAdd(() -> intake.setPower(1))
                                 .setTangent(Math.toRadians(80))
-                                .splineToLinearHeading(new Pose2d(-13, -33, Math.toRadians(270)), Math.toRadians(270))
+                                .splineToLinearHeading(new Pose2d(-10, -33, Math.toRadians(270)), Math.toRadians(270))
                                 .setTangent(Math.toRadians(270))
-                                .splineToLinearHeading(new Pose2d(-12, -53, Math.toRadians(270)), Math.toRadians(270))
+                                .splineToLinearHeading(new Pose2d(-10, -53, Math.toRadians(270)), Math.toRadians(270))
                                 .stopAndAdd(() -> intake.setPower(0))
 
                                 //Fourth Shot
@@ -315,7 +308,6 @@ public class Close18BallDumpOnlyBlue extends LinearOpMode {
                                 .stopAndAdd(() -> artifactCounter = 0)
 
                                 //Dump'N Intake2
-        //                        .stopAndAdd(new RaceAction(intakeAction, DumpNIntakeAction))
                                 .stopAndAdd(() -> intake.setPower(1))
                                 .setTangent(Math.toRadians(280))
                                 .splineToSplineHeading(dumpPose1, dumpTangent1)
