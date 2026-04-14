@@ -117,6 +117,7 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static boolean velocityCheck;
 
     public static boolean velocityCheck2;
+
     DcMotor frontLeftDrive;
     DcMotor frontRightDrive;
     DcMotor backLeftDrive;
@@ -334,7 +335,7 @@ public class TwentyTwentyFiveJava extends OpMode {
                 if (gamepad1.a) {
                     hood.setReadyPos(.5);
                 }
-                else {
+                else
                     hood.setReadyPos(.277);
                 }
             } else {
