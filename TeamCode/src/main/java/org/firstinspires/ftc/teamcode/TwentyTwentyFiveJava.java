@@ -69,8 +69,6 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  *
  */
-
-// Test
 @Config
 @TeleOp(name = "TwentyTwentyFiveJava", group = "Robot")
 public class TwentyTwentyFiveJava extends OpMode {
@@ -79,7 +77,7 @@ public class TwentyTwentyFiveJava extends OpMode {
     int lift_height = 0;
     public static int fastShooterSpeed = 1065;
     public static int shooterSpeed = 750;
-    public static int slowShooterSpeed = 665;
+    public static int slowShooterSpeed = 650;
     public static double shooterSpeedTolerance = 40;
     public static int targetVelocity = 0;
     public static double DRIVE_SPEED = 0.8;
@@ -119,7 +117,6 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static boolean velocityCheck;
 
     public static boolean velocityCheck2;
-
     DcMotor frontLeftDrive;
     DcMotor frontRightDrive;
     DcMotor backLeftDrive;
@@ -337,7 +334,7 @@ public class TwentyTwentyFiveJava extends OpMode {
                 if (gamepad1.a) {
                     hood.setReadyPos(.5);
                 }
-                else
+                else {
                     hood.setReadyPos(.277);
                 }
             } else {
