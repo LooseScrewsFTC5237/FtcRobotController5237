@@ -77,7 +77,7 @@ public class TwentyTwentyFiveJava extends OpMode {
     int lift_height = 0;
     public static int fastShooterSpeed = 1065;
     public static int shooterSpeed = 750;
-    public static int slowShooterSpeed = 650;
+    public static int slowShooterSpeed = 665;
     public static double shooterSpeedTolerance = 40;
     public static int targetVelocity = 0;
     public static double DRIVE_SPEED = 0.8;
