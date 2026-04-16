@@ -14,13 +14,15 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 @Disabled
 public class Hood {
-    private Servo servoPos, ready, artifactIndicator /*, LEDs*/;
+    private Servo servoPos, ready, readyRed, readyBlue, artifactIndicator /*, LEDs*/;
     private RevBlinkinLedDriver LEDs;
 
 
     public void init(HardwareMap hwMap) {
         servoPos = hwMap.get(Servo.class, "hood");
         ready = hwMap.get(Servo.class, "ready");
+        readyRed = hwMap.get(Servo.class, "readyRed");
+        readyBlue = hwMap.get(Servo.class, "readyBlue");
         artifactIndicator = hwMap.get(Servo.class,"Artifact Indicator");
         LEDs = hwMap.get(RevBlinkinLedDriver.class, "LEDs");
     }
@@ -33,6 +35,15 @@ public class Hood {
     public void setReadyPos(double position) {
         ready.setPosition(position);
     }
+
+    public void setReadyRedPos(double position) {
+        readyRed.setPosition(position);
+    }
+
+    public void setReadyBluePos(double position) {
+        readyBlue.setPosition(position);
+    }
+
     public void setReadyLEDPos(int color) {
         if (color == 1) {
             LEDs.setPattern(GREEN);

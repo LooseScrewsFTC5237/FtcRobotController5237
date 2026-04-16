@@ -275,14 +275,14 @@ public class RedFarAuto extends LinearOpMode {
                                 // 3rd Intake
                                 .stopAndAdd(() -> intake.setPower(1))
                                 .setTangent(Math.toRadians(90))
-                                .splineToSplineHeading(new Pose2d(70, 47, Math.toRadians(100)), Math.toRadians(100))
-                                .splineToSplineHeading(new Pose2d(70, 65, Math.toRadians(100)), Math.toRadians(100))
-                                .splineToLinearHeading(new Pose2d(50, 70, Math.toRadians(180)), Math.toRadians(180))
+                                .strafeToSplineHeading(new Vector2d(61,36),Math.toRadians(135))
+                                .strafeToSplineHeading(new Vector2d(66,55),Math.toRadians(135))
+                                .strafeToLinearHeading(new Vector2d(40,60), Math.toRadians(135))
                                 .waitSeconds(0.6)
                                 .stopAndAdd(() -> intake.setPower(0))
 
                                 // 4th Shot
-                                .strafeToLinearHeading(new Vector2d(56, 17), Math.toRadians(150))
+                                .strafeToLinearHeading(new Vector2d(56, 17), Math.toRadians(153))
                                 .stopAndAdd(() -> artifactCounter = 0)
                                 .stopAndAdd(() -> intake.setPower(1))
                                 .stopAndAdd(() -> feeder.setPower(1))
@@ -294,14 +294,14 @@ public class RedFarAuto extends LinearOpMode {
                                 // 4th Intake
                                 .stopAndAdd(() -> intake.setPower(1))
                                 .setTangent(Math.toRadians(90))
-                                .splineToSplineHeading(new Pose2d(70, 47, Math.toRadians(100)), Math.toRadians(100))
-                                .splineToSplineHeading(new Pose2d(70, 65, Math.toRadians(100)), Math.toRadians(100))
-                                .splineToLinearHeading(new Pose2d(50, 70, Math.toRadians(180)), Math.toRadians(180))
+                                .strafeToSplineHeading(new Vector2d(61,36),Math.toRadians(135))
+                                .strafeToSplineHeading(new Vector2d(66,55),Math.toRadians(135))
+                                .strafeToLinearHeading(new Vector2d(40,60), Math.toRadians(135))
                                 .waitSeconds(0.6)
                                 .stopAndAdd(() -> intake.setPower(0))
 
                                 // 5th Shot
-                                .strafeToLinearHeading(new Vector2d(56, 17), Math.toRadians(150))
+                                .strafeToLinearHeading(new Vector2d(56, 17), Math.toRadians(153))
                                 .stopAndAdd(() -> artifactCounter = 0)
                                 .stopAndAdd(() -> intake.setPower(1))
                                 .stopAndAdd(() -> feeder.setPower(1))
@@ -313,11 +313,12 @@ public class RedFarAuto extends LinearOpMode {
                                 // 5th Intake
                                 .stopAndAdd(() -> intake.setPower(1))
                                 .setTangent(Math.toRadians(90))
-                                .splineToSplineHeading(new Pose2d(75, 47, Math.toRadians(100)), Math.toRadians(100))
-                                .splineToSplineHeading(new Pose2d(75, 65, Math.toRadians(100)), Math.toRadians(100))
+                                .strafeToSplineHeading(new Vector2d(61,36),Math.toRadians(72))
+                                .strafeToSplineHeading(new Vector2d(66,55),Math.toRadians(72))
                                 .waitSeconds(0.6)
                                 .stopAndAdd(() -> intake.setPower(0))
 
+//                              region 6th Shot and Intake
                                 //                        // 6th shot
                                 //                        .strafeToLinearHeading(new Vector2d(56, 20), Math.toRadians(157))
                                 //                        .stopAndAdd(() -> artifactCounter = 0)
@@ -329,6 +330,7 @@ public class RedFarAuto extends LinearOpMode {
 
                                 //                        // 6th Intake
                                 //                        .stopAndAdd(new RaceAction(intakeAction, AngleIntakingAction))
+                                // endregion
 
                                 // Park
                                 .strafeToLinearHeading(new Vector2d(60, 40), Math.toRadians(90))

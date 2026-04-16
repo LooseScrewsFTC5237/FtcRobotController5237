@@ -274,7 +274,10 @@ public class BlueFarAuto extends LinearOpMode {
 
                                 // 3rd Intake
                                 .stopAndAdd(() -> intake.setPower(1))
-                                .strafeToLinearHeading(new Vector2d(66, -58), Math.toRadians(275))
+                                .setTangent(Math.toRadians(270))
+                                .strafeToSplineHeading(new Vector2d(61,-36),Math.toRadians(225))
+                                .strafeToSplineHeading(new Vector2d(66,-55),Math.toRadians(225))
+                                .strafeToLinearHeading(new Vector2d(40,-60), Math.toRadians(225))
                                 .waitSeconds(0.6)
                                 .stopAndAdd(() -> intake.setPower(0))
 
@@ -290,7 +293,10 @@ public class BlueFarAuto extends LinearOpMode {
 
                                 // 4th Intake
                                 .stopAndAdd(() -> intake.setPower(1))
-                                .strafeToLinearHeading(new Vector2d(66, -58), Math.toRadians(275))
+                                .setTangent(Math.toRadians(270))
+                                .strafeToSplineHeading(new Vector2d(61,-36),Math.toRadians(225))
+                                .strafeToSplineHeading(new Vector2d(66,-55),Math.toRadians(225))
+                                .strafeToLinearHeading(new Vector2d(40,-60), Math.toRadians(225))
                                 .waitSeconds(0.6)
                                 .stopAndAdd(() -> intake.setPower(0))
 
@@ -306,7 +312,9 @@ public class BlueFarAuto extends LinearOpMode {
 
                                 // 5th Intake
                                 .stopAndAdd(() -> intake.setPower(1))
-                                .strafeToLinearHeading(new Vector2d(66, -58), Math.toRadians(275))
+                                .setTangent(Math.toRadians(270))
+                                .strafeToSplineHeading(new Vector2d(61,-36),Math.toRadians(288))
+                                .strafeToSplineHeading(new Vector2d(66,-55),Math.toRadians(288))
                                 .waitSeconds(0.6)
                                 .stopAndAdd(() -> intake.setPower(0))
 

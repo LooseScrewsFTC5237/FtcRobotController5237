@@ -172,7 +172,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         intake.setDirection(DcMotor.Direction.REVERSE);
         shooter2.setDirection(DcMotorSimple.Direction.REVERSE);
         hood.init(hardwareMap);
-        hood.setServoPos(.5);
+        hood.setServoPos(0.6);
 
         // This uses RUN_USING_ENCODER to be more accurate.   If you don't have the encoder
         // wires, you should remove these
@@ -332,14 +332,20 @@ public class TwentyTwentyFiveJava extends OpMode {
                 turn = 0;
                 telemetry.addData("Auto", "Robot aligned with AprilTag!");
                 if (gamepad1.a) {
-                    hood.setReadyPos(.5);
+                    hood.setReadyPos(0.5);
+                    hood.setReadyRedPos(0.611 );
+                    hood.setReadyBluePos(0.611);
                 }
                 else {
-                    hood.setReadyPos(.277);
+                    hood.setReadyPos(0.277);
+                    hood.setReadyRedPos(0);
+                    hood.setReadyBluePos(0);
                 }
             } else {
                 turn = Range.clip((offsetError + (Math.signum(offsetError) * TURN_STATIC)) * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
-                hood.setReadyPos(.277);
+                hood.setReadyPos(0.277);
+                hood.setReadyRedPos(0);
+                hood.setReadyBluePos(0);
                 telemetry.addData("heading Error + heading offset", headingError+headingOffset);
             }
             telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", driveSpeed, strafe, turn);
