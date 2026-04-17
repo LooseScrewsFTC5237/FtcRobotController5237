@@ -173,7 +173,8 @@ public class BlueCloseAuto extends LinearOpMode {
         double currentShooterVelocity = shooter.getVelocity();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(8);
-        Pose2d dumpPose1 = new Pose2d(5, -60, Math.toRadians(225));
+
+        Pose2d dumpPose1 = new Pose2d(5, -68, Math.toRadians(225));
         double dumpTangent1 = Math.toRadians(270);
         Pose2d shootPose = new Pose2d(-16, -16, Math.toRadians(217));
         Pose2d dumpPose2 = new Pose2d(20, -63, Math.toRadians(225));
@@ -252,7 +253,7 @@ public class BlueCloseAuto extends LinearOpMode {
                                 //Intake Middle Line
                                 .stopAndAdd(() -> intake.setPower(1))
                                 .setTangent(Math.toRadians(0))
-                                .splineToSplineHeading(new Pose2d(17, -30, Math.toRadians(270)), Math.toRadians(270))
+                                .splineToSplineHeading(new Pose2d(17, -33, Math.toRadians(270)), Math.toRadians(270))
                                 .splineToLinearHeading(new Pose2d(17, -52, Math.toRadians(270)), Math.toRadians(270))
                                 .stopAndAdd(() -> intake.setPower(0))
 
@@ -318,7 +319,7 @@ public class BlueCloseAuto extends LinearOpMode {
                                 //Fifth Shot
                                 .setTangent(Math.toRadians(90))
                                 .splineToSplineHeading(new Pose2d(2, -20,Math.toRadians(270)), Math.toRadians(180))
-                                .splineToLinearHeading(shootPose, Math.toRadians(180))
+                                .splineToLinearHeading(new Pose2d(-16, -16, Math.toRadians(216)), Math.toRadians(180))
                                 .stopAndAdd(() -> artifactCounter = 0)
                                 .stopAndAdd(() -> feeder.setPower(1))
                                 .stopAndAdd(() -> intake.setPower(1))

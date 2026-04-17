@@ -24,8 +24,8 @@ public class MeepMeepCloseRedBallDump {
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-60, 37, Math.toRadians(0)))
 
-                //1st Shot
-                .strafeToLinearHeading(new Vector2d(-16,16),Math.toRadians(135))
+                //First Shot
+                .splineToLinearHeading(shootPose, Math.toRadians(0))
                 .waitSeconds(0.75)
 
 
@@ -35,7 +35,7 @@ public class MeepMeepCloseRedBallDump {
                 .splineToLinearHeading(new Pose2d(20, 52,Math.toRadians(90)), Math.toRadians(90))
                 .waitSeconds(0)
 
-                //2nd Shot
+                //Second Shot
                 .setTangent(Math.toRadians(270))
                 .splineToLinearHeading(shootPose, Math.toRadians(180))
                 .waitSeconds(0.75)
@@ -47,17 +47,19 @@ public class MeepMeepCloseRedBallDump {
                 .splineToLinearHeading(dumpPose2, dumpTangent2)
                 .waitSeconds(1)
 
-                //3rd Shot
+                //Third Shot
                 .setTangent(Math.toRadians(230))
+                .splineToSplineHeading(new Pose2d(2, 20,Math.toRadians(90)), Math.toRadians(180))
                 .splineToLinearHeading(shootPose, Math.toRadians(180))
-                .waitSeconds(0.75)
+                .waitSeconds(0.7)
 
                 //Intake Goal Side Line
-                .setTangent(Math.toRadians(80))
-                .splineToSplineHeading(new Pose2d(-2, 33, Math.toRadians(90)), Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(-2, 53, Math.toRadians(90)), Math.toRadians(90))
+                .setTangent(Math.toRadians(280))
+                .splineToLinearHeading(new Pose2d(-5, 33, Math.toRadians(90)), Math.toRadians(90))
+                .setTangent(Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(-5, 53, Math.toRadians(90)), Math.toRadians(90))
 
-                //4th Shot
+                //Fourth Shot
                 .setTangent(Math.toRadians(270))
                 .splineToLinearHeading(shootPose, Math.toRadians(270))
                 .waitSeconds(0.75)
@@ -68,24 +70,26 @@ public class MeepMeepCloseRedBallDump {
                 .splineToLinearHeading(dumpPose2, dumpTangent2)
                 .waitSeconds(1)
 
-                //5th Shot
-                .setTangent(Math.toRadians(230))
+                //Fifth Shot
+                .setTangent(Math.toRadians(270))
+                .splineToSplineHeading(new Pose2d(2, 20,Math.toRadians(90)), Math.toRadians(90))
                 .splineToLinearHeading(shootPose, Math.toRadians(180))
                 .waitSeconds(0.75)
 
-                //Dump'N Intake3
-                .setTangent(Math.toRadians(80))
-                .splineToSplineHeading(dumpPose1, dumpTangent1)
-                .splineToLinearHeading(dumpPose2, dumpTangent2)
-                .waitSeconds(1)
-
-                //6th Shot
-                .setTangent(Math.toRadians(230))
-                .splineToLinearHeading(shootPose, Math.toRadians(180))
-                .waitSeconds(0.75)
+// region DumpN3 & Shot 6
+//                //Dump'N Intake3
+//                .setTangent(Math.toRadians(80))
+//                .splineToSplineHeading(dumpPose1, dumpTangent1)
+//                .splineToLinearHeading(dumpPose2, dumpTangent2)
+//                .waitSeconds(1)
+//
+//                //Sixth Shot
+//                .setTangent(Math.toRadians(230))
+//                .splineToLinearHeading(shootPose, Math.toRadians(180))
+//                .waitSeconds(0.75)
+// endregion
 
                 //Park
-                .setTangent(Math.toRadians(90))
                 .splineToLinearHeading(new Pose2d(-16, 37, Math.toRadians(90)), Math.toRadians(90))
 
                 .build());

@@ -258,7 +258,7 @@ public class BlueFarAuto extends LinearOpMode {
                                 // 2nd Intake
                                 .stopAndAdd(() -> intake.setPower(1))
                                 .strafeToLinearHeading(new Vector2d(48, -63), Math.toRadians(349))
-                                .strafeToLinearHeading(new Vector2d(60, -64), Math.toRadians(349))
+                                .strafeToLinearHeading(new Vector2d(62, -64), Math.toRadians(349))
                                 .waitSeconds(0.6)
                                 .stopAndAdd(() -> intake.setPower(0))
 
@@ -275,9 +275,9 @@ public class BlueFarAuto extends LinearOpMode {
                                 // 3rd Intake
                                 .stopAndAdd(() -> intake.setPower(1))
                                 .setTangent(Math.toRadians(270))
-                                .strafeToSplineHeading(new Vector2d(61,-36),Math.toRadians(225))
-                                .strafeToSplineHeading(new Vector2d(66,-55),Math.toRadians(225))
-                                .strafeToLinearHeading(new Vector2d(40,-60), Math.toRadians(225))
+                                .strafeToSplineHeading(new Vector2d(61,-37.5),Math.toRadians(225))
+                                .strafeToSplineHeading(new Vector2d(66,-58),Math.toRadians(225))
+                                .strafeToLinearHeading(new Vector2d(33,-63), Math.toRadians(225))
                                 .waitSeconds(0.6)
                                 .stopAndAdd(() -> intake.setPower(0))
 
@@ -294,9 +294,9 @@ public class BlueFarAuto extends LinearOpMode {
                                 // 4th Intake
                                 .stopAndAdd(() -> intake.setPower(1))
                                 .setTangent(Math.toRadians(270))
-                                .strafeToSplineHeading(new Vector2d(61,-36),Math.toRadians(225))
-                                .strafeToSplineHeading(new Vector2d(66,-55),Math.toRadians(225))
-                                .strafeToLinearHeading(new Vector2d(40,-60), Math.toRadians(225))
+                                .strafeToSplineHeading(new Vector2d(61,-37.5),Math.toRadians(225))
+                                .strafeToSplineHeading(new Vector2d(66,-58),Math.toRadians(225))
+                                .strafeToLinearHeading(new Vector2d(33,-63), Math.toRadians(225))
                                 .waitSeconds(0.6)
                                 .stopAndAdd(() -> intake.setPower(0))
 
@@ -313,11 +313,12 @@ public class BlueFarAuto extends LinearOpMode {
                                 // 5th Intake
                                 .stopAndAdd(() -> intake.setPower(1))
                                 .setTangent(Math.toRadians(270))
-                                .strafeToSplineHeading(new Vector2d(61,-36),Math.toRadians(288))
-                                .strafeToSplineHeading(new Vector2d(66,-55),Math.toRadians(288))
+                                .strafeToSplineHeading(new Vector2d(61,-37.5),Math.toRadians(225))
+                                .strafeToSplineHeading(new Vector2d(66,-58),Math.toRadians(225))
                                 .waitSeconds(0.6)
                                 .stopAndAdd(() -> intake.setPower(0))
 
+// region 6th Shot &  Intake
                                 //                        // 6th shot
                                 //                        .strafeToLinearHeading(new Vector2d(56, 20), Math.toRadians(157))
                                 //                        .stopAndAdd(() -> artifactCounter = 0)
@@ -329,6 +330,7 @@ public class BlueFarAuto extends LinearOpMode {
 
                                 //                        // 6th Intake
                                 //                        .stopAndAdd(new RaceAction(intakeAction, AngleIntakingAction))
+                                // endregion
 
                                 // Park
                                 .strafeToLinearHeading(new Vector2d(60, -40), Math.toRadians(270))

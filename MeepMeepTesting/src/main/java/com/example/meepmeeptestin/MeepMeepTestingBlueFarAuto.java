@@ -24,15 +24,15 @@ public class MeepMeepTestingBlueFarAuto {
                 // 1st Intake
                 .setTangent(Math.toRadians(180))
                 .splineToSplineHeading(new Pose2d(31, -35,Math.toRadians(270)), Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(31,-53,Math.toRadians(265)),Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(31,-53,Math.toRadians(265)),Math.toRadians(265))
 
                 // 2nd Shot
                 .splineToSplineHeading(new Pose2d(56, -17, Math.toRadians(197)), Math.toRadians(90))
                 .waitSeconds(0.6)
 
                // 2nd Intake
-                .strafeToLinearHeading(new Vector2d(48, -63), Math.toRadians(355))
-                .strafeToLinearHeading(new Vector2d(60, -64), Math.toRadians(355))
+                .strafeToLinearHeading(new Vector2d(48, -63), Math.toRadians(349))
+                .strafeToLinearHeading(new Vector2d(62, -64), Math.toRadians(349))
                 .waitSeconds(0.6)
 
                 // 3rd Shot
@@ -40,8 +40,10 @@ public class MeepMeepTestingBlueFarAuto {
                 .waitSeconds(0.6)
 
                 // 3rd Intake
-                .strafeToLinearHeading(new Vector2d(66, -58), Math.toRadians(275))
-                .waitSeconds(0.6)
+                .setTangent(Math.toRadians(270))
+                .strafeToSplineHeading(new Vector2d(61,-37.5),Math.toRadians(225))
+                .strafeToSplineHeading(new Vector2d(66,-58),Math.toRadians(225))
+                .strafeToLinearHeading(new Vector2d(33,-63), Math.toRadians(225))
                 .waitSeconds(0.6)
 
                 // 4th Shot
@@ -49,8 +51,10 @@ public class MeepMeepTestingBlueFarAuto {
                 .waitSeconds(0.6)
 
                 // 4th Intake
-                .setTangent(Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(66, -58), Math.toRadians(275))
+                .setTangent(Math.toRadians(270))
+                .strafeToSplineHeading(new Vector2d(61,-37.5),Math.toRadians(225))
+                .strafeToSplineHeading(new Vector2d(66,-58),Math.toRadians(225))
+                .strafeToLinearHeading(new Vector2d(33,-63), Math.toRadians(225))
                 .waitSeconds(0.6)
 
                 // 5th Shot
@@ -58,9 +62,12 @@ public class MeepMeepTestingBlueFarAuto {
                 .waitSeconds(0.6)
 
                 // 5th Intake
-                .strafeToLinearHeading(new Vector2d(66, -58), Math.toRadians(275))
+                .setTangent(Math.toRadians(270))
+                .strafeToSplineHeading(new Vector2d(61,-36),Math.toRadians(288))
+                .strafeToSplineHeading(new Vector2d(66,-55),Math.toRadians(288))
                 .waitSeconds(0.6)
 
+                // region 6th Shot & Intake
 //                // 6th Shot
 //                .strafeToLinearHeading(new Vector2d(56, -23), Math.toRadians(194))
 //                .waitSeconds(0.6)
@@ -70,6 +77,7 @@ public class MeepMeepTestingBlueFarAuto {
 //                .splineToSplineHeading(new Pose2d(48, -40,Math.toRadians(225)), Math.toRadians(225))
 //                .lineToY(-58)
 //                .waitSeconds(0.6)
+                // endregion
 
                 // Park
                 .strafeToLinearHeading(new Vector2d(60, -40), Math.toRadians(270))

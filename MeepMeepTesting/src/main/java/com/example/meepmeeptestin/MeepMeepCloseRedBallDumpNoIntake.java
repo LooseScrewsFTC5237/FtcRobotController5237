@@ -10,7 +10,7 @@ public class MeepMeepCloseRedBallDumpNoIntake {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
-        Pose2d dumpPose1 = new Pose2d(7, 57, Math.toRadians(135));
+        Pose2d dumpPose1 = new Pose2d(10, 57, Math.toRadians(135));
         double dumpTangent1 = Math.toRadians(0);
         Pose2d shootPose = new Pose2d(-16, 16, Math.toRadians(135));
         Pose2d dumpPose2 = new Pose2d(25, 60, Math.toRadians(135));
@@ -25,33 +25,35 @@ public class MeepMeepCloseRedBallDumpNoIntake {
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-60, 37, Math.toRadians(0)))
 
                 //1st Shot
-                .strafeToLinearHeading(new Vector2d(-16,16),Math.toRadians(135))
+                .splineToLinearHeading(shootPose, Math.toRadians(0))
                 .waitSeconds(0.75)
 
+                //Intake Middle Line
+                .setTangent(Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(20, 25,Math.toRadians(90)), Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(20, 52,Math.toRadians(90)), Math.toRadians(90))
+                .waitSeconds(0)
 
-                //Intake Goal Side Line
-                .setTangent(Math.toRadians(80))
-                .splineToSplineHeading(new Pose2d(-13, 33, Math.toRadians(90)), Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(-12, 53, Math.toRadians(90)), Math.toRadians(90))
+                //2nd Shot
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(shootPose, Math.toRadians(180))
+                .waitSeconds(0.75)
 
                 //Dump No Intake
                 .setTangent(Math.toRadians(270))
                 .splineToLinearHeading(new Pose2d(-1, 53, Math.toRadians(180)), Math.toRadians(90))
 
-                //2nd Shot
-                .strafeToLinearHeading(new Vector2d(-16,16),Math.toRadians(135))
-                .waitSeconds(0.75)
+                //3rd Shot
+                .setTangent(Math.toRadians(230))
+                .splineToSplineHeading(new Pose2d(2, 20,Math.toRadians(90)), Math.toRadians(180))
+                .splineToLinearHeading(shootPose, Math.toRadians(180))
+                .waitSeconds(0.7)
 
                 //Intake Middle Line
                 .setTangent(Math.toRadians(0))
                 .splineToSplineHeading(new Pose2d(14, 35,Math.toRadians(90)), Math.toRadians(90))
                 .splineToLinearHeading(new Pose2d(14, 52,Math.toRadians(90)), Math.toRadians(90))
                 .waitSeconds(0)
-
-                //3rd Shot
-                .setTangent(Math.toRadians(230))
-                .splineToLinearHeading(shootPose, Math.toRadians(180))
-                .waitSeconds(0.75)
 
                 //Dump'N Intake
                 .setTangent(Math.toRadians(80))
