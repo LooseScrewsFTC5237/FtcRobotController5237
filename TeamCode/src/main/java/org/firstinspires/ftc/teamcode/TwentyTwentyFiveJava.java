@@ -249,7 +249,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         if (artifactCounter >= 3) {
             hood.setArtifactIndicatorPos(0.5);
         } else {
-            hood.setArtifactIndicatorPos(.611);
+            hood.setArtifactIndicatorPos(0.611);
         }
 
         // Intake Motor
@@ -333,19 +333,19 @@ public class TwentyTwentyFiveJava extends OpMode {
                 telemetry.addData("Auto", "Robot aligned with AprilTag!");
                 if (gamepad1.a) {
                     hood.setReadyPos(0.5);
-                    hood.setReadyRedPos(0.611 );
-                    hood.setReadyBluePos(0.611);
+                    hood.setReadySide1Pos(0.388);
+                    hood.setReadySide2Pos(0.388);
                 }
                 else {
                     hood.setReadyPos(0.277);
-                    hood.setReadyRedPos(0);
-                    hood.setReadyBluePos(0);
+                    hood.setReadySide1Pos(0);
+                    hood.setReadySide2Pos(0);
                 }
             } else {
                 turn = Range.clip((offsetError + (Math.signum(offsetError) * TURN_STATIC)) * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
                 hood.setReadyPos(0.277);
-                hood.setReadyRedPos(0);
-                hood.setReadyBluePos(0);
+                hood.setReadySide1Pos(0);
+                hood.setReadySide2Pos(0);
                 telemetry.addData("heading Error + heading offset", headingError+headingOffset);
             }
             telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", driveSpeed, strafe, turn);
