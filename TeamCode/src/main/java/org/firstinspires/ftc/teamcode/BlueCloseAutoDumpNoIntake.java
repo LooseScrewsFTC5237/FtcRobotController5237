@@ -174,10 +174,10 @@ public class BlueCloseAutoDumpNoIntake extends LinearOpMode {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(8);
 
-        Pose2d dumpPose1 = new Pose2d(5, -68, Math.toRadians(225));
+        Pose2d dumpPose1 = new Pose2d(-5, -60, Math.toRadians(165));
         double dumpTangent1 = Math.toRadians(270);
         Pose2d shootPose = new Pose2d(-16, -16, Math.toRadians(217));
-        Pose2d dumpPose2 = new Pose2d(20, -63, Math.toRadians(225));
+        Pose2d dumpPose2 = new Pose2d(5, -60, Math.toRadians(0));
         double dumpTangent2 = Math.toRadians(0);
 
 //        PIDFCoefficients c = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -241,7 +241,29 @@ public class BlueCloseAutoDumpNoIntake extends LinearOpMode {
 
                                 //First Shot
                                 .stopAndAdd(() -> artifactCounter = 3)
-                                .splineToLinearHeading(shootPose, Math.toRadians(0))
+                                .strafeToLinearHeading(new Vector2d(-16, -16),Math.toRadians(217))
+                                .stopAndAdd(() -> artifactCounter = 0)
+                                .stopAndAdd(() -> intake.setPower(1))
+                                .stopAndAdd(() -> feeder.setPower(1))
+                                .waitSeconds(feederOnTime)
+                                .stopAndAdd(() -> feeder.setPower(0))
+                                .stopAndAdd(() -> intake.setPower(0))
+                                .stopAndAdd(() -> artifactCounter = 0)
+
+                                //Intake Goal Side Line
+                                .stopAndAdd(() -> intake.setPower(1))
+                                .setTangent(Math.toRadians(260))
+                                .splineToSplineHeading(new Pose2d(-10, -33, Math.toRadians(270)), Math.toRadians(270))
+                                .splineToLinearHeading(new Pose2d(-10, -53, Math.toRadians(270)), Math.toRadians(270))
+                                .stopAndAdd(() -> intake.setPower(0))
+
+                                //Dump 1
+                                .setTangent(Math.toRadians(90))
+                                .splineToLinearHeading(dumpPose1,dumpTangent1)
+
+                                //Second Shot
+                                .setTangent(Math.toRadians(90))
+                                .strafeToSplineHeading(new Vector2d(-16,-16), Math.toRadians(217))
                                 .stopAndAdd(() -> artifactCounter = 0)
                                 .stopAndAdd(() -> intake.setPower(1))
                                 .stopAndAdd(() -> feeder.setPower(1))
@@ -257,30 +279,13 @@ public class BlueCloseAutoDumpNoIntake extends LinearOpMode {
                                 .splineToLinearHeading(new Pose2d(17, -52, Math.toRadians(270)), Math.toRadians(270))
                                 .stopAndAdd(() -> intake.setPower(0))
 
-                                //Second Shot
+                                //Dump 2
                                 .setTangent(Math.toRadians(90))
-                                .splineToLinearHeading(shootPose, Math.toRadians(180))
-                                .stopAndAdd(() -> artifactCounter = 0)
-                                .stopAndAdd(() -> intake.setPower(1))
-                                .stopAndAdd(() -> feeder.setPower(1))
-                                .waitSeconds(feederOnTime)
-                                .stopAndAdd(() -> feeder.setPower(0))
-                                .stopAndAdd(() -> intake.setPower(0))
-                                .stopAndAdd(() -> artifactCounter = 0)
-
-                                //Dump'N Intake
-                                .stopAndAdd(() -> intake.setPower(1))
-                                .setTangent(Math.toRadians(0))
-                                .splineToSplineHeading(new Pose2d(12, -20, Math.toRadians(270)), Math.toRadians(270))
-                                .splineToSplineHeading(dumpPose1, dumpTangent1)
-                                .splineToLinearHeading(dumpPose2, dumpTangent2)
-                                .waitSeconds(1)
-                                .stopAndAdd(() -> intake.setPower(0))
+                                .splineToLinearHeading(dumpPose2,dumpTangent1)
 
                                 //Third Shot
                                 .setTangent(Math.toRadians(90))
-                                .splineToSplineHeading(new Pose2d(2, -20,Math.toRadians(270)), Math.toRadians(180))
-                                .splineToLinearHeading(shootPose, Math.toRadians(180))
+                                .strafeToSplineHeading(new Vector2d(-16,-16), Math.toRadians(217))
                                 .stopAndAdd(() -> artifactCounter = 0)
                                 .stopAndAdd(() -> intake.setPower(1))
                                 .stopAndAdd(() -> feeder.setPower(1))
@@ -289,37 +294,18 @@ public class BlueCloseAutoDumpNoIntake extends LinearOpMode {
                                 .stopAndAdd(() -> intake.setPower(0))
                                 .stopAndAdd(() -> artifactCounter = 0)
 
-                                //Intake Goal Side Line
-                                .stopAndAdd(() -> intake.setPower(1))
-                                .setTangent(Math.toRadians(80))
-                                .splineToLinearHeading(new Pose2d(-10, -33, Math.toRadians(270)), Math.toRadians(270))
+                                //Dump 3
                                 .setTangent(Math.toRadians(270))
-                                .splineToLinearHeading(new Pose2d(-10, -53, Math.toRadians(270)), Math.toRadians(270))
-                                .stopAndAdd(() -> intake.setPower(0))
+                                .splineToLinearHeading(dumpPose2,dumpTangent1)
+                                .waitSeconds(1)
+
+                                // Intake Dumped Artifacts
+                                .setTangent(Math.toRadians(0))
+                                .splineToLinearHeading(new Pose2d(20 ,-65 ,Math.toRadians(300)), Math.toRadians(0))
 
                                 //Fourth Shot
                                 .setTangent(Math.toRadians(90))
-                                .splineToLinearHeading(shootPose, Math.toRadians(180))
-                                .stopAndAdd(() -> artifactCounter = 0)
-                                .stopAndAdd(() -> feeder.setPower(1))
-                                .stopAndAdd(() -> intake.setPower(1))
-                                .waitSeconds(feederOnTime)
-                                .stopAndAdd(() -> feeder.setPower(0))
-                                .stopAndAdd(() -> intake.setPower(0))
-                                .stopAndAdd(() -> artifactCounter = 0)
-
-                                //Dump'N Intake2
-                                .stopAndAdd(() -> intake.setPower(1))
-                                .setTangent(Math.toRadians(280))
-                                .splineToSplineHeading(dumpPose1, dumpTangent1)
-                                .splineToLinearHeading(dumpPose2, dumpTangent2)
-                                .waitSeconds(1)
-                                .stopAndAdd(() -> intake.setPower(0))
-
-                                //Fifth Shot
-                                .setTangent(Math.toRadians(90))
-                                .splineToSplineHeading(new Pose2d(2, -20,Math.toRadians(270)), Math.toRadians(180))
-                                .splineToLinearHeading(new Pose2d(-16, -16, Math.toRadians(216)), Math.toRadians(180))
+                                .strafeToSplineHeading(new Vector2d(-16,-16), Math.toRadians(217))
                                 .stopAndAdd(() -> artifactCounter = 0)
                                 .stopAndAdd(() -> feeder.setPower(1))
                                 .stopAndAdd(() -> intake.setPower(1))
@@ -329,7 +315,7 @@ public class BlueCloseAutoDumpNoIntake extends LinearOpMode {
                                 .stopAndAdd(() -> artifactCounter = 0)
 
                                 //Park
-                                .splineToLinearHeading(new Pose2d(-16, -37, Math.toRadians(267)), Math.toRadians(270))
+                                .strafeToLinearHeading(new Vector2d(-16, -37), Math.toRadians(270))
                                 .build(),
                         intakeAction
                 )

@@ -8,12 +8,12 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class MeepMeepCloseBlueDumpNoIntake {
     public static void main(String[] args) {
-        MeepMeep meepMeep = new MeepMeep(800);
+        MeepMeep meepMeep = new MeepMeep(850);
 
-        Pose2d dumpPose1 = new Pose2d(-5, -53, Math.toRadians(180));
+        Pose2d dumpPose1 = new Pose2d(-5, -60, Math.toRadians(165));
         double dumpTangent1 = Math.toRadians(270);
         Pose2d shootPose = new Pose2d(-16, -16, Math.toRadians(217));
-        Pose2d dumpPose2 = new Pose2d(5, -53, Math.toRadians(0));
+        Pose2d dumpPose2 = new Pose2d(5, -60, Math.toRadians(0));
         double dumpTangent2 = Math.toRadians(0);
 
 
@@ -25,24 +25,21 @@ public class MeepMeepCloseBlueDumpNoIntake {
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
 
                 //First Shot
-//                .splineToLinearHeading(shootPose, Math.toRadians(0))
                 .strafeToLinearHeading(new Vector2d(-16, -16),Math.toRadians(217))
                 .waitSeconds(2)
 
                 //Intake Goal Side Line
                 .setTangent(Math.toRadians(260))
-                .splineToLinearHeading(new Pose2d(-10, -33, Math.toRadians(270)), Math.toRadians(270))
-                .setTangent(Math.toRadians(270))
+                .splineToSplineHeading(new Pose2d(-10, -33, Math.toRadians(270)), Math.toRadians(270))
                 .splineToLinearHeading(new Pose2d(-10, -53, Math.toRadians(270)), Math.toRadians(270))
 
-                //Dump
+                //Dump 1
                 .setTangent(Math.toRadians(90))
                 .splineToLinearHeading(dumpPose1,dumpTangent1)
 
-
                 //Second Shot
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(shootPose, Math.toRadians(180))
+                .strafeToSplineHeading(new Vector2d(-16,-16), Math.toRadians(217))
                 .waitSeconds(1)
 
                 //Intake Middle Line
@@ -51,31 +48,31 @@ public class MeepMeepCloseBlueDumpNoIntake {
                 .splineToLinearHeading(new Pose2d(17, -52, Math.toRadians(270)), Math.toRadians(270))
                 .waitSeconds(0)
 
-                //Dump
-                .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(dumpPose1,dumpTangent1)
-
-                //Third Shot
-                .setTangent(Math.toRadians(90))
-                .splineToSplineHeading(new Pose2d(2, -20,Math.toRadians(270)), Math.toRadians(180))
-                .splineToLinearHeading(shootPose, Math.toRadians(180))
-                .waitSeconds(1)
-
-                //Dump
+                //Dump 2
                 .setTangent(Math.toRadians(90))
                 .splineToLinearHeading(dumpPose2,dumpTangent1)
 
+                //Third Shot
+                .setTangent(Math.toRadians(90))
+                .strafeToSplineHeading(new Vector2d(-16,-16), Math.toRadians(217))
+                .waitSeconds(1)
+
+                //Dump 3
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(dumpPose2,dumpTangent1)
+                .waitSeconds(1)
+
                 // Intake Dumped Artifacts
                 .setTangent(Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(20 ,-63 ,Math.toRadians(180)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(20 ,-65 ,Math.toRadians(300)), Math.toRadians(0))
 
                 //Fourth Shot
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(shootPose, Math.toRadians(180))
+                .strafeToSplineHeading(new Vector2d(-16,-16), Math.toRadians(217))
                 .waitSeconds(1)
 
                 //Park
-                .splineToLinearHeading(new Pose2d(-16, -37, Math.toRadians(270)), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(-16, -37), Math.toRadians(270))
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_DECODE_OFFICIAL)
