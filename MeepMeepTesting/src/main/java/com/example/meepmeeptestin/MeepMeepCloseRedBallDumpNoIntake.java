@@ -10,10 +10,10 @@ public class MeepMeepCloseRedBallDumpNoIntake {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
-        Pose2d dumpPose1 = new Pose2d(-5, 53, Math.toRadians(180));
+        Pose2d dumpPose1 = new Pose2d(0, 55, Math.toRadians(190));
         double dumpTangent1 = Math.toRadians(90);
         Pose2d shootPose = new Pose2d(-16, 16, Math.toRadians(135));
-        Pose2d dumpPose2 = new Pose2d(5, 53, Math.toRadians(0));
+        Pose2d dumpPose2 = new Pose2d(5, 55, Math.toRadians(350));
         double dumpTangent2 = Math.toRadians(0);
 
 
@@ -30,7 +30,7 @@ public class MeepMeepCloseRedBallDumpNoIntake {
 
                 //Intake Goal Side Line
                 .setTangent(Math.toRadians(100))
-                .splineToSplineHeading(new Pose2d(-10, 33, Math.toRadians(90)), Math.toRadians(90))
+                .splineToSplineHeading(new Pose2d(-10, 27, Math.toRadians(90)), Math.toRadians(90))
                 .splineToLinearHeading(new Pose2d(-10, 53, Math.toRadians(90)), Math.toRadians(90))
 
                 //Dump 1
@@ -44,8 +44,8 @@ public class MeepMeepCloseRedBallDumpNoIntake {
 
                 //Intake Middle Line
                 .setTangent(Math.toRadians(0))
-                .splineToSplineHeading(new Pose2d(17, 33, Math.toRadians(90)), Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(17, 52, Math.toRadians(90)), Math.toRadians(90))
+                .splineToSplineHeading(new Pose2d(22, 27, Math.toRadians(90)), Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(22, 52, Math.toRadians(90)), Math.toRadians(90))
                 .waitSeconds(0)
 
                 //Dump 2
@@ -57,14 +57,12 @@ public class MeepMeepCloseRedBallDumpNoIntake {
                 .strafeToSplineHeading(new Vector2d(-16,16), Math.toRadians(135))
                 .waitSeconds(1)
 
-                //Dump 3
-                .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(dumpPose2,dumpTangent1)
+                //Dump'N Intake
+                .setTangent(Math.toRadians(80))
+                .splineToSplineHeading(new Pose2d(5, 58, Math.toRadians(100)), dumpTangent1)
+                .splineToLinearHeading(new Pose2d(25,60 ,Math.toRadians(135)), Math.toRadians(0))
                 .waitSeconds(1)
 
-                // Intake Dumped Artifacts
-                .setTangent(Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(20 ,63 ,Math.toRadians(0)), Math.toRadians(0))
 
                 //Fourth Shot
                 .setTangent(Math.toRadians(270))

@@ -1,3 +1,4 @@
+//surgivl
 package org.firstinspires.ftc.teamcode;
 import androidx.annotation.NonNull;
 
@@ -253,7 +254,7 @@ public class BlueCloseAutoDumpNoIntake extends LinearOpMode {
                                 //Intake Goal Side Line
                                 .stopAndAdd(() -> intake.setPower(1))
                                 .setTangent(Math.toRadians(260))
-                                .splineToSplineHeading(new Pose2d(-10, -33, Math.toRadians(270)), Math.toRadians(270))
+                                .splineToSplineHeading(new Pose2d(-10, -27, Math.toRadians(270)), Math.toRadians(270))
                                 .splineToLinearHeading(new Pose2d(-10, -53, Math.toRadians(270)), Math.toRadians(270))
                                 .stopAndAdd(() -> intake.setPower(0))
 
@@ -275,7 +276,7 @@ public class BlueCloseAutoDumpNoIntake extends LinearOpMode {
                                 //Intake Middle Line
                                 .stopAndAdd(() -> intake.setPower(1))
                                 .setTangent(Math.toRadians(0))
-                                .splineToSplineHeading(new Pose2d(17, -33, Math.toRadians(270)), Math.toRadians(270))
+                                .splineToSplineHeading(new Pose2d(17, -27, Math.toRadians(270)), Math.toRadians(270))
                                 .splineToLinearHeading(new Pose2d(17, -52, Math.toRadians(270)), Math.toRadians(270))
                                 .stopAndAdd(() -> intake.setPower(0))
 
@@ -294,14 +295,13 @@ public class BlueCloseAutoDumpNoIntake extends LinearOpMode {
                                 .stopAndAdd(() -> intake.setPower(0))
                                 .stopAndAdd(() -> artifactCounter = 0)
 
-                                //Dump 3
-                                .setTangent(Math.toRadians(270))
-                                .splineToLinearHeading(dumpPose2,dumpTangent1)
+                                //Dump'N Intake
+                                .stopAndAdd(() -> intake.setPower(1))
+                                .setTangent(Math.toRadians(280))
+                                .splineToSplineHeading(new Pose2d(5,-68,Math.toRadians(225)), Math.toRadians(270))
+                                .splineToLinearHeading(new Pose2d(20,-63,Math.toRadians(225)), Math.toRadians(0))
                                 .waitSeconds(1)
-
-                                // Intake Dumped Artifacts
-                                .setTangent(Math.toRadians(0))
-                                .splineToLinearHeading(new Pose2d(20 ,-65 ,Math.toRadians(300)), Math.toRadians(0))
+                                .stopAndAdd(() -> intake.setPower(0))
 
                                 //Fourth Shot
                                 .setTangent(Math.toRadians(90))
