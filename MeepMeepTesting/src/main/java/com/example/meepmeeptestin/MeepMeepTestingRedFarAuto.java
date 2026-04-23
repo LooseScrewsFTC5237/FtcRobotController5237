@@ -18,63 +18,66 @@ public class MeepMeepTestingRedFarAuto {
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(60, 14.5, Math.toRadians(180)))
 
                 // 1st Shot
-                .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(160.5))
+                .strafeToLinearHeading(new Vector2d(56, 20), Math.toRadians(154.5))
                 .waitSeconds(1)
 
                 // 1st Intake
                 .setTangent(Math.toRadians(180))
-                .splineToSplineHeading(new Pose2d(35, 35,Math.toRadians(90)), Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(35,55),Math.toRadians(90))
+                .splineToSplineHeading(new Pose2d(31, 35,Math.toRadians(90)), Math.toRadians(90))
+                .splineToSplineHeading(new Pose2d(31, 53, Math.toRadians(95)), Math.toRadians(90))
 
                 // 2nd Shot
-                .splineToSplineHeading(new Pose2d(56, 23, Math.toRadians(160.5)), Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(56, 20, Math.toRadians(158.5)), Math.toRadians(270))
                 .waitSeconds(0.6)
 
                // 2nd Intake
-                .setTangent(Math.toRadians(90))
-                .splineToSplineHeading(new Pose2d(60, 40,Math.toRadians(90)), Math.toRadians(90))
-                .lineToY(58)
+                .strafeToLinearHeading(new Vector2d(48, 63), Math.toRadians(5))
+                .strafeToLinearHeading(new Vector2d(60, 64), Math.toRadians(5))
                 .waitSeconds(0.6)
 
                 // 3rd Shot
-                .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(150.5))
+                .strafeToLinearHeading(new Vector2d(56, 17), Math.toRadians(158.5)) // A
                 .waitSeconds(0.6)
 
                 // 3rd Intake
                 .setTangent(Math.toRadians(90))
-                .splineToSplineHeading(new Pose2d(60, 40,Math.toRadians(90)), Math.toRadians(90))
-                .lineToY(58)
+                .strafeToSplineHeading(new Vector2d(61,36),Math.toRadians(135))
+                .strafeToSplineHeading(new Vector2d(66,55),Math.toRadians(135))
+                .strafeToLinearHeading(new Vector2d(40,60), Math.toRadians(135))
                 .waitSeconds(0.6)
 
                 // 4th Shot
-                .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(166))
+                .strafeToLinearHeading(new Vector2d(56, 17), Math.toRadians(153))
                 .waitSeconds(0.6)
 
                 // 4th Intake
                 .setTangent(Math.toRadians(90))
-                .splineToSplineHeading(new Pose2d(48, 40,Math.toRadians(135)), Math.toRadians(135))
-                .lineToY(58)
+                .strafeToSplineHeading(new Vector2d(61,36),Math.toRadians(135))
+                .strafeToSplineHeading(new Vector2d(66,55),Math.toRadians(135))
+                .strafeToLinearHeading(new Vector2d(40,60), Math.toRadians(135))
                 .waitSeconds(0.6)
 
                 // 5th Shot
-                .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(166))
+                .strafeToLinearHeading(new Vector2d(56, 17), Math.toRadians(153))
                 .waitSeconds(0.6)
 
                 // 5th Intake
                 .setTangent(Math.toRadians(90))
-                .splineToSplineHeading(new Pose2d(48, 40,Math.toRadians(135)), Math.toRadians(135))
-                .lineToY(58)
+                .strafeToSplineHeading(new Vector2d(61,36),Math.toRadians(72))
+                .strafeToSplineHeading(new Vector2d(66,55),Math.toRadians(72))
                 .waitSeconds(0.6)
 
-                // 6th Shot
-                .strafeToLinearHeading(new Vector2d(56, 23), Math.toRadians(166))
-                .waitSeconds(0.6)
-
-                // 6th Intake
-                .setTangent(Math.toRadians(90))
-                .splineToSplineHeading(new Pose2d(48, 40,Math.toRadians(135)), Math.toRadians(135))
-                .lineToY(58)
-                .waitSeconds(0.6)
+//                region 6th Shot and Intake
+//                // 6th Shot
+//                .strafeToLinearHeading(new Vector2d(56, 20), Math.toRadians(158.5))
+//                .waitSeconds(0.6)
+//
+//                // 6th Intake
+//                .setTangent(Math.toRadians(90))
+//                .splineToSplineHeading(new Pose2d(48, 40,Math.toRadians(135)), Math.toRadians(135))
+//                .lineToY(55)
+//                .waitSeconds(0.6)
+                //endregion
 
                 // Park
                 .strafeToLinearHeading(new Vector2d(60, 40), Math.toRadians(90))

@@ -1,3 +1,4 @@
+//surgivl
 package org.firstinspires.ftc.teamcode;
 import androidx.annotation.NonNull;
 
@@ -5,14 +6,10 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.IdentityPoseMap;
-import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseMap;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.RaceAction;
-import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.SleepAction;
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -27,12 +24,12 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.Range;
 
 @Config
-public class Close18BallDumpOnlyBlueTEST extends LinearOpMode {
+public class BlueCloseAutoDumpNoIntake extends LinearOpMode {
 
     boolean isBlue = false;
     @Autonomous()
-    public static class BlueClose18BallDumpOnlyTEST extends Close18BallDumpOnlyBlueTEST {
-        public BlueClose18BallDumpOnlyTEST() {
+    public static class BlueCloseDumpNoIntake extends BlueCloseAutoDumpNoIntake {
+        public BlueCloseDumpNoIntake() {
             super(new Pose2d(-60, -37, Math.toRadians(0)), new IdentityPoseMap());
             isBlue = true;
         }
@@ -69,7 +66,6 @@ public class Close18BallDumpOnlyBlueTEST extends LinearOpMode {
     public static boolean
             UPDATE_FLYWHEEL_PID = true;
     public static boolean artifactPresent = false;
-    public static boolean artifactDetected = false;
 
     public static int artifactCounter = 0;
     public static double Redoffset = 0;
@@ -78,7 +74,6 @@ public class Close18BallDumpOnlyBlueTEST extends LinearOpMode {
     public static double TURN_GAIN   =  0.04  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
     public static double TURN_STATIC = 0.1;
     public static double MAX_AUTO_TURN  = 0.3;
-
     public static double feederOnTime = 0.6;
     PoseMap poseMap;
     Pose2d startingPose;
@@ -157,7 +152,7 @@ public class Close18BallDumpOnlyBlueTEST extends LinearOpMode {
         };
     }
 
-    public Close18BallDumpOnlyBlueTEST(Pose2d startingPose, PoseMap poseMap) {
+    public BlueCloseAutoDumpNoIntake(Pose2d startingPose, PoseMap poseMap) {
         this.poseMap = poseMap;
         this.startingPose = startingPose;
     }
@@ -179,13 +174,12 @@ public class Close18BallDumpOnlyBlueTEST extends LinearOpMode {
         double currentShooterVelocity = shooter.getVelocity();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(8);
-        Pose2d dumpPose1 = new Pose2d(7, -60, Math.toRadians(225));
+
+        Pose2d dumpPose1 = new Pose2d(-5, -60, Math.toRadians(165));
         double dumpTangent1 = Math.toRadians(270);
         Pose2d shootPose = new Pose2d(-16, -16, Math.toRadians(217));
-        Pose2d dumpPose2 = new Pose2d(15, -63, Math.toRadians(225));
+        Pose2d dumpPose2 = new Pose2d(5, -60, Math.toRadians(0));
         double dumpTangent2 = Math.toRadians(0);
-
-
 
 //        PIDFCoefficients c = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
 //        if (!UPDATE_FLYWHEEL_PID) {
@@ -210,18 +204,6 @@ public class Close18BallDumpOnlyBlueTEST extends LinearOpMode {
         telemetry.addData("Flywheel P", currentPIDF.p);
         telemetry.addData("Flywheel F", currentPIDF.f);
 
-        // 1. Define the Action Builders (using .fresh() to chain them)
-                TrajectoryActionBuilder setup = drive.actionBuilder(beginPose, poseMap)
-                        .stopAndAdd(() -> {
-                            intake.setPower(0.0);
-                            feeder.setPower(0.0);
-                            shooter.setVelocity(0);
-                            shooter2.setVelocity(0);
-                        });
-
-            TrajectoryActionBuilder firstTestAction = setup.fresh()
-                    .lineToX(50);
-
         Action intakeAction = (telemetryPacket) -> {
             // Artifact Counter Logic
             boolean artifactDetected = laserInput.getState();
@@ -232,7 +214,7 @@ public class Close18BallDumpOnlyBlueTEST extends LinearOpMode {
             if (!artifactDetected) {
                 artifactPresent = false;
             }
-            if (artifactCounter < 4) {
+            if (artifactCounter < 3) {
                 intake.setPower(1);
             } else {
                 intake.setPower(0);
@@ -245,26 +227,99 @@ public class Close18BallDumpOnlyBlueTEST extends LinearOpMode {
 
             return true;
         };
-//                    new InstantAction(() -> intake.setPower(1)),
-//                    new SleepAction(feederOnTime),
-//                    new InstantAction(() -> intake.setPower(0))
 
+        Actions.runBlocking(
+                new RaceAction(
+                        drive.actionBuilder(beginPose, poseMap)
 
-        // 2. Execute everything in order
-                Actions.runBlocking(new SequentialAction(
-                        setup.build(),
-                        new RaceAction(
-                                firstTestAction.build(),
-                                intakeAction
-                        )
-                ));
+                                // Turn on motors
+                                .stopAndAdd(() -> {
+                                    intake.setPower(0.0);
+                                    feeder.setPower(0.0);
+                                    shooter.setVelocity(shooterSpeed);
+                                    shooter2.setVelocity(shooterSpeed);
+                                })
 
-        // 3. Final Cleanup (Runs after all actions finish or if the OpMode stops)
-                intake.setPower(0);
-                feeder.setPower(0);
-                shooter.setPower(0);
-                shooter2.setPower(0);
+                                //First Shot
+                                .stopAndAdd(() -> artifactCounter = 3)
+                                .strafeToLinearHeading(new Vector2d(-16, -16),Math.toRadians(217))
+                                .stopAndAdd(() -> artifactCounter = 0)
+                                .stopAndAdd(() -> intake.setPower(1))
+                                .stopAndAdd(() -> feeder.setPower(1))
+                                .waitSeconds(feederOnTime)
+                                .stopAndAdd(() -> feeder.setPower(0))
+                                .stopAndAdd(() -> intake.setPower(0))
+                                .stopAndAdd(() -> artifactCounter = 0)
 
+                                //Intake Goal Side Line
+                                .stopAndAdd(() -> intake.setPower(1))
+                                .setTangent(Math.toRadians(260))
+                                .splineToSplineHeading(new Pose2d(-10, -27, Math.toRadians(270)), Math.toRadians(270))
+                                .splineToLinearHeading(new Pose2d(-10, -53, Math.toRadians(270)), Math.toRadians(270))
+                                .stopAndAdd(() -> intake.setPower(0))
+
+                                //Dump 1
+                                .setTangent(Math.toRadians(90))
+                                .splineToLinearHeading(dumpPose1,dumpTangent1)
+
+                                //Second Shot
+                                .setTangent(Math.toRadians(90))
+                                .strafeToSplineHeading(new Vector2d(-16,-16), Math.toRadians(217))
+                                .stopAndAdd(() -> artifactCounter = 0)
+                                .stopAndAdd(() -> intake.setPower(1))
+                                .stopAndAdd(() -> feeder.setPower(1))
+                                .waitSeconds(feederOnTime)
+                                .stopAndAdd(() -> feeder.setPower(0))
+                                .stopAndAdd(() -> intake.setPower(0))
+                                .stopAndAdd(() -> artifactCounter = 0)
+
+                                //Intake Middle Line
+                                .stopAndAdd(() -> intake.setPower(1))
+                                .setTangent(Math.toRadians(0))
+                                .splineToSplineHeading(new Pose2d(17, -27, Math.toRadians(270)), Math.toRadians(270))
+                                .splineToLinearHeading(new Pose2d(17, -52, Math.toRadians(270)), Math.toRadians(270))
+                                .stopAndAdd(() -> intake.setPower(0))
+
+                                //Dump 2
+                                .setTangent(Math.toRadians(90))
+                                .splineToLinearHeading(dumpPose2,dumpTangent1)
+
+                                //Third Shot
+                                .setTangent(Math.toRadians(90))
+                                .strafeToSplineHeading(new Vector2d(-16,-16), Math.toRadians(217))
+                                .stopAndAdd(() -> artifactCounter = 0)
+                                .stopAndAdd(() -> intake.setPower(1))
+                                .stopAndAdd(() -> feeder.setPower(1))
+                                .waitSeconds(feederOnTime)
+                                .stopAndAdd(() -> feeder.setPower(0))
+                                .stopAndAdd(() -> intake.setPower(0))
+                                .stopAndAdd(() -> artifactCounter = 0)
+
+                                //Dump'N Intake
+                                .stopAndAdd(() -> intake.setPower(1))
+                                .setTangent(Math.toRadians(280))
+                                .splineToSplineHeading(new Pose2d(5,-68,Math.toRadians(225)), Math.toRadians(270))
+                                .splineToLinearHeading(new Pose2d(20,-63,Math.toRadians(225)), Math.toRadians(0))
+                                .waitSeconds(1)
+                                .stopAndAdd(() -> intake.setPower(0))
+
+                                //Fourth Shot
+                                .setTangent(Math.toRadians(90))
+                                .strafeToSplineHeading(new Vector2d(-16,-16), Math.toRadians(217))
+                                .stopAndAdd(() -> artifactCounter = 0)
+                                .stopAndAdd(() -> feeder.setPower(1))
+                                .stopAndAdd(() -> intake.setPower(1))
+                                .waitSeconds(feederOnTime)
+                                .stopAndAdd(() -> feeder.setPower(0))
+                                .stopAndAdd(() -> intake.setPower(0))
+                                .stopAndAdd(() -> artifactCounter = 0)
+
+                                //Park
+                                .strafeToLinearHeading(new Vector2d(-16, -37), Math.toRadians(270))
+                                .build(),
+                        intakeAction
+                )
+        );
 
         if(isStopRequested()) return;
 

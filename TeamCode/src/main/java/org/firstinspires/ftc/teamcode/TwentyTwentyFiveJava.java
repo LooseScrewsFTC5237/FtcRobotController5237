@@ -75,9 +75,9 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
     // This declares the four motors needed
     int lift_height = 0;
-    public static int fastShooterSpeed = 1500;
-    public static int shooterSpeed = 1200;
-    public static int slowShooterSpeed = 960;
+    public static int fastShooterSpeed = 1065;
+    public static int shooterSpeed = 750;
+    public static int slowShooterSpeed = 650;
     public static double shooterSpeedTolerance = 40;
     public static int targetVelocity = 0;
     public static double DRIVE_SPEED = 0.8;
@@ -104,9 +104,9 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static double FLYWHEEL_I = 0;
     public static double FLYWHEEL_D = 0;
     public static double FLYWHEEL_F = 22.16;
-    public static double closeHoodAngle = .5;
+    public static double closeHoodAngle = .6;
     public static double mediumHoodAngle = 0.5;
-    public static double farHoodAngle = 0.5;
+    public static double farHoodAngle = 0.42;
     public static double FarRPMBump = 60;
     public static double FarHoodBump = -0.04;
     public static double headingOffset = 0;
@@ -172,7 +172,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         intake.setDirection(DcMotor.Direction.REVERSE);
         shooter2.setDirection(DcMotorSimple.Direction.REVERSE);
         hood.init(hardwareMap);
-        hood.setServoPos(.5);
+        hood.setServoPos(0.6);
 
         // This uses RUN_USING_ENCODER to be more accurate.   If you don't have the encoder
         // wires, you should remove these
@@ -249,7 +249,7 @@ public class TwentyTwentyFiveJava extends OpMode {
         if (artifactCounter >= 3) {
             hood.setArtifactIndicatorPos(0.5);
         } else {
-            hood.setArtifactIndicatorPos(.611);
+            hood.setArtifactIndicatorPos(0.611);
         }
 
         // Intake Motor
@@ -332,14 +332,20 @@ public class TwentyTwentyFiveJava extends OpMode {
                 turn = 0;
                 telemetry.addData("Auto", "Robot aligned with AprilTag!");
                 if (gamepad1.a) {
-                    hood.setReadyPos(.5);
+                    hood.setReadyPos(0.5);
+                    hood.setReadySide1Pos(0.388);
+                    hood.setReadySide2Pos(0.388);
                 }
                 else {
-                    hood.setReadyPos(.277);
+                    hood.setReadyPos(0.277);
+                    hood.setReadySide1Pos(0);
+                    hood.setReadySide2Pos(0);
                 }
             } else {
                 turn = Range.clip((offsetError + (Math.signum(offsetError) * TURN_STATIC)) * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
-                hood.setReadyPos(.277);
+                hood.setReadyPos(0.277);
+                hood.setReadySide1Pos(0);
+                hood.setReadySide2Pos(0);
                 telemetry.addData("heading Error + heading offset", headingError+headingOffset);
             }
             telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", driveSpeed, strafe, turn);

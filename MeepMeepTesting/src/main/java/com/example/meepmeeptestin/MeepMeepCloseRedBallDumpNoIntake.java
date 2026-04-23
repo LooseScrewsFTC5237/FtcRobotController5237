@@ -10,10 +10,10 @@ public class MeepMeepCloseRedBallDumpNoIntake {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
-        Pose2d dumpPose1 = new Pose2d(7, 57, Math.toRadians(135));
-        double dumpTangent1 = Math.toRadians(0);
+        Pose2d dumpPose1 = new Pose2d(0, 55, Math.toRadians(190));
+        double dumpTangent1 = Math.toRadians(90);
         Pose2d shootPose = new Pose2d(-16, 16, Math.toRadians(135));
-        Pose2d dumpPose2 = new Pose2d(25, 60, Math.toRadians(135));
+        Pose2d dumpPose2 = new Pose2d(5, 55, Math.toRadians(350));
         double dumpTangent2 = Math.toRadians(0);
 
 
@@ -24,71 +24,53 @@ public class MeepMeepCloseRedBallDumpNoIntake {
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-60, 37, Math.toRadians(0)))
 
-                //1st Shot
-                .strafeToLinearHeading(new Vector2d(-16,16),Math.toRadians(135))
-                .waitSeconds(0.75)
-
+                //First Shot
+                .strafeToLinearHeading(new Vector2d(-16, 16),Math.toRadians(135))
+                .waitSeconds(2)
 
                 //Intake Goal Side Line
-                .setTangent(Math.toRadians(80))
-                .splineToSplineHeading(new Pose2d(-13, 33, Math.toRadians(90)), Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(-12, 53, Math.toRadians(90)), Math.toRadians(90))
+                .setTangent(Math.toRadians(100))
+                .splineToSplineHeading(new Pose2d(-10, 27, Math.toRadians(90)), Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(-10, 53, Math.toRadians(90)), Math.toRadians(90))
 
-                //Dump No Intake
+                //Dump 1
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(-1, 53, Math.toRadians(180)), Math.toRadians(90))
+                .splineToLinearHeading(dumpPose1,dumpTangent1)
 
-                //2nd Shot
-                .strafeToLinearHeading(new Vector2d(-16,16),Math.toRadians(135))
-                .waitSeconds(0.75)
+                //Second Shot
+                .setTangent(Math.toRadians(270))
+                .strafeToSplineHeading(new Vector2d(-16,16), Math.toRadians(135))
+                .waitSeconds(1)
 
                 //Intake Middle Line
                 .setTangent(Math.toRadians(0))
-                .splineToSplineHeading(new Pose2d(14, 35,Math.toRadians(90)), Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(14, 52,Math.toRadians(90)), Math.toRadians(90))
+                .splineToSplineHeading(new Pose2d(22, 27, Math.toRadians(90)), Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(22, 52, Math.toRadians(90)), Math.toRadians(90))
                 .waitSeconds(0)
 
-                //3rd Shot
-                .setTangent(Math.toRadians(230))
-                .splineToLinearHeading(shootPose, Math.toRadians(180))
-                .waitSeconds(0.75)
+                //Dump 2
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(dumpPose2,dumpTangent1)
+
+                //Third Shot
+                .setTangent(Math.toRadians(270))
+                .strafeToSplineHeading(new Vector2d(-16,16), Math.toRadians(135))
+                .waitSeconds(1)
 
                 //Dump'N Intake
                 .setTangent(Math.toRadians(80))
-                .splineToSplineHeading(dumpPose1,dumpTangent1)
-                .splineToLinearHeading(dumpPose2, dumpTangent2)
+                .splineToSplineHeading(new Pose2d(5, 58, Math.toRadians(100)), dumpTangent1)
+                .splineToLinearHeading(new Pose2d(25,60 ,Math.toRadians(135)), Math.toRadians(0))
                 .waitSeconds(1)
 
-                //4th Shot
+
+                //Fourth Shot
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(shootPose, Math.toRadians(270))
-                .waitSeconds(0.75)
-
-                //Dump'N Intake2
-                .setTangent(Math.toRadians(80))
-                .splineToSplineHeading(dumpPose1, dumpTangent1)
-                .splineToLinearHeading(dumpPose2, dumpTangent2)
+                .strafeToSplineHeading(new Vector2d(-16,16), Math.toRadians(135))
                 .waitSeconds(1)
-
-                //5th Shot
-                .setTangent(Math.toRadians(230))
-                .splineToLinearHeading(shootPose, Math.toRadians(180))
-                .waitSeconds(0.75)
-
-                //Dump'N Intake3
-                .setTangent(Math.toRadians(80))
-                .splineToSplineHeading(dumpPose1, dumpTangent1)
-                .splineToLinearHeading(dumpPose2, dumpTangent2)
-                .waitSeconds(1)
-
-                //6th Shot
-                .setTangent(Math.toRadians(230))
-                .splineToLinearHeading(shootPose, Math.toRadians(180))
-                .waitSeconds(0.75)
 
                 //Park
-                .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(-16, 37, Math.toRadians(90)), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-16, 37), Math.toRadians(90))
 
                 .build());
         meepMeep.setBackground(MeepMeep.Background.FIELD_DECODE_OFFICIAL)
