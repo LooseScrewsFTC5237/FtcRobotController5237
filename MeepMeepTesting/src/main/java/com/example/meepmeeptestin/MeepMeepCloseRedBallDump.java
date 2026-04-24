@@ -28,7 +28,6 @@ public class MeepMeepCloseRedBallDump {
                 .splineToLinearHeading(shootPose, Math.toRadians(0))
                 .waitSeconds(0.75)
 
-
                 //Intake Middle Line
                 .setTangent(Math.toRadians(0))
                 .splineToSplineHeading(new Pose2d(20, 25,Math.toRadians(90)), Math.toRadians(90))

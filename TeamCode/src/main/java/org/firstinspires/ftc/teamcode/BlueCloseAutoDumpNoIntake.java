@@ -1,4 +1,4 @@
-//surgivl
+//surgival
 package org.firstinspires.ftc.teamcode;
 import androidx.annotation.NonNull;
 
@@ -22,7 +22,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.Range;
-
 @Config
 public class BlueCloseAutoDumpNoIntake extends LinearOpMode {
 
@@ -277,12 +276,13 @@ public class BlueCloseAutoDumpNoIntake extends LinearOpMode {
                                 .stopAndAdd(() -> intake.setPower(1))
                                 .setTangent(Math.toRadians(0))
                                 .splineToSplineHeading(new Pose2d(17, -27, Math.toRadians(270)), Math.toRadians(270))
-                                .splineToLinearHeading(new Pose2d(17, -52, Math.toRadians(270)), Math.toRadians(270))
+                                .splineToLinearHeading(new Pose2d(17, -54, Math.toRadians(270)), Math.toRadians(270))
                                 .stopAndAdd(() -> intake.setPower(0))
 
                                 //Dump 2
                                 .setTangent(Math.toRadians(90))
                                 .splineToLinearHeading(dumpPose2,dumpTangent1)
+                                .waitSeconds(0.5)
 
                                 //Third Shot
                                 .setTangent(Math.toRadians(90))
@@ -296,9 +296,11 @@ public class BlueCloseAutoDumpNoIntake extends LinearOpMode {
                                 .stopAndAdd(() -> artifactCounter = 0)
 
                                 //Dump'N Intake
+                                // Intake disbaling and immediate renabling is useless if there is nothing in between like a move.
                                 .stopAndAdd(() -> intake.setPower(1))
                                 .setTangent(Math.toRadians(280))
-                                .splineToSplineHeading(new Pose2d(5,-68,Math.toRadians(225)), Math.toRadians(270))
+//                                .stopAndAdd(() -> intake.setPower(1)) <- Recommended position
+                                .splineToSplineHeading(new Pose2d(5,-69,Math.toRadians(225)), Math.toRadians(270))
                                 .splineToLinearHeading(new Pose2d(20,-63,Math.toRadians(225)), Math.toRadians(0))
                                 .waitSeconds(1)
                                 .stopAndAdd(() -> intake.setPower(0))

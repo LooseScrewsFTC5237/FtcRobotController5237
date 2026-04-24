@@ -1,3 +1,4 @@
+//surgival
 package com.example.meepmeeptestin;
 
 import com.acmerobotics.roadrunner.Pose2d;
@@ -59,7 +60,7 @@ public class MeepMeepCloseBlueDumpNoIntake {
 
                 //Dump'N Intake
                 .setTangent(Math.toRadians(280))
-                .splineToSplineHeading(new Pose2d(5,-68,Math.toRadians(225)), Math.toRadians(270))
+                .splineToSplineHeading(new Pose2d(4,-69,Math.toRadians(225)), Math.toRadians(270))
                 .splineToLinearHeading(new Pose2d(20,-63,Math.toRadians(225)), Math.toRadians(0))
                 .waitSeconds(1)
 

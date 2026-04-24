@@ -1,3 +1,4 @@
+//surgival
 /* Copyright (c) 2025 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -333,17 +334,17 @@ public class TwentyTwentyFiveJava extends OpMode {
                 telemetry.addData("Auto", "Robot aligned with AprilTag!");
                 if (gamepad1.a) {
                     hood.setReadyPos(0.5);
-                    hood.setReadySide1Pos(0.388);
+                    hood.setReadySide1Pos(0.611);
                     hood.setReadySide2Pos(0.388);
                 }
                 else {
-                    hood.setReadyPos(0.277);
+                    hood.setReadyPos(0);
                     hood.setReadySide1Pos(0);
                     hood.setReadySide2Pos(0);
                 }
             } else {
                 turn = Range.clip((offsetError + (Math.signum(offsetError) * TURN_STATIC)) * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
-                hood.setReadyPos(0.277);
+                hood.setReadyPos(0);
                 hood.setReadySide1Pos(0);
                 hood.setReadySide2Pos(0);
                 telemetry.addData("heading Error + heading offset", headingError+headingOffset);
