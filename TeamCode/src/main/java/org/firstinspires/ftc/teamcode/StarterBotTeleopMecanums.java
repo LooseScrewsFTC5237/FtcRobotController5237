@@ -64,8 +64,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 //@Disabled
 public class StarterBotTeleopMecanums extends OpMode {
     final double FEED_TIME_SECONDS = 0.20; //The feeder servos run this long when a shot is requested.
-    final double STOP_SPEED = 0.0; //We send this power to the servos when we want them to stop.
-    final double FULL_SPEED = 1.0;
+    final double FEEDER_IDLE_LEFT = 0.25; //We send this power to the servos when we want them to stop.
+    final double FEEDER_IDLE_RIGHT = 0.25;
+    final double STOP_SPEED = 0.0;
+    final double FULL_SPEED = -1.0;
 
     /*
      * When we control our launcher motor, we are using encoders. These allow the control system
@@ -73,7 +75,7 @@ public class StarterBotTeleopMecanums extends OpMode {
      * velocity. Here we are setting the target, and minimum velocity that the launcher should run
      * at. The minimum velocity is a threshold for determining when to fire.
      */
-    final double LAUNCHER_TARGET_VELOCITY = 1125;
+    final double LAUNCHER_TARGET_VELOCITY = 1200;
     final double LAUNCHER_MIN_VELOCITY = 1075;
 
     // Declare OpMode members.
@@ -85,7 +87,7 @@ public class StarterBotTeleopMecanums extends OpMode {
     private CRServo leftFeeder = null;
     private CRServo rightFeeder = null;
 
-    ElapsedTime feederTimer = new ElapsedTime();
+
 
     /*
      * TECH TIP: State Machines
@@ -176,7 +178,7 @@ public class StarterBotTeleopMecanums extends OpMode {
         leftFeeder.setPower(STOP_SPEED);
         rightFeeder.setPower(STOP_SPEED);
 
-        launcher.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(300, 0, 0, 10));
+        //launcher.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(300, 0, 0, 10));
 
         /*
          * Much like our drivetrain motors, we set the left feeder servo to reverse so that they
@@ -224,16 +226,16 @@ public class StarterBotTeleopMecanums extends OpMode {
          * Here we give the user control of the speed of the launcher motor without automatically
          * queuing a shot.
          */
-        if (gamepad1.y) {
+        if (gamepad2.y) {
             launcher.setVelocity(LAUNCHER_TARGET_VELOCITY);
-        } else if (gamepad1.b) { // stop flywheel
+        } else if (gamepad2.b) { // stop flywheel
             launcher.setVelocity(STOP_SPEED);
         }
 
         /*
          * Now we call our "Launch" function.
          */
-        launch(gamepad1.rightBumperWasPressed());
+        launch(gamepad2.rightBumperWasPressed());
 
         /*
          * Show the state and motor powers
@@ -276,24 +278,35 @@ public class StarterBotTeleopMecanums extends OpMode {
                 if (shotRequested) {
                     launchState = LaunchState.SPIN_UP;
                 }
+                if (!gamepad2.right_bumper) {
+                    launchState = LaunchState.IDLE;
+                    leftFeeder.setPower(FEEDER_IDLE_LEFT);
+                    rightFeeder.setPower(FEEDER_IDLE_RIGHT);
+                }
                 break;
             case SPIN_UP:
                 launcher.setVelocity(LAUNCHER_TARGET_VELOCITY);
                 if (launcher.getVelocity() > LAUNCHER_MIN_VELOCITY) {
                     launchState = LaunchState.LAUNCH;
                 }
+                if (!gamepad2.right_bumper) {
+                    launchState = LaunchState.IDLE;
+                    leftFeeder.setPower(FEEDER_IDLE_LEFT);
+                    rightFeeder.setPower(FEEDER_IDLE_RIGHT);
+                }
                 break;
             case LAUNCH:
-                leftFeeder.setPower(FULL_SPEED);
-                rightFeeder.setPower(FULL_SPEED);
-                feederTimer.reset();
+                if (gamepad2.right_bumper) {
+                    leftFeeder.setPower(FULL_SPEED);
+                    rightFeeder.setPower(FULL_SPEED);
+                }
                 launchState = LaunchState.LAUNCHING;
                 break;
             case LAUNCHING:
-                if (feederTimer.seconds() > FEED_TIME_SECONDS) {
+                if (!gamepad2.right_bumper) {
                     launchState = LaunchState.IDLE;
-                    leftFeeder.setPower(STOP_SPEED);
-                    rightFeeder.setPower(STOP_SPEED);
+                    leftFeeder.setPower(FEEDER_IDLE_LEFT);
+                    rightFeeder.setPower(FEEDER_IDLE_RIGHT);
                 }
                 break;
         }
