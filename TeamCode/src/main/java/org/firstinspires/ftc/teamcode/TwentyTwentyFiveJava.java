@@ -78,7 +78,7 @@ public class TwentyTwentyFiveJava extends OpMode {
     int lift_height = 0;
     public static int fastShooterSpeed = 1065;
     public static int shooterSpeed = 750;
-    public static int slowShooterSpeed = 650;
+    public static int slowShooterSpeed = 675;
     public static double shooterSpeedTolerance = 40;
     public static int targetVelocity = 0;
     public static double DRIVE_SPEED = 0.8;
@@ -96,8 +96,10 @@ public class TwentyTwentyFiveJava extends OpMode {
     public static float targetRPM;
     public static double rpmDistanceMultiplier = 7.61765;
     public static double axisOffsetRPM = 776.59769;
-    public static double Blueoffset = -2.5;
-    public static double Redoffset = 0;
+    public static double blueCloseOffset = 2;
+    public static double redCloseOffset = 0;
+    public static double blueFarOffset = -2;
+    public static double redFarOffset = 2;
     public static double hoodDistanceMultiplier = -0.00188;
     public static double getAxisOffsetHood = 0.535;
     public static boolean UPDATE_FLYWHEEL_PID = false;
@@ -318,7 +320,22 @@ public class TwentyTwentyFiveJava extends OpMode {
         Position p = null;
         if (goalTag != null) {
             p = goalTag.getTargetPoseCameraSpace().getPosition();
-            headingOffset = goalTag.getFiducialId() == 20 ? Blueoffset : goalTag.getFiducialId() == 24 ? Redoffset : 0.0;
+            double dist = Math.hypot(p.x, p.z) * 39.3701;
+            //  headingOffset = goalTag.getFiducialId() == 20 ? blueCloseOffset : goalTag.getFiducialId() == 24 ? redCloseOffset : 0.0;
+            if (goalTag.getFiducialId() == 20) {
+              if (dist <= 105) {
+                  headingOffset = blueCloseOffset;
+              } else {
+                  headingOffset = blueFarOffset;
+              }
+          } else {
+                if (dist <= 105){
+                    headingOffset = redCloseOffset;
+                } else {
+                    headingOffset = redFarOffset;
+                }
+
+          }
             telemetry.addData("heading offset", headingOffset);
         }
 

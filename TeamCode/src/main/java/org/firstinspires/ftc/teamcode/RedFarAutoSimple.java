@@ -26,21 +26,21 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.Range;
 
 @Config
-public class BlueFarAuto extends LinearOpMode {
+public class RedFarAutoSimple extends LinearOpMode {
 
     boolean isRed = false;
     @Autonomous()
-    public static class BlueFar extends BlueFarAuto {
-        public BlueFar() {
-            super(new Pose2d(60, -14.5, Math.toRadians(180)), new IdentityPoseMap());
-
+    public static class RedFarSimple extends RedFarAutoSimple {
+        public RedFarSimple() {
+            super(new Pose2d(60, 14.5, Math.toRadians(180)), new IdentityPoseMap());
+            isRed = true;
         }
     }
 
     @Autonomous()
     @Disabled
-    public static class RedFarAuto extends BlueFarAuto {
-        public RedFarAuto() {
+    public static class BlueFarAuto extends RedFarAutoSimple {
+        public BlueFarAuto() {
             super(
                     new Pose2d(60, -14.5, Math.toRadians(180)
                     ),
@@ -63,7 +63,7 @@ public class BlueFarAuto extends LinearOpMode {
     DcMotorEx shooter2;
     Hood hood = new Hood();
     private Limelight3A limelight;
-    private double shooterSpeed = 1075;
+    private double shooterSpeed = 1085;
 
     public static boolean
             UPDATE_FLYWHEEL_PID = true;
@@ -71,7 +71,7 @@ public class BlueFarAuto extends LinearOpMode {
 
     public static int artifactCounter = 0;
     public static double Redoffset = 0;
-    public static double Blueoffset = 0;
+    public static double Blueoffset = -2.5;
     public static double BEARING_THRESHOLD = 0.25; // Angled towards the tag (degrees)
     public static double TURN_GAIN   =  0.04  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
     public static double TURN_STATIC = 0.1;
@@ -137,7 +137,7 @@ public class BlueFarAuto extends LinearOpMode {
         };
     }
 
-    public BlueFarAuto(Pose2d startingPose, PoseMap poseMap) {
+    public RedFarAutoSimple(Pose2d startingPose, PoseMap poseMap) {
         this.poseMap = poseMap;
         this.startingPose = startingPose;
     }
@@ -159,11 +159,11 @@ public class BlueFarAuto extends LinearOpMode {
         double currentShooterVelocity = shooter.getVelocity();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(8);
-        Pose2d dumpPose1 = new Pose2d(7, -57, Math.toRadians(135));
-        double dumpTangent1 = Math.toRadians(270);
-        Pose2d shootPose = new Pose2d(-16, -16, Math.toRadians(135));
-        Pose2d dumpPose2 = new Pose2d(25, -60, Math.toRadians(135));
-        double dumpTangent2 = Math.toRadians(270);
+        Pose2d dumpPose1 = new Pose2d(7, 57, Math.toRadians(135));
+        double dumpTangent1 = Math.toRadians(90);
+        Pose2d shootPose = new Pose2d(-16, 16, Math.toRadians(135));
+        Pose2d dumpPose2 = new Pose2d(25, 60, Math.toRadians(135));
+        double dumpTangent2 = Math.toRadians(90);
 
 //        PIDFCoefficients c = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
 //        if (!UPDATE_FLYWHEEL_PID) {
@@ -226,27 +226,8 @@ public class BlueFarAuto extends LinearOpMode {
 
                                 // 1st Shot
                                 .stopAndAdd(() -> artifactCounter = 3)
-                                .strafeToLinearHeading(new Vector2d(56, -20), Math.toRadians(203))
-                                .stopAndAdd(() -> artifactCounter = 0)
-
-                                .stopAndAdd(() -> intake.setPower(1))
-                                .waitSeconds(0.3)
-                                .stopAndAdd(() -> feeder.setPower(1))
-                                .waitSeconds(feederOnTime)
-                                .stopAndAdd(() -> feeder.setPower(0))
-                                .stopAndAdd(() -> intake.setPower(0))
-                                .stopAndAdd(() -> artifactCounter = 0)
-
-                                // 1st Intake
-                                .stopAndAdd(() -> intake.setPower(1))
-                                .setTangent(Math.toRadians(180))
-                                .splineToSplineHeading(new Pose2d(31, -35, Math.toRadians(270)), Math.toRadians(270))
-                                .splineToLinearHeading(new Pose2d(31, -53, Math.toRadians(265)), Math.toRadians(270))
-                                .waitSeconds(0.6)
-                                .stopAndAdd(() -> intake.setPower(0))
-
-                                // 2nd Shot
-                                .splineToLinearHeading(new Pose2d(56, -17, Math.toRadians(197)), Math.toRadians(90))
+                                .strafeToLinearHeading(new Vector2d(56, 20), Math.toRadians(154.5))
+                                .waitSeconds(2)
                                 .stopAndAdd(() -> artifactCounter = 0)
                                 .stopAndAdd(() -> intake.setPower(1))
                                 .stopAndAdd(() -> feeder.setPower(1))
@@ -255,85 +236,15 @@ public class BlueFarAuto extends LinearOpMode {
                                 .stopAndAdd(() -> intake.setPower(0))
                                 .stopAndAdd(() -> artifactCounter = 0)
 
-                                // 2nd Intake
+                                //First Intake
                                 .stopAndAdd(() -> intake.setPower(1))
-                                .strafeToLinearHeading(new Vector2d(48, -63), Math.toRadians(349))
-                                .strafeToLinearHeading(new Vector2d(62, -64), Math.toRadians(349))
+                                .strafeToLinearHeading(new Vector2d(48, 63), Math.toRadians(5))
+                                .strafeToLinearHeading(new Vector2d(60,64), Math.toRadians(5))
                                 .waitSeconds(0.6)
                                 .stopAndAdd(() -> intake.setPower(0))
 
-                                // 3rd Shot
-                                .strafeToLinearHeading(new Vector2d(56, -17), Math.toRadians(197))
-                                .stopAndAdd(() -> artifactCounter = 0)
-                                .stopAndAdd(() -> intake.setPower(1))
-                                .stopAndAdd(() -> feeder.setPower(1))
-                                .waitSeconds(feederOnTime)
-                                .stopAndAdd(() -> feeder.setPower(0))
-                                .stopAndAdd(() -> intake.setPower(0))
-                                .stopAndAdd(() -> artifactCounter = 0)
-
-                                // 3rd Intake
-                                .stopAndAdd(() -> intake.setPower(1))
-                                .setTangent(Math.toRadians(270))
-                                .strafeToSplineHeading(new Vector2d(61,-37.5),Math.toRadians(225))
-                                .strafeToSplineHeading(new Vector2d(66,-58),Math.toRadians(225))
-                                .strafeToLinearHeading(new Vector2d(33,-63), Math.toRadians(225))
-                                .waitSeconds(0.6)
-                                .stopAndAdd(() -> intake.setPower(0))
-
-                                // 4th Shot
-                                .strafeToLinearHeading(new Vector2d(56, -17), Math.toRadians(195))
-                                .stopAndAdd(() -> artifactCounter = 0)
-                                .stopAndAdd(() -> intake.setPower(1))
-                                .stopAndAdd(() -> feeder.setPower(1))
-                                .waitSeconds(feederOnTime)
-                                .stopAndAdd(() -> feeder.setPower(0))
-                                .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
-                                .stopAndAdd(() -> artifactCounter = 0)
-
-                                // 4th Intake
-                                .stopAndAdd(() -> intake.setPower(1))
-                                .setTangent(Math.toRadians(270))
-                                .strafeToSplineHeading(new Vector2d(61,-37.5),Math.toRadians(225))
-                                .strafeToSplineHeading(new Vector2d(66,-58),Math.toRadians(225))
-                                .strafeToLinearHeading(new Vector2d(33,-63), Math.toRadians(225))
-                                .waitSeconds(0.6)
-                                .stopAndAdd(() -> intake.setPower(0))
-
-                                // 5th Shot
-                                .strafeToLinearHeading(new Vector2d(56, -17), Math.toRadians(195))
-                                .stopAndAdd(() -> artifactCounter = 0)
-                                .stopAndAdd(() -> intake.setPower(1))
-                                .stopAndAdd(() -> feeder.setPower(1))
-                                .waitSeconds(feederOnTime)
-                                .stopAndAdd(() -> feeder.setPower(0))
-                                .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
-                                .stopAndAdd(() -> artifactCounter = 0)
-
-                                // 5th Intake
-                                .stopAndAdd(() -> intake.setPower(1))
-                                .setTangent(Math.toRadians(270))
-                                .strafeToSplineHeading(new Vector2d(61,-37.5),Math.toRadians(283))
-                                .strafeToSplineHeading(new Vector2d(66,-58),Math.toRadians(283))
-                                .waitSeconds(0.6)
-                                .stopAndAdd(() -> intake.setPower(0))
-
-// region 6th Shot &  Intake
-                                //                        // 6th shot
-                                //                        .strafeToLinearHeading(new Vector2d(56, 20), Math.toRadians(157))
-                                //                        .stopAndAdd(() -> artifactCounter = 0)
-                                //                        .stopAndAdd(() -> intake.setPower(1))
-                                //                        .stopAndAdd(() -> feeder.setPower(1))
-                                //                        .waitSeconds(feederOnTime)
-                                //                        .stopAndAdd(() -> feeder.setPower(0))
-                                //                        .stopAndAdd(() -> intake.setPower(0)) // Turn off intake
-
-                                //                        // 6th Intake
-                                //                        .stopAndAdd(new RaceAction(intakeAction, AngleIntakingAction))
-                                // endregion
-
-                                // Park
-                                .strafeToLinearHeading(new Vector2d(60, -40), Math.toRadians(283))
+                                //Park
+                                .strafeToLinearHeading(new Vector2d(60, 40), Math.toRadians(90))
 
                                 .build(),
                         intakeAction
