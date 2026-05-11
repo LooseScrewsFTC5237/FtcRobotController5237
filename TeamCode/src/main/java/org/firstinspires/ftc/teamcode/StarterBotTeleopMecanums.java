@@ -33,8 +33,10 @@
 package org.firstinspires.ftc.teamcode;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
-
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -44,6 +46,12 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.ImuOrientationOnRobot;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
+// Inside your class:
+
 
 /*
  * This file includes a teleop (driver-controlled) file for the goBILDA® StarterBot for the
@@ -69,15 +77,23 @@ public class StarterBotTeleopMecanums extends OpMode {
     final double STOP_SPEED = 0.0;
     final double FULL_SPEED = -1.0;
 
+
+    public static boolean UPDATE_FLYWHEEL_PID = false;
+    public static double FLYWHEEL_P = 250;
+    public static double FLYWHEEL_I = 0;
+    public static double FLYWHEEL_D = 0;
+    public static double FLYWHEEL_F = 12.5;
+
     /*
      * When we control our launcher motor, we are using encoders. These allow the control system
      * to read the current speed of the motor and apply more or less power to keep it at a constant
      * velocity. Here we are setting the target, and minimum velocity that the launcher should run
      * at. The minimum velocity is a threshold for determining when to fire.
      */
-    public static double LAUNCHER_TARGET_VELOCITY = 1200;
-    public static double LAUNCHER_MIN_VELOCITY = 1075;
+    public static double LAUNCHER_TARGET_VELOCITY = 975;
+    public static double LAUNCHER_MIN_VELOCITY = 500;
     public static double SHOOTER_SPEED = 0;
+    public static double MAX_SPEED = 0.7;
 
     // Declare OpMode members.
     private DcMotor leftFrontDrive = null;
@@ -115,6 +131,9 @@ public class StarterBotTeleopMecanums extends OpMode {
 
     private LaunchState launchState;
 
+    private IMU imu;
+
+
     // Setup a variable for each drive wheel to save power level for telemetry
     double leftFrontPower;
     double rightFrontPower;
@@ -126,6 +145,8 @@ public class StarterBotTeleopMecanums extends OpMode {
      */
     @Override
     public void init() {
+        telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
+
         launchState = LaunchState.IDLE;
 
         /*
@@ -140,6 +161,26 @@ public class StarterBotTeleopMecanums extends OpMode {
         launcher = hardwareMap.get(DcMotorEx.class, "launcher");
         leftFeeder = hardwareMap.get(CRServo.class, "left_feeder");
         rightFeeder = hardwareMap.get(CRServo.class, "right_feeder");
+        // Inside init():
+        imu = hardwareMap.get(IMU.class, "imu");
+// Adjust these parameters based on your Hub's orientation!
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+        imu.initialize(parameters);
+
+
+       // PIDFCoefficients c = launcher.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+      //  if (!UPDATE_FLYWHEEL_PID) {
+       //     FLYWHEEL_P = c.p;
+       //    FLYWHEEL_I = c.i;
+       //     FLYWHEEL_D = c.d;
+      //     FLYWHEEL_F = c.f;
+   //    }
+       // pidTuner();
+
+       PIDFCoefficients pidfNew = new PIDFCoefficients (250, 0, 0, 12.5);
+        launcher.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
 
         /*
          * To drive forward, most robots need the motor on one side to be reversed,
@@ -193,6 +234,18 @@ public class StarterBotTeleopMecanums extends OpMode {
         telemetry.addData("Status", "Initialized");
     }
 
+  //  private void pidTuner() {
+   //    if (UPDATE_FLYWHEEL_PID) {
+   //        PIDFCoefficients c = new PIDFCoefficients(FLYWHEEL_P, FLYWHEEL_I, FLYWHEEL_D, FLYWHEEL_F);
+  //         launcher.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, c);
+  //         UPDATE_FLYWHEEL_PID = false;
+  //      }
+  //     telemetry.addData("Flywheel P", FLYWHEEL_P);
+  //      telemetry.addData("Flywheel I", FLYWHEEL_I);
+  //      telemetry.addData("Flywheel D", FLYWHEEL_D);
+   //     telemetry.addData("Flywheel F", FLYWHEEL_F);
+  // }
+
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit START
      */
@@ -212,6 +265,7 @@ public class StarterBotTeleopMecanums extends OpMode {
      */
     @Override
     public void loop() {
+
         /*
          * Here we call a function called arcadeDrive. The arcadeDrive function takes the input from
          * the joysticks, and applies power to the left and right drive motor to move the robot
@@ -221,7 +275,18 @@ public class StarterBotTeleopMecanums extends OpMode {
          * both motors work to rotate the robot. Combinations of these inputs can be used to create
          * more complex maneuvers.
          */
-        mecanumDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, -gamepad1.right_stick_x);
+
+        // Check for the reset button (X on Gamepad 1)
+        if (gamepad1.x) {
+            imu.resetYaw();
+        }
+
+        double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        mecanumDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, -gamepad1.right_stick_x, botHeading);
+
+        // Drive with the potentially updated heading
+        mecanumDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, -gamepad1.right_stick_x, botHeading);
+
 
         /*
          * Here we give the user control of the speed of the launcher motor without automatically
@@ -244,7 +309,25 @@ public class StarterBotTeleopMecanums extends OpMode {
         telemetry.addData("State", launchState);
         telemetry.addData("motorSpeed", launcher.getVelocity());
 
+        // Current & Target Shooter Velocity
+        double  currentLauncherVelocity = launcher.getVelocity();
+        telemetry.addData("Actual Launcher Speed: ", currentLauncherVelocity);
+        telemetry.addData("Target Launcher Speed: ", LAUNCHER_TARGET_VELOCITY);
+
+       // pidTuner();
+
+        // PID Info
+        PIDFCoefficients currentPIDF = launcher.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        telemetry.addData("Flywheel P", currentPIDF.p);
+        telemetry.addData("Flywheel F", currentPIDF.f);
+      //  PIDFCoefficients currentPIDF = launcher.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+         //telemetry.addData("Flywheel P", currentPIDF.p);
+     //   telemetry.addData("Flywheel F", currentPIDF.f);
+      //  telemetry.update();
+
     }
+
+
 
     /*
      * Code to run ONCE after the driver hits STOP
@@ -253,25 +336,51 @@ public class StarterBotTeleopMecanums extends OpMode {
     public void stop() {
     }
 
-    void mecanumDrive(double forward, double strafe, double rotate){
+//    void mecanumDrive(double forward, double strafe, double rotate){
+//
+//        /* the denominator is the largest motor power (absolute value) or 1
+//         * This ensures all the powers maintain the same ratio,
+//         * but only if at least one is out of the range [-1, 1]
+//         */
+//        double denominator = Math.max(Math.abs(forward) + Math.abs(strafe) + Math.abs(rotate), 1);
+//
+//        leftFrontPower = (forward + strafe + rotate) / denominator;
+//        rightFrontPower = (forward - strafe - rotate) / denominator;
+//        leftBackPower = (forward - strafe + rotate) / denominator;
+//        rightBackPower = (forward + strafe - rotate) / denominator;
+//
+//        leftFrontDrive.setPower(leftFrontPower);
+//        rightFrontDrive.setPower(rightFrontPower);
+//        leftBackDrive.setPower(leftBackPower);
+//        rightBackDrive.setPower(rightBackPower);
+//
+//    }
+void mecanumDrive(double y, double x, double rx, double botHeading) {
 
-        /* the denominator is the largest motor power (absolute value) or 1
-         * This ensures all the powers maintain the same ratio,
-         * but only if at least one is out of the range [-1, 1]
-         */
-        double denominator = Math.max(Math.abs(forward) + Math.abs(strafe) + Math.abs(rotate), 1);
+    // This math rotates the joystick inputs to align with the field
+    double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+    double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
-        leftFrontPower = (forward + strafe + rotate) / denominator;
-        rightFrontPower = (forward - strafe - rotate) / denominator;
-        leftBackPower = (forward - strafe + rotate) / denominator;
-        rightBackPower = (forward + strafe - rotate) / denominator;
+    double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
 
-        leftFrontDrive.setPower(leftFrontPower);
-        rightFrontDrive.setPower(rightFrontPower);
-        leftBackDrive.setPower(leftBackPower);
-        rightBackDrive.setPower(rightBackPower);
+    leftFrontPower = (rotY + rotX + rx) / denominator;
+    rightFrontPower = (rotY - rotX - rx) / denominator;
+    leftBackPower = (rotY - rotX + rx) / denominator;
+    rightBackPower = (rotY + rotX - rx) / denominator;
 
+    if (gamepad1.left_bumper) {
+        MAX_SPEED = 0.5;
+    } else if (gamepad1.right_bumper) {
+        MAX_SPEED = 1.0;
+    } else {
+        MAX_SPEED = 0.7;
     }
+
+    leftFrontDrive.setPower(leftFrontPower * MAX_SPEED);
+    rightFrontDrive.setPower(rightFrontPower * MAX_SPEED);
+    leftBackDrive.setPower(leftBackPower * MAX_SPEED);
+    rightBackDrive.setPower(rightBackPower * MAX_SPEED);
+}
 
     void launch(boolean shotRequested) {
         switch (launchState) {
