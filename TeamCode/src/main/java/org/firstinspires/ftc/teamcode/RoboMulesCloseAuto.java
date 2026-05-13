@@ -62,9 +62,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * main robot "loop," continuously checking for conditions that allow us to move to the next step.
  */
 
-@Autonomous(name="Robo Mules Blue Far", group="StarterBot")
+@Autonomous(name="Robo Mules Close", group="StarterBot")
 //@Disabled
-public class RoboMulesBlueFarAuto extends OpMode
+public class RoboMulesCloseAuto extends OpMode
 {
 
     final double FEED_TIME = 0.20; //The feeder servos run this long when a shot is requested.
@@ -117,6 +117,8 @@ public class RoboMulesBlueFarAuto extends OpMode
     // Declare OpMode members.
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
+    private DcMotor leftBackDrive = null;
+    private DcMotor rightBackDrive = null;
     private DcMotorEx launcher = null;
     private CRServo leftFeeder = null;
     private CRServo rightFeeder = null;
@@ -182,7 +184,7 @@ public class RoboMulesBlueFarAuto extends OpMode
          * Later in our code, we will progress through the state machine by moving to other enum members.
          * We do the same for our launcher state machine, setting it to IDLE before we use it later.
          */
-        autonomousState = AutonomousState.DRIVING_OFF_LINE;
+        autonomousState = AutonomousState.LAUNCH;
         launchState = LaunchState.IDLE;
 
 
@@ -191,8 +193,10 @@ public class RoboMulesBlueFarAuto extends OpMode
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the driver's station).
          */
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "front_left_drive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
+        leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
         launcher = hardwareMap.get(DcMotorEx.class,"launcher");
         leftFeeder = hardwareMap.get(CRServo.class, "left_feeder");
         rightFeeder = hardwareMap.get(CRServo.class, "right_feeder");
@@ -207,12 +211,16 @@ public class RoboMulesBlueFarAuto extends OpMode
          */
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
         /*
          * Here we reset the encoders on our drive motors before we start moving.
          */
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         /*
          * Setting zeroPowerBehavior to BRAKE enables a "brake mode." This causes the motor to
@@ -221,6 +229,8 @@ public class RoboMulesBlueFarAuto extends OpMode
          */
         leftFrontDrive.setZeroPowerBehavior(BRAKE);
         rightFrontDrive.setZeroPowerBehavior(BRAKE);
+        leftBackDrive.setZeroPowerBehavior(BRAKE);
+        rightBackDrive.setZeroPowerBehavior(BRAKE);
         launcher.setZeroPowerBehavior(BRAKE);
 
         /*
@@ -329,6 +339,8 @@ public class RoboMulesBlueFarAuto extends OpMode
                     } else {
                         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                         launcher.setVelocity(0);
                         autonomousState = AutonomousState.DRIVING_AWAY_FROM_GOAL;
                     }
@@ -344,6 +356,8 @@ public class RoboMulesBlueFarAuto extends OpMode
                 if(drive(DRIVE_SPEED, -4, DistanceUnit.INCH, 1)){
                     leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     autonomousState = AutonomousState.ROTATING;
                 }
                 break;
@@ -358,6 +372,8 @@ public class RoboMulesBlueFarAuto extends OpMode
                 if(rotate(ROTATE_SPEED, robotRotationAngle, AngleUnit.DEGREES,1)){
                     leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     autonomousState = AutonomousState.DRIVING_OFF_LINE;
                 }
                 break;
@@ -463,12 +479,18 @@ public class RoboMulesBlueFarAuto extends OpMode
 
         leftFrontDrive.setTargetPosition((int) targetPosition);
         rightFrontDrive.setTargetPosition((int) targetPosition);
+        leftBackDrive.setTargetPosition((int) targetPosition);
+        rightBackDrive.setTargetPosition((int) targetPosition);
 
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         leftFrontDrive.setPower(speed);
         rightFrontDrive.setPower(speed);
+        leftBackDrive.setPower(speed);
+        rightBackDrive.setPower(speed);
 
         /*
          * Here we check if we are within tolerance of our target position or not. We calculate the
@@ -515,12 +537,18 @@ public class RoboMulesBlueFarAuto extends OpMode
 
         leftFrontDrive.setTargetPosition((int) leftTargetPosition);
         rightFrontDrive.setTargetPosition((int) rightTargetPosition);
+        leftBackDrive.setTargetPosition((int) leftTargetPosition);
+        rightBackDrive.setTargetPosition((int) rightTargetPosition);
 
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         leftFrontDrive.setPower(speed);
         rightFrontDrive.setPower(speed);
+        leftBackDrive.setPower(speed);
+        rightBackDrive.setPower(speed);
 
         if((Math.abs(leftTargetPosition - leftFrontDrive.getCurrentPosition())) > (TOLERANCE_MM * TICKS_PER_MM)){
             driveTimer.reset();
