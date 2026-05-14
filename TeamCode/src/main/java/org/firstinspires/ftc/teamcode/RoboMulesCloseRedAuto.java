@@ -34,21 +34,14 @@ package org.firstinspires.ftc.teamcode;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 
-import static java.lang.Thread.sleep;
-
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 /*
@@ -66,9 +59,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * main robot "loop," continuously checking for conditions that allow us to move to the next step.
  */
 
-@Autonomous(name="Robo Mules Far", group="StarterBot")
+@Autonomous(name="Robo Mules Red Close", group="StarterBot")
 //@Disabled
-public class RoboMulesFarAuto extends OpMode {
+public class RoboMulesCloseRedAuto extends OpMode {
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
@@ -79,6 +72,25 @@ public class RoboMulesFarAuto extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
+    private ElapsedTime feederOnTime = new ElapsedTime();
+
+    private ElapsedTime betweenShotsTime = new ElapsedTime();
+    private ElapsedTime turnTime = new ElapsedTime();
+
+
+    public static double LAUNCHER_TARGET_VELOCITY = 975;
+
+    public static double shotsTaken = 0;
+
+    private enum LaunchState {
+        SPIN_UP,
+        SHOT,
+        WAIT_BETWEEN_SHOTS,
+        TURN,
+        PARK
+    }
+
+    private RoboMulesCloseRedAuto.LaunchState autoState;
 
     @Override
     public void init() {
@@ -93,7 +105,7 @@ public class RoboMulesFarAuto extends OpMode {
         leftFeeder = hardwareMap.get(CRServo.class, "left_feeder");
         rightFeeder = hardwareMap.get(CRServo.class, "right_feeder");
         // Inside init():
-        PIDFCoefficients pidfNew = new PIDFCoefficients (250, 0, 0, 12.5);
+        PIDFCoefficients pidfNew = new PIDFCoefficients(250, 0, 0, 12.5);
         launcher.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
 
         /*
@@ -120,22 +132,54 @@ public class RoboMulesFarAuto extends OpMode {
     @Override
     public void start() {
         runtime.reset();
+        autoState = LaunchState.SPIN_UP;
     }
 
     @Override
     public void loop() {
 
-        if (runtime.seconds() < 1.0) {
-            leftBackDrive.setPower(.5);
-            leftFrontDrive.setPower(.5);
-            rightBackDrive.setPower(.5);
-            rightFrontDrive.setPower(.5);
-        } else {
-            leftBackDrive.setPower(0);
-            leftFrontDrive.setPower(0);
-            rightBackDrive.setPower(0);
-            rightFrontDrive.setPower(0);
+        launcher.setVelocity(LAUNCHER_TARGET_VELOCITY);
+
+        switch (autoState) {
+            case SPIN_UP:
+                if (runtime.seconds() > 3.0) {
+                    autoState = LaunchState.SHOT;
+                }
+                break;
+            case SHOT:
+
+                feederOnTime.reset();
+
+                if (feederOnTime.seconds() <= 0.2 && shotsTaken < 3 ) {
+                    leftFeeder.setPower(1);
+                    rightFeeder.setPower(1);
+                } else if (shotsTaken <= 2) {
+                    autoState = LaunchState.WAIT_BETWEEN_SHOTS;
+                    shotsTaken++;
+                } else {
+                    autoState = LaunchState.TURN;
+                }
+
+                break;
+            case WAIT_BETWEEN_SHOTS:
+
+                betweenShotsTime.reset();
+
+                if (betweenShotsTime.seconds() >= 1) {
+                    autoState = LaunchState.SHOT;
+                }
+
+                break;
+            case TURN:
+                turnTime.reset();
+                if (turnTime.seconds() <= 0.5) {
+                    
+                }
+                break;
+            case PARK:
+                break;
         }
+
     }
 }
 
