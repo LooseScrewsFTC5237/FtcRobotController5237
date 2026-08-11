@@ -60,9 +60,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * main robot "loop," continuously checking for conditions that allow us to move to the next step.
  */
 @Config
-@Autonomous(name="Robo Mules Red Close", group="StarterBot")
+@Autonomous(name="Robo Mules Blue Close", group="StarterBot")
 //@Disabled
-public class RoboMulesCloseRedAuto extends OpMode {
+public class RoboMulesCloseBlueAuto extends OpMode {
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
@@ -99,7 +99,7 @@ public class RoboMulesCloseRedAuto extends OpMode {
         END
     }
 
-    private RoboMulesCloseRedAuto.LaunchState autoState;
+    private RoboMulesCloseBlueAuto.LaunchState autoState;
 
     @Override
     public void init() {
@@ -209,10 +209,10 @@ public class RoboMulesCloseRedAuto extends OpMode {
                 }
                 
                 if (turnTimer.seconds() >= 0.5) {
-                    leftBackDrive.setPower(-0.5);
-                    leftFrontDrive.setPower(-0.5);
-                    rightFrontDrive.setPower(0.5);
-                    rightBackDrive.setPower(0.5);
+                    leftBackDrive.setPower(0.5);
+                    leftFrontDrive.setPower(0.5);
+                    rightFrontDrive.setPower(-0.5);
+                    rightBackDrive.setPower(-0.5);
                 }
 
                 if (turnTimer.seconds() >= 0.5 + turnTime) {

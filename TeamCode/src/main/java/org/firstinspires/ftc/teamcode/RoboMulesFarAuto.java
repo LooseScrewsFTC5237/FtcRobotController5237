@@ -36,6 +36,7 @@ import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 
 import static java.lang.Thread.sleep;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -65,7 +66,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * it will move forward in the enum. This allows us to run the autonomous period inside of our
  * main robot "loop," continuously checking for conditions that allow us to move to the next step.
  */
-
+@Config
 @Autonomous(name="Robo Mules Far", group="StarterBot")
 //@Disabled
 public class RoboMulesFarAuto extends OpMode {
