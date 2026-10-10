@@ -51,28 +51,34 @@ import java.lang.Math;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-@Disabled
+//@Disabled
 @Config
 public final class MecanumDrive {
     public static class Params {
         // IMU orientation
         // TODO: fill in these values based on
         //   see https://ftc-docs.firstinspires.org/en/latest/programming_resources/imu/imu.html?highlight=imu#physical-hub-mounting
+
+        // 2025-26 Decode Robot
+        //    public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
+        //           RevHubOrientationOnRobot.LogoFacingDirection.LEFT;
+        //    public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
+        //        RevHubOrientationOnRobot.UsbFacingDirection.UP;
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
-                RevHubOrientationOnRobot.LogoFacingDirection.LEFT;
+                RevHubOrientationOnRobot.LogoFacingDirection.UP;
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
-                RevHubOrientationOnRobot.UsbFacingDirection.UP;
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
 
         // drive model parameters
-        public double inPerTick = .0019662591605038;
-        public double lateralInPerTick = .0009654089058694289;
-        public double trackWidthTicks = 6168.467688499759;
+        public double inPerTick = 0.0020016680567139;
+        public double lateralInPerTick = 0.0016588190532151226;
+        public double trackWidthTicks = 337385.97063817567;
 
         // feedforward parameters (in tick units)
         //public double kS = 1.533857609675465; Decode robot
         //public double kV = .00023961805032057435; Decode robot
-        public double kS = 0.7203869267317011; // Decode robot
-        public double kV = 0.00027076228418574484; // Decode robot
+        public double kS = 0.891731194768342; // Decode robot
+        public double kV = 0.0002566568355577845; // Decode robot
         public double kA = 0.000085;
 
         // path profile parameters (in inches)
@@ -250,8 +256,8 @@ public final class MecanumDrive {
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick, pose);
-
+     //   localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick, pose);
+        localizer = new PinpointLocalizer(hardwareMap, PARAMS.inPerTick, pose);
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }
 
