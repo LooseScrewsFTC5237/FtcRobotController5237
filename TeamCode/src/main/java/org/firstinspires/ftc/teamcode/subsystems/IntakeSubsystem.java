@@ -20,10 +20,17 @@ public class IntakeSubsystem {
 
 
     public void runIntakeForward(){
-
+        leftIntakeMotor.setPower(1);
+        rightIntakeMotor.setPower(1);
     }
 
     public void runIntakeReverse(){
+        leftIntakeMotor.setPower(-1);
+        rightIntakeMotor.setPower(-1);
+    }
 
+    public void stopIntake(){
+        leftIntakeMotor.setPower(0);
+        rightIntakeMotor.setPower(0);
     }
 }
