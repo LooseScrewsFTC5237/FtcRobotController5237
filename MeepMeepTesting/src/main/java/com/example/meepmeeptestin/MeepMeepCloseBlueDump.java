@@ -24,7 +24,7 @@ public class MeepMeepCloseBlueDump {
                 .setConstraints(80, 80, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(20.4, 70, Math.toRadians(0)))
 
                 //First Shot
                 .splineToLinearHeading(shootPose, Math.toRadians(0))

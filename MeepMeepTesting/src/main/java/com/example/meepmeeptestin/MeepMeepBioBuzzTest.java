@@ -6,6 +6,12 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 public class MeepMeepBioBuzzTest {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
@@ -15,12 +21,24 @@ public class MeepMeepBioBuzzTest {
                 .setConstraints(100, 100, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(0, 0, 0))
-                .turn(Math.toRadians(90))
-                .strafeTo(new Vector2d(6, 0))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(14, 60.5, Math.toRadians(270)))
+                .waitSeconds(2) // Shoot
+                .strafeToSplineHeading(new Vector2d(60.5,60.5), Math.toRadians(270))
+                .strafeToSplineHeading(new Vector2d(40,-45), Math.toRadians(130))
+                .waitSeconds(2) // Shoot
+                .waitSeconds(2) // Intake
 
                 .build());
-        meepMeep.setBackground(MeepMeep.Background.FIELD_DECODE_JUICE_LIGHT)
+
+        Image img = null;
+        try {
+            // Provide the absolute path to your image file
+            img = ImageIO.read(new File("C:\\Users\\Owner\\Documents\\biobuzz.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        meepMeep.setBackground(img)
                 .setDarkMode(true)
                 .setBackgroundAlpha(1.0f)
                 .addEntity(myBot)
