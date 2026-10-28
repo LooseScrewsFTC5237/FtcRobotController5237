@@ -1,4 +1,4 @@
-package com.example.meepmeeptestin;
+package com.example.meepmeeptestin.decode;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -6,7 +6,7 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-public class MeepMeepCloseBlueSimple {
+public class MeepMeepFarBlueSimple {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
@@ -22,14 +22,19 @@ public class MeepMeepCloseBlueSimple {
                 .setConstraints(80, 80, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(60, -14.5, Math.toRadians(180)))
 
                 //First Shot
-                .strafeToLinearHeading(new Vector2d(-16, -16), Math.toRadians(217))
+                .strafeToLinearHeading(new Vector2d(56, -20), Math.toRadians(203))
                 .waitSeconds(2)
 
+                //First Intake
+                .strafeToLinearHeading(new Vector2d(48, -63), Math.toRadians(355))
+                .strafeToLinearHeading(new Vector2d(60,-64), Math.toRadians(355))
+
+
                 //Park
-                .strafeToLinearHeading(new Vector2d(-60, -16), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(60, -40), Math.toRadians(270))
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_DECODE_JUICE_BLACK)

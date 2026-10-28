@@ -1,4 +1,4 @@
-package com.example.meepmeeptestin;
+package com.example.meepmeeptestin.biobuzz;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -24,9 +24,16 @@ public class MeepMeepBioBuzzTest {
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(14, 60.5, Math.toRadians(270)))
                 .waitSeconds(2) // Shoot
                 .strafeToSplineHeading(new Vector2d(60.5,60.5), Math.toRadians(270))
-                .strafeToSplineHeading(new Vector2d(40,-45), Math.toRadians(130))
+              //  .strafeToSplineHeading(new Vector2d(40,-45), Math.toRadians(130))
+                .setTangent(Math.toRadians(240))
+                .splineToLinearHeading(new Pose2d(40, -45, Math.toRadians(130)), Math.toRadians(250))
                 .waitSeconds(2) // Shoot
                 .waitSeconds(2) // Intake
+                .setTangent(Math.toRadians(80))
+                .splineToLinearHeading(new Pose2d(14, 60.5, Math.toRadians(270)), Math.toRadians(160))
+                .waitSeconds(2) // shoot
+                .setTangent(Math.toRadians(320))
+                .splineToLinearHeading(new Pose2d(57, -20, Math.toRadians(180)), Math.toRadians(300))
 
                 .build());
 
