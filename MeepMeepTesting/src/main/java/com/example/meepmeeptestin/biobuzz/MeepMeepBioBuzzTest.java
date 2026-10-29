@@ -22,10 +22,13 @@ public class MeepMeepBioBuzzTest {
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(14, 60.5, Math.toRadians(270)))
+                // region Block 1
                 .waitSeconds(2) // Shoot
                 .strafeToSplineHeading(new Vector2d(60.5,60.5), Math.toRadians(270))
-              //  .strafeToSplineHeading(new Vector2d(40,-45), Math.toRadians(130))
                 .setTangent(Math.toRadians(240))
+                .strafeToLinearHeading(new Vector2d(55,55),Math.toRadians(220))
+                .waitSeconds(1)
+                // endregion
                 .splineToLinearHeading(new Pose2d(40, -45, Math.toRadians(130)), Math.toRadians(250))
                 .waitSeconds(2) // Shoot
                 .waitSeconds(2) // Intake

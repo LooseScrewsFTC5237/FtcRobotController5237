@@ -11,7 +11,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-
+import org.firstinspires.ftc.teamcode.subsystems.FeederSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 
 
 @Config
@@ -22,7 +24,11 @@ public class BlueScoring extends LinearOpMode {
 
     protected MecanumDrive drive;
     // TODO: create instances of subsystems
+    private IntakeSubsystem intakeSubsystem;
+    private ShooterSubsystem shooterSubsystem;
+    private FeederSubsystem feederSubsystem;
     PoseMap poseMap;
+    private double feederOnTime = 2;
 
 
     public void runOpMode() throws InterruptedException {
@@ -32,16 +38,107 @@ public class BlueScoring extends LinearOpMode {
 
         Actions.runBlocking(
                 new RaceAction(
-                        drive.actionBuilder(beginPose, poseMap).stopAndAdd(() -> drive.setDrivePowers()).build()) // TODO:call instances of subsystems
+                        drive.actionBuilder(beginPose, poseMap)
+                                .stopAndAdd(() -> shooterSubsystem.runShooter() )
+                                .stopAndAdd(() -> feederSubsystem.runIndexerForward())
+                                .waitSeconds(feederOnTime)
+                                .stopAndAdd(() -> feederSubsystem.stopIndexer())
+                                .strafeToSplineHeading(new Vector2d(60.5,60.5), Math.toRadians(270))
 
-
+                                .build()
                 )
-
 
 
         );
 
+        Actions.runBlocking(
+                new RaceAction(
+                        drive.actionBuilder(beginPose, poseMap)
+                                .stopAndAdd(() -> shooterSubsystem.runShooter() )
+                                .stopAndAdd(() -> feederSubsystem.runIndexerForward())
+                                .waitSeconds(feederOnTime)
+                                .stopAndAdd(() -> feederSubsystem.stopIndexer())
+
+
+                                .build()
+                )
+
+
+        );
+
+        Actions.runBlocking(
+                new RaceAction(
+                        drive.actionBuilder(beginPose, poseMap)
+                                .stopAndAdd(() -> shooterSubsystem.runShooter() )
+                                .stopAndAdd(() -> feederSubsystem.runIndexerForward())
+                                .waitSeconds(feederOnTime)
+                                .stopAndAdd(() -> feederSubsystem.stopIndexer())
+
+
+                                .build()
+                )
+
+
+        );
+
+        Actions.runBlocking(
+                new RaceAction(
+                        drive.actionBuilder(beginPose, poseMap)
+                                .stopAndAdd(() -> shooterSubsystem.runShooter() )
+                                .stopAndAdd(() -> feederSubsystem.runIndexerForward())
+                                .waitSeconds(feederOnTime)
+                                .stopAndAdd(() -> feederSubsystem.stopIndexer())
+
+
+                                .build()
+                )
+
+
+        );
+
+        Actions.runBlocking(
+                new RaceAction(
+                        drive.actionBuilder(beginPose, poseMap)
+                                .stopAndAdd(() -> shooterSubsystem.runShooter() )
+                                .stopAndAdd(() -> feederSubsystem.runIndexerForward())
+                                .waitSeconds(feederOnTime)
+                                .stopAndAdd(() -> feederSubsystem.stopIndexer())
+
+
+                                .build()
+                )
+
+
+        );
+
+        Actions.runBlocking(
+                new RaceAction(
+                        drive.actionBuilder(beginPose, poseMap)
+                                .stopAndAdd(() -> shooterSubsystem.runShooter() )
+                                .stopAndAdd(() -> feederSubsystem.runIndexerForward())
+                                .waitSeconds(feederOnTime)
+                                .stopAndAdd(() -> feederSubsystem.stopIndexer())
+
+
+                                .build()
+                )
+
+
+        );
+
+        Actions.runBlocking(
+                new RaceAction(
+                        drive.actionBuilder(beginPose, poseMap)
+                                .stopAndAdd(() -> shooterSubsystem.runShooter() )
+                                .stopAndAdd(() -> feederSubsystem.runIndexerForward())
+                                .waitSeconds(feederOnTime)
+                                .stopAndAdd(() -> feederSubsystem.stopIndexer())
+
+
+                                .build()
+                )
+
+
+        );
     }
-
-
 }
