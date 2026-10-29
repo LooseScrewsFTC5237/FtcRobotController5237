@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -15,8 +16,10 @@ public class IntakeSubsystem {
 
     public IntakeSubsystem(HardwareMap hardwareMap, Telemetry telemetry){
         this.telemetry = telemetry;
-        leftIntakeMotor = hardwareMap.get(DcMotor.class, "intakeLEFT");
-        rightIntakeMotor = hardwareMap.get(DcMotor.class, "intakeRIGHT");
+        leftIntakeMotor = hardwareMap.get(DcMotor.class, "IntakeLEFT");
+        rightIntakeMotor = hardwareMap.get(DcMotor.class, "IntakeRIGHT");
+
+        leftIntakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
 

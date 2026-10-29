@@ -26,6 +26,8 @@ public class BestRobotEverBioBuzzOpMode extends OpMode {
     @Override
     public void init() {
         intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry);
+        shooterSubsystem = new ShooterSubsystem(hardwareMap, telemetry);
+        feederSubsystem = new FeederSubsystem(hardwareMap, telemetry);
         drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
         telemetry.addData("Status", "Initialized");
@@ -53,7 +55,7 @@ public class BestRobotEverBioBuzzOpMode extends OpMode {
         // endregion
 
         // region Intake code
-        if (gamepad2.right_trigger > 0) {
+        if (gamepad2.right_trigger > 0 || gamepad2.right_bumper) {
             intakeSubsystem.runIntakeForward();
         } else if (gamepad2.left_trigger > 0) {
             intakeSubsystem.runIntakeReverse();
