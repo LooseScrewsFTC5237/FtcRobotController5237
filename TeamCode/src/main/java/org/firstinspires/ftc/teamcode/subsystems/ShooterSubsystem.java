@@ -14,7 +14,7 @@ public class ShooterSubsystem {
 
     public ShooterSubsystem(HardwareMap hardwareMap,Telemetry telemetry){
         this.telemetry = telemetry;
-        shooter = hardwareMap.get(DcMotorEx.class,"shooter");
+        shooter = hardwareMap.get(DcMotorEx.class,"Shooter");
     }
 
     public void runShooter(){

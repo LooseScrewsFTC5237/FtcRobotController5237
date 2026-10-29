@@ -12,7 +12,7 @@ public class FeederSubsystem {
 
     public FeederSubsystem(HardwareMap hardwareMap,Telemetry telemetry){
         this.telemetry = telemetry;
-        indexer = hardwareMap.get(DcMotor.class, "indexer");
+        indexer = hardwareMap.get(DcMotor.class, "TowerIndexer");
     }
 
     public void runIndexerForward(){

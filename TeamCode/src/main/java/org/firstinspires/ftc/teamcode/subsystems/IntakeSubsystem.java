@@ -15,8 +15,8 @@ public class IntakeSubsystem {
 
     public IntakeSubsystem(HardwareMap hardwareMap, Telemetry telemetry){
         this.telemetry = telemetry;
-        leftIntakeMotor = hardwareMap.get(DcMotor.class, "leftIntakeMotor");
-        rightIntakeMotor = hardwareMap.get(DcMotor.class, "rightIntakeMotor");
+        leftIntakeMotor = hardwareMap.get(DcMotor.class, "intakeLEFT");
+        rightIntakeMotor = hardwareMap.get(DcMotor.class, "intakeRIGHT");
     }
 
 
