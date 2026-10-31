@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Rotation2d;
@@ -7,16 +8,18 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.subsystems.BeamBrakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.FeederSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
-
+@Config
 @TeleOp(name = "BioBuzz", group = "Competition")
 public class BestRobotEverBioBuzzOpMode extends OpMode {
     private ShooterSubsystem shooterSubsystem;
     private IntakeSubsystem intakeSubsystem;
     private FeederSubsystem feederSubsystem;
+    private BeamBrakeSubsystem beamBrakeSubsystem;
     private MecanumDrive drive;
 
     private double driveSpeed = 0.8;
@@ -28,14 +31,20 @@ public class BestRobotEverBioBuzzOpMode extends OpMode {
         intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry);
         shooterSubsystem = new ShooterSubsystem(hardwareMap, telemetry);
         feederSubsystem = new FeederSubsystem(hardwareMap, telemetry);
+        beamBrakeSubsystem = new BeamBrakeSubsystem(hardwareMap, telemetry);
         drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
+        beamBrakeSubsystem.Reset();
         telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
 
     @Override
     public void loop() {
+
+        // region Beam break code
+        beamBrakeSubsystem.Status();
+        // endregion
 
         // region Shooter code
         shooterSubsystem.runShooter();
@@ -55,10 +64,11 @@ public class BestRobotEverBioBuzzOpMode extends OpMode {
         // endregion
 
         // region Intake code
-        if (gamepad2.right_trigger > 0 || gamepad2.right_bumper) {
+        if ((gamepad2.right_trigger > 0 || gamepad2.right_bumper) /*& !beamBrakeSubsystem.Status()*/) {
             intakeSubsystem.runIntakeForward();
         } else if (gamepad2.left_trigger > 0) {
             intakeSubsystem.runIntakeReverse();
+            beamBrakeSubsystem.Reset();
         } else {
             intakeSubsystem.stopIntake();
         }
@@ -67,8 +77,10 @@ public class BestRobotEverBioBuzzOpMode extends OpMode {
         // region Indexer code
         if(gamepad2.left_trigger > 0){
             feederSubsystem.runIndexerReverse();
+            beamBrakeSubsystem.Reset();
         } else if (gamepad2.right_bumper){
             feederSubsystem.runIndexerForward();
+            beamBrakeSubsystem.Reset();
         } else {
             feederSubsystem.stopIndexer();
         }
