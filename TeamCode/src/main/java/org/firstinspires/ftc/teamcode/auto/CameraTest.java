@@ -66,7 +66,7 @@ public class CameraTest extends LinearOpMode {
 
         telemetry.addData("See Apriltag", seeTag);
         telemetry.update();
-
+        sleep(1000);
 //        if (seeTag) {
 //            // Put your code here when the tag is seen
 //        }
