@@ -87,8 +87,10 @@ public class randomTest extends LinearOpMode {
                 drive.actionBuilder(new Pose2d(0, 0, Math.toRadians(0)))
                        // .strafeToSplineHeading(new Vector2d(0, 10), Math.toRadians(90))
                       //  .strafeToLinearHeading(new Vector2d(0,10 ), Math.toRadians(90))
-                        .turn(Math.toRadians(90))
-                        .turn(Math.toRadians(-90))
+                        .strafeToLinearHeading(new Vector2d(0,10),Math.toRadians(0))
+                        .turnTo(90)
+                        .strafeToLinearHeading(new Vector2d(0,0),Math.toRadians(90))
+
                         .build()
 
         );

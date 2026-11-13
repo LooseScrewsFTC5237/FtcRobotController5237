@@ -29,7 +29,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystemTeleop;
 
 
 @Autonomous
-public class GardenSideAuto extends LinearOpMode {
+public class gardenSideAuto extends LinearOpMode {
 
     protected MecanumDrive drive;
     // TODO: create instances of subsystems

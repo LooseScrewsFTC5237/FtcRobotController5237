@@ -44,6 +44,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.archive.Drawing;
 import org.firstinspires.ftc.teamcode.archive.Localizer;
 import org.firstinspires.ftc.teamcode.archive.PinpointLocalizer;
+import org.firstinspires.ftc.teamcode.archive.ThreeDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumLocalizerInputsMessage;
@@ -69,13 +70,16 @@ public final class MecanumDrive {
         // drive model parameters
         public double inPerTick = 0.0019895548371052;
         public double lateralInPerTick = 0.00299633510643511;
-        public double trackWidthTicks = 254196.44627846833;
+        public double trackWidthTicks = 3616309.0351512004;
 
         // feedforward parameters (in tick units)
 
-        public double kS = 2.3755149187123243; // biobuzz robot
-        public double kV = 0.00025389120050251093; // biobuzz robot
-        public double kA = 0.0001;
+
+        public double kS = 0.000025389120050251093; // biobuzz robot
+        public double kV = 0.000025389120050251093; // biobuzz robot
+        public double kA = 0.0000001;
+
+
 
         // path profile parameters (in inches)
         public double maxWheelVel = 100;
@@ -253,9 +257,9 @@ public final class MecanumDrive {
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-     //   localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick, pose);
-        localizer = new PinpointLocalizer(hardwareMap, PARAMS.inPerTick, pose);
-        FlightRecorder.write("MECANUM_PARAMS", PARAMS);
+        localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick, pose);
+//        localizer = new PinpointLocalizer(hardwareMap, PARAMS.inPerTick, pose);
+//        FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }
 
     public void setDrivePowers(PoseVelocity2d powers) {
