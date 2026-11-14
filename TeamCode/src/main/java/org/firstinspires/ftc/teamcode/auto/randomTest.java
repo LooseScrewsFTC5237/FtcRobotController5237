@@ -6,7 +6,7 @@ import static org.firstinspires.ftc.teamcode.Constants.GARDEN_CAMERA_CHECK_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_CAMERA_CHECK_VECTOR;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_HEADING;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_VECTOR;
-import static org.firstinspires.ftc.teamcode.Constants.SLOW_INTAKE_VEL;
+import static org.firstinspires.ftc.teamcode.Constants.SLOW_VEL;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -62,6 +62,7 @@ public class randomTest extends LinearOpMode {
         Actions.runBlocking(
                 drive.actionBuilder(beginPose)
                         .stopAndAdd(() -> depollenaterSubsystem.depollenaterUp())
+
                         .build()
         );
 
@@ -87,9 +88,14 @@ public class randomTest extends LinearOpMode {
                 drive.actionBuilder(new Pose2d(0, 0, Math.toRadians(0)))
                        // .strafeToSplineHeading(new Vector2d(0, 10), Math.toRadians(90))
                       //  .strafeToLinearHeading(new Vector2d(0,10 ), Math.toRadians(90))
-                        .strafeToLinearHeading(new Vector2d(0,10),Math.toRadians(0))
-                        .turnTo(90)
-                        .strafeToLinearHeading(new Vector2d(0,0),Math.toRadians(90))
+                        .strafeToSplineHeading(new Vector2d(0, 20 ),  Math.toRadians(0)) //
+                        .strafeToSplineHeading(new Vector2d(20, 20),  Math.toRadians(0)) //
+                        .strafeToSplineHeading(new Vector2d(20, 0),  Math.toRadians(0)) //
+                        .strafeToSplineHeading(new Vector2d(0, 0),  Math.toRadians(0)) //
+
+
+
+
 
                         .build()
 
