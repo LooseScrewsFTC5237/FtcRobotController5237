@@ -65,19 +65,19 @@ public final class MecanumDrive {
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
                 RevHubOrientationOnRobot.LogoFacingDirection.UP;
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
-                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD ;
 
         // drive model parameters
-        public double inPerTick = 0.0019895548371052;
-        public double lateralInPerTick = 0.00299633510643511;
-        public double trackWidthTicks = 3616309.0351512004;
+        public double inPerTick = 0.0019919078742608;
+        public double lateralInPerTick = 0.0013629779642068424;
+        public double trackWidthTicks = 5531.754874548692;
 
         // feedforward parameters (in tick units)
 
 
-        public double kS = 0.000025389120050251093; // biobuzz robot
-        public double kV = 0.000025389120050251093; // biobuzz robot
-        public double kA = 0.0000001;
+        public double kS = 1.1884933208798678; // biobuzz robot
+        public double kV = 0.00023909384741098468; // biobuzz robot
+        public double kA = 0.00006;
 
 
 
@@ -91,8 +91,8 @@ public final class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 1;
-        public double lateralGain = 0.1;
+        public double axialGain = 5;
+        public double lateralGain = 2;
         public double headingGain = 0; // shared with turn
 
         public double axialVelGain = 0.0;
@@ -234,10 +234,11 @@ public final class MecanumDrive {
 
         // TODO: make sure your config has motors with these names (or change them)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
-        leftFront = hardwareMap.get(DcMotorEx.class, "FLDrive");
-        leftBack = hardwareMap.get(DcMotorEx.class, "BLDrive");
-        rightBack = hardwareMap.get(DcMotorEx.class, "BRDrive");
-        rightFront = hardwareMap.get(DcMotorEx.class, "FRDrive");
+        // Device names do not match the variables on purpose
+        leftFront = hardwareMap.get(DcMotorEx.class, "FRDrive");
+        leftBack = hardwareMap.get(DcMotorEx.class, "FLDrive");
+        rightBack = hardwareMap.get(DcMotorEx.class, "BLDrive");
+        rightFront = hardwareMap.get(DcMotorEx.class, "BRDrive");
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
