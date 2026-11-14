@@ -8,7 +8,6 @@ import static org.firstinspires.ftc.teamcode.Constants.GARDEN_SHOOT_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_HEADING;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_VECTOR;
 import static org.firstinspires.ftc.teamcode.Constants.SLOW_VEL;
-import static org.firstinspires.ftc.teamcode.Constants.TO_BOTTOM;
 import static org.firstinspires.ftc.teamcode.Constants.TO_TOP;
 import static org.firstinspires.ftc.teamcode.Constants.TO_LEFT;
 import static org.firstinspires.ftc.teamcode.Constants.TO_BOTTOM_RIGHT;
