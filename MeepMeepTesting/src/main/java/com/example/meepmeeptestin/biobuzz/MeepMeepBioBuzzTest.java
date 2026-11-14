@@ -8,6 +8,7 @@ import static com.example.meepmeeptestin.Constants.GARDEN_SHOOT_POSE;
 import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_HEADING;
 import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_VECTOR;
 import static com.example.meepmeeptestin.Constants.SLOW_VEL;
+import static com.example.meepmeeptestin.Constants.TO_BOTTOM;
 import static com.example.meepmeeptestin.Constants.TO_TOP;
 import static com.example.meepmeeptestin.Constants.TO_LEFT;
 import static com.example.meepmeeptestin.Constants.TO_BOTTOM_RIGHT;
@@ -61,6 +62,7 @@ public class MeepMeepBioBuzzTest {
 
                 // region block 3
 
+                .setTangent(TO_BOTTOM_LEFT)
                 .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM_LEFT) //move to loading side
                 .waitSeconds(2) // shoot
                 .waitSeconds(1) // camera check

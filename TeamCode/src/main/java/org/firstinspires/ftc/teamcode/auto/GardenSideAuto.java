@@ -8,6 +8,7 @@ import static org.firstinspires.ftc.teamcode.Constants.GARDEN_SHOOT_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_HEADING;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_VECTOR;
 import static org.firstinspires.ftc.teamcode.Constants.SLOW_VEL;
+import static org.firstinspires.ftc.teamcode.Constants.TO_BOTTOM;
 import static org.firstinspires.ftc.teamcode.Constants.TO_TOP;
 import static org.firstinspires.ftc.teamcode.Constants.TO_LEFT;
 import static org.firstinspires.ftc.teamcode.Constants.TO_BOTTOM_RIGHT;
@@ -48,6 +49,9 @@ public class gardenSideAuto extends LinearOpMode {
     private CameraTrackingSubsystems cameraTrackingSubsystems;
 
     private double feederOnTime = 3;
+
+
+
 
     public void runOpMode() throws InterruptedException {
 
@@ -164,14 +168,15 @@ public class gardenSideAuto extends LinearOpMode {
             // region block 3
             Actions.runBlocking(
                             drive.actionBuilder(GARDEN_CAMERA_CHECK_POSE)
+                                    .setTangent(TO_BOTTOM_LEFT)
                                     .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM_LEFT) //move to loading side
-                    .stopAndAdd(() -> feederSubsystem.runIndexerForward())  //shoot
-                    .waitSeconds(feederOnTime)
-                    .stopAndAdd(() -> feederSubsystem.stopIndexer()) //stop shooting
-                    .stopAndAdd(() -> intakeSubsystem.runIntakeForward()) //start intaking
-                    .waitSeconds(3)
-                    .stopAndAdd(() -> intakeSubsystem.stopIntake()) //stop intaking
-                    .waitSeconds(1) // camera check
+                                    .stopAndAdd(() -> feederSubsystem.runIndexerForward())  //shoot
+                                    .waitSeconds(feederOnTime)
+                                    .stopAndAdd(() -> feederSubsystem.stopIndexer()) //stop shooting
+                                    .stopAndAdd(() -> intakeSubsystem.runIntakeForward()) //start intaking
+                                    .waitSeconds(3)
+                                    .stopAndAdd(() -> intakeSubsystem.stopIntake()) //stop intaking
+                                    .waitSeconds(1) // camera check
 
                     .build()
             );
