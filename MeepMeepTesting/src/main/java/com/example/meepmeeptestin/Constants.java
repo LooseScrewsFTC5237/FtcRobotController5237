@@ -23,9 +23,14 @@ public class Constants {
 
     public static final Vector2d INTAKE_GARDEN_VECTOR = new Vector2d(60,60.5);
     public static final double INTAKE_GARDEN_HEADING = Math.toRadians(270);
-    public static final TranslationalVelConstraint SLOW_VEL = new TranslationalVelConstraint(5.0);
+    public static final Pose2d INTAKE_LOADING_POSE = new Pose2d(60.0, -34, Math.toRadians(90));
+
+    public static final TranslationalVelConstraint SLOW_VEL = new TranslationalVelConstraint(15);
+
     public static final Vector2d GARDEN_CAMERA_CHECK_VECTOR = new Vector2d(55,55);
     public static final double GARDEN_CAMERA_CHECK_HEADING = Math.toRadians(220);
     public static final Pose2d GARDEN_CAMERA_CHECK_POSE = new Pose2d(55, 55, Math.toRadians(220));
+
+    public static final Pose2d PARK_POSE = new Pose2d(57, -20, Math.toRadians(180));
 
 }

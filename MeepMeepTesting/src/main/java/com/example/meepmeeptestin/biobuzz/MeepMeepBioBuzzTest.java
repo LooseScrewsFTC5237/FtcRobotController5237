@@ -2,13 +2,22 @@ package com.example.meepmeeptestin.biobuzz;
 
 import static com.example.meepmeeptestin.Constants.GARDEN_BEGIN_POSE;
 import static com.example.meepmeeptestin.Constants.GARDEN_CAMERA_CHECK_HEADING;
+import static com.example.meepmeeptestin.Constants.GARDEN_CAMERA_CHECK_POSE;
 import static com.example.meepmeeptestin.Constants.GARDEN_CAMERA_CHECK_VECTOR;
 import static com.example.meepmeeptestin.Constants.GARDEN_SHOOT_POSE;
 import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_HEADING;
 import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_VECTOR;
-import static com.example.meepmeeptestin.Constants.LOADING_SHOOT_POSE;
 import static com.example.meepmeeptestin.Constants.SLOW_VEL;
+import static com.example.meepmeeptestin.Constants.TO_TOP;
+import static com.example.meepmeeptestin.Constants.TO_LEFT;
+import static com.example.meepmeeptestin.Constants.TO_BOTTOM_RIGHT;
+import static com.example.meepmeeptestin.Constants.PARK_POSE;
+import static com.example.meepmeeptestin.Constants.LOADING_SHOOT_POSE;
+import static com.example.meepmeeptestin.Constants.INTAKE_LOADING_POSE;
+import static com.example.meepmeeptestin.Constants.SLOW_VEL;
+import static com.example.meepmeeptestin.Constants.TO_TOP_RIGHT;
 import static com.example.meepmeeptestin.Constants.TO_BOTTOM_LEFT;
+
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.RaceAction;
@@ -39,7 +48,7 @@ public class MeepMeepBioBuzzTest {
                 .waitSeconds(2) // Shoot
                 .strafeToSplineHeading(INTAKE_GARDEN_VECTOR, INTAKE_GARDEN_HEADING, SLOW_VEL) // Intake
                 .setTangent(TO_BOTTOM_LEFT)
-                .strafeToLinearHeading(GARDEN_CAMERA_CHECK_VECTOR,GARDEN_CAMERA_CHECK_HEADING)
+                .strafeToLinearHeading(GARDEN_CAMERA_CHECK_VECTOR, GARDEN_CAMERA_CHECK_HEADING)
                 .waitSeconds(1)
                 // endregion
 
@@ -48,7 +57,7 @@ public class MeepMeepBioBuzzTest {
 //                .splineToLinearHeading(GARDEN_SHOOT_POSE, Math.toRadians(180))
 //                .waitSeconds(2) //shoot
 //                .waitSeconds(1) //camera check
-               //  endregion
+                //  endregion
 
                 // region block 3
 
@@ -60,38 +69,38 @@ public class MeepMeepBioBuzzTest {
 
                 // region block 4 (off)
 //                .setTangent(Math.toRadians(330))
-//                .splineToLinearHeading(new Pose2d(57, -20, Math.toRadians(180)), Math.toRadians(300))
+//                .splineToLinearHeading(PARK_POSE, TO_BOTTOM_RIGHT)
                 // endregion
 
                 // region block 5 (off)
-//                .splineToLinearHeading(new Pose2d(40, -45, Math.toRadians(130)), Math.toRadians(250)) //move to loading side
+//                .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM_LEFT) //move to loading side
 //                .waitSeconds(3) // intake human player
 //                .waitSeconds(2) // shoot
-//                .splineToLinearHeading(new Pose2d(57, -20, Math.toRadians(180)), Math.toRadians(300)) // park
+//                .splineToLinearHeading(new Pose2d(PARK_POSE), TO_BOTTOM_RIGHT) // park
                 // endregion
 
                 // region block 6 (off)
 
-//                .setTangent(Math.toRadians(80))
-//                .splineToLinearHeading(new Pose2d(14, 60.5, Math.toRadians(270)), Math.toRadians(160)) //move to garden side
+//                .setTangent(TO_TOP)
+//                .splineToLinearHeading(GARDEN_SHOOT_POSE), TO_TOP_LEFT) //move to garden side
 //                .waitSeconds(2)// shoot
-//                .setTangent(Math.toRadians(320))
-//                .splineToLinearHeading(new Pose2d(57, -20, Math.toRadians(180)), Math.toRadians(300)) // park
+//                .setTangent(TO_BOTTOM_RIGHT)
+//                .splineToLinearHeading(PARK_POSE, TO_BOTTOM_RIGHT) // park
 
                 // endregion
                 // region block 6.1
                 .waitSeconds(1) // shoot
-                .setTangent(Math.toRadians(50))
-                .splineToLinearHeading(new Pose2d(60.0, -34, Math.toRadians(90)), Math.toRadians(50), new TranslationalVelConstraint(15.0)) // intake
+                .setTangent(TO_TOP_RIGHT)
+                .splineToLinearHeading(INTAKE_LOADING_POSE, TO_TOP_RIGHT, SLOW_VEL) // intake
                 .waitSeconds(1) // intake
 
-                .splineToLinearHeading(new Pose2d(40, -45, Math.toRadians(130)), Math.toRadians(220)) // shoot
+                .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM_LEFT) // shoot
 
                 // endregion
                 // region block 7
                 .waitSeconds(2) // shoot
-                .setTangent(Math.toRadians(50))
-                .splineToLinearHeading(new Pose2d(57, -20, Math.toRadians(180)), Math.toRadians(50)) //park
+                .setTangent(TO_TOP_RIGHT)
+                .splineToLinearHeading(PARK_POSE, TO_TOP_RIGHT) //park
                 // endregion
 
                 .build());
@@ -110,4 +119,4 @@ public class MeepMeepBioBuzzTest {
                 .addEntity(myBot)
                 .start();
     }
-        }
+}
