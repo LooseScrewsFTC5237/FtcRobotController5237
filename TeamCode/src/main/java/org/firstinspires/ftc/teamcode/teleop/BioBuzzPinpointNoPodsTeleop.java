@@ -63,7 +63,7 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
     @Override
     public void init() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        lights = new Lights();
+        lights = new Lights(hardwareMap);
         intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry);
         shooterSubsystem = new ShooterSubsystemTeleop(hardwareMap, telemetry);
         feederSubsystem = new FeederSubsystem(hardwareMap, telemetry);
@@ -113,10 +113,10 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
           if (Math.abs(cameraTrackingSubsystems.autoAim()) < autoAimThreshold) {
             lights.turnRightLockedOnLightOn(0.416);
             lights.turnLeftLockedOnLightOn(0.416);
-          } else if (cameraTrackingSubsystems.seeApirltag()){
-            lights.turnRightLockedOnLightOn(0.388);
-            lights.turnLeftLockedOnLightOn(0.388);
-          } else {
+          } else if (cameraTrackingSubsystems.autoAim() > autoAimThreshold){
+            lights.turnRightLockedOnLightOn(0.277);
+            lights.turnLeftLockedOnLightOn(0.277);
+          } else if(gamepad1.right_trigger == 0){
             lights.turnRightLockedOnLightOn(0);
             lights.turnLeftLockedOnLightOn(0);
           }

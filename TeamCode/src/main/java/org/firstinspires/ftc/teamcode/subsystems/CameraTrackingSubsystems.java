@@ -23,7 +23,7 @@ public class CameraTrackingSubsystems {
 
     public CameraTrackingSubsystems(HardwareMap hardwareMap, Telemetry telemetry){
         this.telemetry = telemetry;
-        lights = new Lights();
+        lights = new Lights(hardwareMap);
 
         webcam1 = hardwareMap.get(WebcamName.class, "Webcam 1");
 
