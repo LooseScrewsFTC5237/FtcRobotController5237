@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.subsystems.CameraTrackingSubsystems;
 import org.firstinspires.ftc.teamcode.subsystems.DepollenaterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.FeederSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.Lights;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystemTeleop;
 
 @Config
@@ -27,9 +28,11 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
     private BeamBrakeSubsystem beamBrakeSubsystem;
     private CameraTrackingSubsystems cameraTrackingSubsystems;
     private DepollenaterSubsystem depollenaterSubsystem;
+
+    private Lights lights;
     private IMU imu;
 
-
+    private double lockedOn = 1; // TODO change this number
     private double rx;
     private double driveSpeed = 0;
     private double driveSpeedFast = 0.95;
@@ -38,6 +41,10 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
     public static double turnSpeed = 0.5;
 
     public static double autoAimMultuplyer = 0.05;
+
+    public static double autoAimThreshold = 1;
+
+    public static double autoAimK = .1;
 
     private double forward;
     private double strafe;
@@ -56,6 +63,7 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
     @Override
     public void init() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        lights = new Lights();
         intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry);
         shooterSubsystem = new ShooterSubsystemTeleop(hardwareMap, telemetry);
         feederSubsystem = new FeederSubsystem(hardwareMap, telemetry);
@@ -101,7 +109,25 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
         shooterSubsystem.runShooter();
         // endregion
 
+        //region light code
+          if (Math.abs(cameraTrackingSubsystems.autoAim()) < autoAimThreshold) {
+            lights.turnRightLockedOnLightOn(0.416);
+            lights.turnLeftLockedOnLightOn(0.416);
+          } else if (cameraTrackingSubsystems.seeApirltag()){
+            lights.turnRightLockedOnLightOn(0.388);
+            lights.turnLeftLockedOnLightOn(0.388);
+          } else {
+            lights.turnRightLockedOnLightOn(0);
+            lights.turnLeftLockedOnLightOn(0);
+          }
+
+        // endregion
+
         // region Drive code
+
+        if (gamepad1.x){
+            pinpoint.resetPosAndIMU();
+        }
 
         if (gamepad1.left_bumper) {
             driveSpeed = driveSpeedSlow;
@@ -115,11 +141,14 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
 
         double y = gamepad1.left_stick_y;
         double x = gamepad1.left_stick_x * 1.1;
-        if (gamepad1.right_trigger > 0 && cameraTrackingSubsystems.seeApirltag()){
-            rx = -cameraTrackingSubsystems.autoAim() * autoAimMultuplyer * driveSpeed;// Rotation
+
+        if (gamepad1.right_trigger > 0 && cameraTrackingSubsystems.seeApirltag() && Math.abs(cameraTrackingSubsystems.autoAim()) > autoAimThreshold){
+            rx = (-cameraTrackingSubsystems.autoAim() * autoAimMultuplyer) + autoAimK * (cameraTrackingSubsystems.autoAim() / Math.abs(cameraTrackingSubsystems.autoAim()));
+
         } else {
             rx = gamepad1.right_stick_x;
         }
+        telemetry.addData("Camera P", -cameraTrackingSubsystems.autoAim());
 
         double rawHeading = pinpoint.getHeading();
         double robotHeading = rawHeading - headingOffset;

@@ -37,4 +37,12 @@ public class IntakeSubsystem {
         leftIntakeMotor.setPower(0);
         rightIntakeMotor.setPower(0);
     }
+
+    public void runIntakeRight(){
+        rightIntakeMotor.setPower(1);
+    }
+
+    public void runIntakeLeft(){
+        leftIntakeMotor.setPower(1);
+    }
 }

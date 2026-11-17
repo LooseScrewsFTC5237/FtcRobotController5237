@@ -5,10 +5,13 @@ import static org.firstinspires.ftc.teamcode.Constants.GARDEN_CAMERA_CHECK_HEADI
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_CAMERA_CHECK_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_CAMERA_CHECK_VECTOR;
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_SHOOT_POSE;
+import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_APPROACH_HEADING;
+import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_APPROACH_VECTOR;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_HEADING;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_VECTOR;
 import static org.firstinspires.ftc.teamcode.Constants.LOADING_SHOOT_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.PARK_POSE;
+import static org.firstinspires.ftc.teamcode.Constants.SLOW_SLOW_VEL;
 import static org.firstinspires.ftc.teamcode.Constants.SLOW_VEL;
 import static org.firstinspires.ftc.teamcode.Constants.TO_BOTTOM;
 import static org.firstinspires.ftc.teamcode.Constants.TO_BOTTOM_LEFT;
@@ -35,18 +38,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystemTeleop;
 
 @Config
 @Autonomous
-public class gardenSideAuto extends LinearOpMode {
-
-    private enum AutoBlock {
-        BLOCK_1,
-        BLOCK_2,
-        BLOCK_3,
-        BLOCK_4,
-        BLOCK_5,
-        BLOCK_6,
-        BLOCK_7,
-        DONE
-    }
+public class GardenSideAuto extends LinearOpMode {
 
     protected MecanumDrive drive;
     // TODO: create instances of subsystems
@@ -56,7 +48,7 @@ public class gardenSideAuto extends LinearOpMode {
     private DepollenaterSubsystem depollenaterSubsystem;
     private CameraTrackingSubsystems cameraTrackingSubsystems;
 
-    private double feederOnTime = 3;
+    private double feederOnTime = 4;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -82,145 +74,45 @@ public class gardenSideAuto extends LinearOpMode {
                         .build()
         );
 
-//        PinpointLocalizer pinpoint = (PinpointLocalizer) drive.localizer;
-//        GoBildaPinpointDriver.DeviceStatus status;
-//        do {
-//            pinpoint.update();
-//            status = pinpoint.getDeviceStatus();
-//            telemetry.addData("Pinpoint Status", status);
-//            telemetry.addData("Starting Pose", drive.localizer.getPose());
-//            telemetry.update();
-//        }  while (status != GoBildaPinpointDriver.DeviceStatus.READY );
-//        telemetry.addData("Pinpoint Status", status);
         telemetry.addData("Status", "Ready. Waiting for start.");
         telemetry.addData("Starting Pose", drive.localizer.getPose());
         telemetry.update();
 
         waitForStart();
+
         drive.localizer.setPose(GARDEN_BEGIN_POSE);
 
-        AutoBlock currentBlock = AutoBlock.BLOCK_1;
+        Actions.runBlocking(
+            drive.actionBuilder(beginPose)
+                // region block 1
+                .stopAndAdd(() -> shooterSubsystem.runShooter()) // turn on shooter
+                .waitSeconds(feederOnTime)
+                .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
+                .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shoot
+                .waitSeconds(feederOnTime)
+                .stopAndAdd(() -> intakeSubsystem.stopIntake())
+                .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooting
+                .stopAndAdd(() -> intakeSubsystem.runIntakeLeft()) // turn on intake
+                .strafeToLinearHeading(INTAKE_GARDEN_APPROACH_VECTOR, INTAKE_GARDEN_APPROACH_HEADING, SLOW_VEL)
+                .strafeToSplineHeading(INTAKE_GARDEN_VECTOR, INTAKE_GARDEN_HEADING, SLOW_SLOW_VEL) // intake
+                .waitSeconds(0.5)
+                .stopAndAdd(() -> intakeSubsystem.stopIntake()) // turn off intake
+                .strafeToLinearHeading(GARDEN_CAMERA_CHECK_VECTOR, GARDEN_CAMERA_CHECK_HEADING, SLOW_VEL) // camera check
+                .waitSeconds(1)
 
-        while (opModeIsActive() && currentBlock != AutoBlock.DONE) {
-            telemetry.addData("Current Block", currentBlock);
-            telemetry.update();
+                // endregion
 
-            switch (currentBlock) {
-                case BLOCK_1:
-                    Actions.runBlocking(
-                            drive.actionBuilder(beginPose)
-                                    .stopAndAdd(() -> shooterSubsystem.runShooter()) // turn on shooter
-                                    .waitSeconds(feederOnTime)
-                                    .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shoot
-                                    .waitSeconds(feederOnTime)
-                                    .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooting
-                                    .stopAndAdd(() -> intakeSubsystem.runIntakeForward()) // turn on intake
-                                    .strafeToSplineHeading(INTAKE_GARDEN_VECTOR, INTAKE_GARDEN_HEADING, SLOW_VEL) // intake
-                                    .waitSeconds(0.5)
-                                    .stopAndAdd(() -> intakeSubsystem.stopIntake()) // turn off intake
-                                    .strafeToLinearHeading(GARDEN_CAMERA_CHECK_VECTOR, GARDEN_CAMERA_CHECK_HEADING, SLOW_VEL) // camera check
-                                    .waitSeconds(1)
-                                    .build()
-                    );
-                    currentBlock = cameraTrackingSubsystems.seeApirltag()
-                            ? AutoBlock.BLOCK_2
-                            : AutoBlock.BLOCK_3;
-                    break;
-
-                case BLOCK_2:
-                    Actions.runBlocking(
-                            drive.actionBuilder(GARDEN_CAMERA_CHECK_POSE)
-                                    .setTangent(TO_LEFT)
-                                    .splineToLinearHeading(GARDEN_SHOOT_POSE, TO_LEFT) // move to garden side
-                                    .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // pew pew
-                                    .waitSeconds(feederOnTime)
-                                    .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooter
-                                    .waitSeconds(1) // camera check
-                                    .build()
-                    );
-                    currentBlock = cameraTrackingSubsystems.seeApirltag()
-                            ? AutoBlock.BLOCK_4
-                            : AutoBlock.BLOCK_5;
-                    break;
-
-                case BLOCK_3:
-                    Actions.runBlocking(
-                            drive.actionBuilder(GARDEN_CAMERA_CHECK_POSE)
-                                    .setTangent(TO_BOTTOM_LEFT)
-                                    .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM_LEFT) // move to loading side
-                                    .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shoot
-                                    .waitSeconds(feederOnTime)
-                                    .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooting
-                                    .stopAndAdd(() -> intakeSubsystem.runIntakeForward()) // start intaking
-                                    .waitSeconds(3)
-                                    .stopAndAdd(() -> intakeSubsystem.stopIntake()) // stop intaking
-                                    .waitSeconds(1) // camera check
-                                    .build()
-                    );
-                    currentBlock = cameraTrackingSubsystems.seeApirltag()
-                            ? AutoBlock.BLOCK_6
-                            : AutoBlock.BLOCK_7;
-                    break;
-
-                case BLOCK_4:
-                    Actions.runBlocking(
-                            drive.actionBuilder(GARDEN_BEGIN_POSE)
-                                    .setTangent(TO_BOTTOM_RIGHT)
-                                    .splineToLinearHeading(PARK_POSE, TO_BOTTOM_RIGHT)
-                                    .build()
-                    );
-                    currentBlock = AutoBlock.DONE;
-                    break;
-
-                case BLOCK_5:
-                    Actions.runBlocking(
-                            drive.actionBuilder(GARDEN_BEGIN_POSE)
-                                    .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM_LEFT) // move to loading side
-                                    .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
-                                    .waitSeconds(3) // intake human player
-                                    .stopAndAdd(() -> intakeSubsystem.stopIntake()) // stop intaking
-                                    .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // start shooting
-                                    .waitSeconds(2) // shoot
-                                    .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooting
-                                    .splineToLinearHeading(PARK_POSE, TO_BOTTOM_RIGHT) // park
-                                    .build()
-                    );
-                    currentBlock = AutoBlock.DONE;
-                    break;
-
-                case BLOCK_6:
-                    Actions.runBlocking(
-                            drive.actionBuilder(LOADING_SHOOT_POSE)
-                                    .setTangent(TO_TOP)
-                                    .splineToLinearHeading(GARDEN_BEGIN_POSE, TO_LEFT) // move to garden side
-                                    .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shoot
-                                    .waitSeconds(feederOnTime)
-                                    .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooting
-                                    .setTangent(TO_BOTTOM_RIGHT)
-                                    .splineToLinearHeading(PARK_POSE, TO_BOTTOM_RIGHT) // park
-                                    .build()
-                    );
-                    currentBlock = AutoBlock.DONE;
-                    break;
-
-                case BLOCK_7:
-                    Actions.runBlocking(
-                            drive.actionBuilder(LOADING_SHOOT_POSE)
-                                    .stopAndAdd(() -> feederSubsystem.runIndexerForward())
-                                    .waitSeconds(feederOnTime) // shoot
-                                    .stopAndAdd(() -> feederSubsystem.stopIndexer())
-                                    .setTangent(TO_TOP_RIGHT)
-                                    .splineToLinearHeading(PARK_POSE, TO_TOP_RIGHT) // park
-                                    .build()
-                    );
-                    currentBlock = AutoBlock.DONE;
-                    break;
-
-                case DONE:
-                default:
-                    currentBlock = AutoBlock.DONE;
-                    break;
-            }
-        }
+                // region block 2
+                    .setTangent(TO_BOTTOM_LEFT)
+                    .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) //move to loading side
+                    .stopAndAdd(() -> intakeSubsystem.runIntakeRight())
+                    .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // pew pew
+                    .waitSeconds(feederOnTime)
+                    .stopAndAdd(() -> intakeSubsystem.stopIntake())
+                    .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooter
+                    .waitSeconds(1) // camera check
+                // endregion
+        .build()
+        );
     }
 }

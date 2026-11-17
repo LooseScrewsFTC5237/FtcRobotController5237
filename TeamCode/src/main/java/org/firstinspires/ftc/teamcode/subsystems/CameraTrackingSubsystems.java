@@ -15,6 +15,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 @Config
 public class CameraTrackingSubsystems {
+    private Lights lights;
     private WebcamName webcam1;
     private Telemetry telemetry;
     private AprilTagProcessor aprilTag;
@@ -22,6 +23,8 @@ public class CameraTrackingSubsystems {
 
     public CameraTrackingSubsystems(HardwareMap hardwareMap, Telemetry telemetry){
         this.telemetry = telemetry;
+        lights = new Lights();
+
         webcam1 = hardwareMap.get(WebcamName.class, "Webcam 1");
 
         // 1. Build the AprilTag Processor
@@ -52,8 +55,8 @@ public class CameraTrackingSubsystems {
                     telemetry.addData("Percent Found", "%d%%", clusterDet.percentClusterFound);
                     telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inc, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
                     if (clusterDet.ftcPose != null) {
-                        telemetry.addData("Yaw (Error)", "%5.2f degrees", clusterDet.ftcPose.yaw);
-                        return clusterDet.ftcPose.yaw;
+                        telemetry.addData("Yaw (Error)", "%5.2f degrees", clusterDet.ftcPose.bearing);
+                        return clusterDet.ftcPose.bearing;
 
                     }
                 }

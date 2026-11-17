@@ -5,8 +5,11 @@ import static com.example.meepmeeptestin.Constants.GARDEN_CAMERA_CHECK_HEADING;
 import static com.example.meepmeeptestin.Constants.GARDEN_CAMERA_CHECK_POSE;
 import static com.example.meepmeeptestin.Constants.GARDEN_CAMERA_CHECK_VECTOR;
 import static com.example.meepmeeptestin.Constants.GARDEN_SHOOT_POSE;
+import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_APPROACH_HEADING;
+import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_APPROACH_VECTOR;
 import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_HEADING;
 import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_VECTOR;
+import static com.example.meepmeeptestin.Constants.SLOW_SLOW_VEL;
 import static com.example.meepmeeptestin.Constants.SLOW_VEL;
 import static com.example.meepmeeptestin.Constants.TO_BOTTOM;
 import static com.example.meepmeeptestin.Constants.TO_TOP;
@@ -47,7 +50,9 @@ public class MeepMeepBioBuzzTest {
 
                 // region block 1
                 .waitSeconds(2) // Shoot
-                .strafeToSplineHeading(INTAKE_GARDEN_VECTOR, INTAKE_GARDEN_HEADING, SLOW_VEL) // Intake
+                .strafeToLinearHeading(INTAKE_GARDEN_APPROACH_VECTOR, INTAKE_GARDEN_APPROACH_HEADING, SLOW_VEL)
+                .strafeToSplineHeading(INTAKE_GARDEN_VECTOR, INTAKE_GARDEN_HEADING, SLOW_SLOW_VEL) // Intake
+                .waitSeconds(0.5)
                 .setTangent(TO_BOTTOM_LEFT)
                 .strafeToLinearHeading(GARDEN_CAMERA_CHECK_VECTOR, GARDEN_CAMERA_CHECK_HEADING)
                 .waitSeconds(1)
@@ -63,7 +68,7 @@ public class MeepMeepBioBuzzTest {
                 // region block 3
 
                 .setTangent(TO_BOTTOM_LEFT)
-                .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM_LEFT) //move to loading side
+                .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) //move to loading side
                 .waitSeconds(2) // shoot
                 .waitSeconds(1) // camera check
 
