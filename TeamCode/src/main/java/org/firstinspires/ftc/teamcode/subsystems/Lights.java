@@ -20,7 +20,7 @@ public class Lights {
    // private RevBlinkinLedDriver LightStrip;
 
 
-    public void init(HardwareMap hwMap) {
+    public Lights(HardwareMap hwMap) {
         leftLockedOnLight = hwMap.get(Servo.class,"LeftLockedOnLight");
         rightLockedOnLight = hwMap.get(Servo.class,"RightLockedOnLight");
        // LightStrip = hwMap.get(RevBlinkinLedDriver.class, "test light strip");
