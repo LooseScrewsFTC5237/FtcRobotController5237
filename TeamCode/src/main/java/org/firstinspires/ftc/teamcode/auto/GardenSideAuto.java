@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.Constants.GARDEN_BEGIN_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_CAMERA_CHECK_HEADING;
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_CAMERA_CHECK_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_CAMERA_CHECK_VECTOR;
+import static org.firstinspires.ftc.teamcode.Constants.GARDEN_FLOWER_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_SHOOT_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_APPROACH_HEADING;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_APPROACH_VECTOR;
@@ -17,6 +18,7 @@ import static org.firstinspires.ftc.teamcode.Constants.TO_BOTTOM;
 import static org.firstinspires.ftc.teamcode.Constants.TO_BOTTOM_LEFT;
 import static org.firstinspires.ftc.teamcode.Constants.TO_BOTTOM_RIGHT;
 import static org.firstinspires.ftc.teamcode.Constants.TO_LEFT;
+import static org.firstinspires.ftc.teamcode.Constants.TO_RIGHT;
 import static org.firstinspires.ftc.teamcode.Constants.TO_TOP;
 import static org.firstinspires.ftc.teamcode.Constants.TO_TOP_RIGHT;
 
@@ -97,8 +99,6 @@ public class GardenSideAuto extends LinearOpMode {
                 .strafeToSplineHeading(INTAKE_GARDEN_VECTOR, INTAKE_GARDEN_HEADING, SLOW_SLOW_VEL) // intake
                 .waitSeconds(0.5)
                 .stopAndAdd(() -> intakeSubsystem.stopIntake()) // turn off intake
-                .strafeToLinearHeading(GARDEN_CAMERA_CHECK_VECTOR, GARDEN_CAMERA_CHECK_HEADING, SLOW_VEL) // camera check
-                .waitSeconds(1)
 
                 // endregion
 
@@ -112,6 +112,38 @@ public class GardenSideAuto extends LinearOpMode {
                     .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooter
                     .waitSeconds(1) // camera check
                 // endregion
+                    // region block 3
+
+                    .setTangent(TO_BOTTOM_LEFT)
+                    .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) //move to loading side
+                    .stopAndAdd(() -> intakeSubsystem.runIntakeRight())
+                    .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shoot
+                    .waitSeconds(feederOnTime)
+                    .stopAndAdd(() -> intakeSubsystem.stopIntake())
+                    .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooting
+
+                    // endregion
+
+                    // region block 4
+                    .setTangent(TO_TOP)
+                    .splineToLinearHeading(GARDEN_FLOWER_POSE, TO_TOP_RIGHT, SLOW_VEL)
+                    .waitSeconds(1)
+                    // endregion
+
+                    // region block 5
+                    .setTangent(TO_BOTTOM_LEFT)
+                    .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) //move to loading side
+                    .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shoot
+                    .waitSeconds(feederOnTime)
+                    .stopAndAdd(() -> intakeSubsystem.stopIntake())
+                    .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooting
+
+                    // endregion
+
+                    // region block park
+                    .setTangent(TO_TOP)
+                    .splineToLinearHeading(PARK_POSE, TO_RIGHT) //park
+                    // endregion
         .build()
         );
     }
