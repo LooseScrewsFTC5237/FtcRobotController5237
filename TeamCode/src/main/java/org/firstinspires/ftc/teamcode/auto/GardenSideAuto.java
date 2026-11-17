@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.Constants.GARDEN_BEGIN_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_CAMERA_CHECK_HEADING;
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_CAMERA_CHECK_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_CAMERA_CHECK_VECTOR;
+import static org.firstinspires.ftc.teamcode.Constants.GARDEN_FLOWER_APPROACH_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_FLOWER_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_SHOOT_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_APPROACH_HEADING;
@@ -126,13 +127,14 @@ public class GardenSideAuto extends LinearOpMode {
 
                     // region block 4
                     .setTangent(TO_TOP)
+                    .splineToLinearHeading(GARDEN_FLOWER_APPROACH_POSE, TO_TOP)
+                    .stopAndAdd(() -> depollenaterSubsystem.DepollenaterDown())
+                    .setTangent(TO_LEFT)
                     .splineToLinearHeading(GARDEN_FLOWER_POSE, TO_TOP_RIGHT, SLOW_VEL)
                     .waitSeconds(1)
-                    // endregion
-
-                    // region block 5
                     .setTangent(TO_BOTTOM_LEFT)
                     .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) //move to loading side
+                    .stopAndAdd(() -> depollenaterSubsystem.depollenaterUp())
                     .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shoot
                     .waitSeconds(feederOnTime)
                     .stopAndAdd(() -> intakeSubsystem.stopIntake())

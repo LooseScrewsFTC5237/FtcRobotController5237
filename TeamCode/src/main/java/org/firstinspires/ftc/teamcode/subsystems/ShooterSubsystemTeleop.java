@@ -12,9 +12,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class ShooterSubsystemTeleop {
 
-    // public static double shooterSpeed = 1320;
     public static double shooterSpeed = 1340;
-
+    public static double shooterSpeeddefault = 1340;
 
     public static double realShooterSpeed = 0;
 
@@ -29,13 +28,20 @@ public class ShooterSubsystemTeleop {
 
     private DcMotorEx shooter;
 
+    private CameraTrackingSubsystems vision;
+
     private Telemetry telemetry;
 
     public ShooterSubsystemTeleop(HardwareMap hardwareMap, Telemetry telemetry) {
+        this(hardwareMap, telemetry, null);
+    }
+
+    public ShooterSubsystemTeleop(HardwareMap hardwareMap, Telemetry telemetry, CameraTrackingSubsystems vision) {
 
         this.telemetry = telemetry;
         shooter = hardwareMap.get(DcMotorEx.class,"Shooter");
         shooter.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.vision = vision;
     }
 
     public void initShooter(){
@@ -45,6 +51,18 @@ public class ShooterSubsystemTeleop {
     }
 
     public void runShooter(){
+
+        if(vision!=null){
+            Double range = vision.gettargetrange();
+            if (range != null) {
+                shooterSpeed = (7.27854 * range) + 992.83133;
+            } else {
+                shooterSpeed = shooterSpeeddefault;
+            }
+        } else {
+            shooterSpeed = shooterSpeeddefault;
+        }
+
        shooter.setVelocity(shooterSpeed);
         telemetry.addData("shooter speed",shooter.getVelocity());
         telemetry.addData("shooter target",shooterSpeed);

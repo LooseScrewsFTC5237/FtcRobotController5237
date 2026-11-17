@@ -21,6 +21,8 @@ public class CameraTrackingSubsystems {
     private AprilTagProcessor aprilTag;
     private VisionPortal visionPortal;
 
+    private AprilTagClusterDetection target;
+
     public CameraTrackingSubsystems(HardwareMap hardwareMap, Telemetry telemetry){
         this.telemetry = telemetry;
         lights = new Lights(hardwareMap);
@@ -56,6 +58,7 @@ public class CameraTrackingSubsystems {
                     telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inc, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
                     if (clusterDet.ftcPose != null) {
                         telemetry.addData("Yaw (Error)", "%5.2f degrees", clusterDet.ftcPose.bearing);
+                       target = clusterDet;
                         return clusterDet.ftcPose.bearing;
 
                     }
@@ -65,6 +68,10 @@ public class CameraTrackingSubsystems {
 
         telemetry.addData("Target", "Not Found");
         return 0.0;
+    }
+
+    public Double gettargetrange(){
+        return target == null ? null : target.ftcPose.range;
     }
 
     public void closePortal() {
