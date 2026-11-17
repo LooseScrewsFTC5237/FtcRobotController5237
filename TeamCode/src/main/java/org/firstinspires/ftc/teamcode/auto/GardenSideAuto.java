@@ -126,6 +126,7 @@ public class GardenSideAuto extends LinearOpMode {
 
                     // region block 4
                     .setTangent(TO_TOP)
+                    .stopAndAdd(() -> depollenaterSubsystem.DepollenaterDown())
                     .splineToLinearHeading(GARDEN_FLOWER_POSE, TO_TOP_RIGHT, SLOW_VEL)
                     .waitSeconds(1)
                     // endregion
