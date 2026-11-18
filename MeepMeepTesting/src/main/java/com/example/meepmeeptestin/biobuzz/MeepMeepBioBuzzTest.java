@@ -4,6 +4,7 @@ import static com.example.meepmeeptestin.Constants.GARDEN_BEGIN_POSE;
 import static com.example.meepmeeptestin.Constants.GARDEN_CAMERA_CHECK_HEADING;
 import static com.example.meepmeeptestin.Constants.GARDEN_CAMERA_CHECK_POSE;
 import static com.example.meepmeeptestin.Constants.GARDEN_CAMERA_CHECK_VECTOR;
+import static com.example.meepmeeptestin.Constants.GARDEN_FIRST_SHOOT_POSE;
 import static com.example.meepmeeptestin.Constants.GARDEN_FLOWER_APPROACH_POSE;
 import static com.example.meepmeeptestin.Constants.GARDEN_FLOWER_POSE;
 import static com.example.meepmeeptestin.Constants.GARDEN_SHOOT_POSE;
@@ -52,6 +53,7 @@ public class            MeepMeepBioBuzzTest {
         myBot.runAction(myBot.getDrive().actionBuilder(GARDEN_BEGIN_POSE)
 
                 // region block 1
+                .splineToLinearHeading(GARDEN_FIRST_SHOOT_POSE, TO_TOP)
                 .waitSeconds(2) // Shoot
                 .strafeToLinearHeading(INTAKE_GARDEN_APPROACH_VECTOR, INTAKE_GARDEN_APPROACH_HEADING)
                 .strafeToSplineHeading(INTAKE_GARDEN_VECTOR, INTAKE_GARDEN_HEADING, SLOW_SLOW_VEL) // Intake
@@ -75,7 +77,7 @@ public class            MeepMeepBioBuzzTest {
                 // endregion
 
                 // region block 4
-                .setTangent(TO_TOP)
+                .setTangent(TO_TOP_RIGHT)
                 .splineToLinearHeading(GARDEN_FLOWER_APPROACH_POSE, TO_TOP)
                 .setTangent(TO_LEFT)
                 .splineToLinearHeading(GARDEN_FLOWER_POSE, TO_LEFT, SLOW_SLOW_VEL)

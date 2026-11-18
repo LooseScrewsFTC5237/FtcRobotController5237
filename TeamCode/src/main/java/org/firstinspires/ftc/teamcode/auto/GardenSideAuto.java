@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.Constants.GARDEN_BEGIN_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_CAMERA_CHECK_HEADING;
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_CAMERA_CHECK_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_CAMERA_CHECK_VECTOR;
+import static org.firstinspires.ftc.teamcode.Constants.GARDEN_FIRST_SHOOT_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_FLOWER_APPROACH_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_FLOWER_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_SHOOT_POSE;
@@ -37,6 +38,7 @@ import org.firstinspires.ftc.teamcode.subsystems.CameraTrackingSubsystems;
 import org.firstinspires.ftc.teamcode.subsystems.DepollenaterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.FeederSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystemAuto;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystemTeleop;
 
 @Config
@@ -46,7 +48,7 @@ public class GardenSideAuto extends LinearOpMode {
     protected MecanumDrive drive;
     // TODO: create instances of subsystems
     private IntakeSubsystem intakeSubsystem;
-    private ShooterSubsystemTeleop shooterSubsystem;
+    private ShooterSubsystemAuto shooterSubsystem;
     private FeederSubsystem feederSubsystem;
     private DepollenaterSubsystem depollenaterSubsystem;
     private CameraTrackingSubsystems cameraTrackingSubsystems;
@@ -61,7 +63,7 @@ public class GardenSideAuto extends LinearOpMode {
 
         drive = new MecanumDrive(hardwareMap, GARDEN_BEGIN_POSE);
         intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry);
-        shooterSubsystem = new ShooterSubsystemTeleop(hardwareMap, telemetry);
+        shooterSubsystem = new ShooterSubsystemAuto(hardwareMap, telemetry);
         feederSubsystem = new FeederSubsystem(hardwareMap, telemetry);
         cameraTrackingSubsystems = new CameraTrackingSubsystems(hardwareMap, telemetry);
         depollenaterSubsystem = new DepollenaterSubsystem(hardwareMap, telemetry);
@@ -87,36 +89,39 @@ public class GardenSideAuto extends LinearOpMode {
 
         Actions.runBlocking(
             drive.actionBuilder(beginPose)
-                //region block 1
-                .stopAndAdd(() -> shooterSubsystem.runShooter()) // turn on shooter
-                .waitSeconds(feederOnTime)
-                .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
-                .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shoot
-                .waitSeconds(feederOnTime)
-                .stopAndAdd(() -> intakeSubsystem.stopIntake())
-                .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooting
-                .stopAndAdd(() -> intakeSubsystem.runIntakeLeft()) // turn on intake
-                .strafeToLinearHeading(INTAKE_GARDEN_APPROACH_VECTOR, INTAKE_GARDEN_APPROACH_HEADING, SLOW_VEL)
-                .strafeToSplineHeading(INTAKE_GARDEN_VECTOR, INTAKE_GARDEN_HEADING, SLOW_SLOW_VEL) // intake
-                .waitSeconds(0.5)
-                .stopAndAdd(() -> intakeSubsystem.stopIntake()) // turn off intake
-                // endregion
+                    //region block 1
+                    .stopAndAdd(() -> shooterSubsystem.runShooter()) // turn on shooter
+                    .waitSeconds(2)
+                    .splineToLinearHeading(GARDEN_FIRST_SHOOT_POSE, TO_TOP)
+                    .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
+                    .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shoot
+                    .waitSeconds(feederOnTime)
+                    .stopAndAdd(() -> intakeSubsystem.stopIntake())
+                    .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooting
+                    .stopAndAdd(() -> intakeSubsystem.runIntakeLeft()) // turn on intake
+                    .strafeToLinearHeading(INTAKE_GARDEN_APPROACH_VECTOR, INTAKE_GARDEN_APPROACH_HEADING, SLOW_VEL)
+                    .strafeToSplineHeading(INTAKE_GARDEN_VECTOR, INTAKE_GARDEN_HEADING, SLOW_SLOW_VEL) // intake
+                    .waitSeconds(0.5)
+                    .stopAndAdd(() -> intakeSubsystem.stopIntake()) // turn off intake
+                    // endregion
 
-                //region block 2
-                .setTangent(TO_BOTTOM_LEFT)
-                .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) //move to loading side
-                .stopAndAdd(() -> intakeSubsystem.runIntakeRight())
-                .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // pew pew
-                .waitSeconds(feederOnTime)
-                .stopAndAdd(() -> intakeSubsystem.stopIntake())
-                .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooter
-                .waitSeconds(1) // camera check
-                // endregion
+                    // region block 2
+                    .setTangent(TO_BOTTOM_LEFT)
+                    .stopAndAdd(() -> shooterSubsystem.changeShooterSpeedTo(1300))
+                    .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) //move to loading side
+                    .stopAndAdd(() -> intakeSubsystem.runIntakeRight())
+                    .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // pew pew
+                    .waitSeconds(feederOnTime)
+                    .stopAndAdd(() -> intakeSubsystem.stopIntake())
+                    .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooter
+                    .waitSeconds(1) // camera check
+                    // endregion
 
                     // region block 3
-                    .setTangent(TO_TOP)
+                    .setTangent(TO_TOP_RIGHT)
                     .stopAndAdd(() -> depollenaterSubsystem.DepollenaterDown())
                     .splineToLinearHeading(GARDEN_FLOWER_APPROACH_POSE, TO_TOP)
+                    .stopAndAdd(() -> intakeSubsystem.runIntakeRight())
                     .setTangent(TO_LEFT)
                     .splineToLinearHeading(GARDEN_FLOWER_POSE, TO_TOP_RIGHT, SLOW_VEL)
                     .waitSeconds(1)
@@ -130,7 +135,7 @@ public class GardenSideAuto extends LinearOpMode {
                     .waitSeconds(feederOnTime)
                     .stopAndAdd(() -> intakeSubsystem.stopIntake())
                     .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooting
-
+                    .stopAndAdd(() -> shooterSubsystem.resetShooterSpeed())
                     // endregion
 
                     // region block park

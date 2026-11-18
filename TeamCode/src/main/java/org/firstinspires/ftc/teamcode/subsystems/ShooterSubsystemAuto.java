@@ -12,9 +12,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class ShooterSubsystemAuto {
 
-    // public static double shooterSpeed = 1320;
-    public static double shooterSpeed = 1350;
-
+    public static double shooterSpeed = 1340;
+    public static double shooterSpeedDefault = 1340;
 
     public static double realShooterSpeed = 0;
 
@@ -29,13 +28,20 @@ public class ShooterSubsystemAuto {
 
     private DcMotorEx shooter;
 
+    private CameraTrackingSubsystems vision;
+
     private Telemetry telemetry;
 
     public ShooterSubsystemAuto(HardwareMap hardwareMap, Telemetry telemetry) {
+        this(hardwareMap, telemetry, null);
+    }
+
+    public ShooterSubsystemAuto(HardwareMap hardwareMap, Telemetry telemetry, CameraTrackingSubsystems vision) {
 
         this.telemetry = telemetry;
         shooter = hardwareMap.get(DcMotorEx.class,"Shooter");
         shooter.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.vision = vision;
     }
 
     public void initShooter(){
@@ -45,7 +51,9 @@ public class ShooterSubsystemAuto {
     }
 
     public void runShooter(){
-       shooter.setVelocity(shooterSpeed);
+
+
+        shooter.setVelocity(shooterSpeed);
         telemetry.addData("shooter speed",shooter.getVelocity());
         telemetry.addData("shooter target",shooterSpeed);
         PIDFCoefficients currentPIDF = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -65,5 +73,15 @@ public class ShooterSubsystemAuto {
             UPDATE_FLYWHEEL_PID = false;
         }
         realShooterSpeed = shooter.getVelocity();
+    }
+
+    public void changeShooterSpeedTo(double speed){
+        shooterSpeed = speed;
+        runShooter();
+    }
+
+    public void resetShooterSpeed(){
+        shooterSpeed = shooterSpeedDefault;
+        runShooter();
     }
 }
