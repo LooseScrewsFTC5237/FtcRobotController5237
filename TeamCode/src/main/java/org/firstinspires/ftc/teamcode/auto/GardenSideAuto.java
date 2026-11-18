@@ -113,25 +113,18 @@ public class GardenSideAuto extends LinearOpMode {
                     .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooter
                     .waitSeconds(1) // camera check
                 // endregion
+
                     // region block 3
-
-                    .setTangent(TO_BOTTOM_LEFT)
-                    .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) //move to loading side
-                    .stopAndAdd(() -> intakeSubsystem.runIntakeRight())
-                    .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shoot
-                    .waitSeconds(feederOnTime)
-                    .stopAndAdd(() -> intakeSubsystem.stopIntake())
-                    .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooting
-
-                    // endregion
-
-                    // region block 4
                     .setTangent(TO_TOP)
+                    .stopAndAdd(() -> depollenaterSubsystem.DepollenaterDown())
                     .splineToLinearHeading(GARDEN_FLOWER_APPROACH_POSE, TO_TOP)
                     .stopAndAdd(() -> depollenaterSubsystem.DepollenaterDown())
                     .setTangent(TO_LEFT)
                     .splineToLinearHeading(GARDEN_FLOWER_POSE, TO_TOP_RIGHT, SLOW_VEL)
                     .waitSeconds(1)
+                    // endregion
+
+                    // region block 4
                     .setTangent(TO_BOTTOM_LEFT)
                     .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) //move to loading side
                     .stopAndAdd(() -> depollenaterSubsystem.depollenaterUp())
