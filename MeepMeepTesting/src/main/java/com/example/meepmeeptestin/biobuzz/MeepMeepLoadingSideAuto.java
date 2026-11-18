@@ -6,17 +6,25 @@ import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_APPROACH_HEADIN
 import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_APPROACH_VECTOR;
 import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_HEADING;
 import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_VECTOR;
+import static com.example.meepmeeptestin.Constants.INTAKE_LOADING_POSE;
 import static com.example.meepmeeptestin.Constants.LOADING_BEGIN_POSE;
+import static com.example.meepmeeptestin.Constants.LOADING_FLOWER_APPROACH_POSE;
+import static com.example.meepmeeptestin.Constants.LOADING_FLOWER_POSE;
+import static com.example.meepmeeptestin.Constants.LOADING_PARK_POSE;
 import static com.example.meepmeeptestin.Constants.LOADING_SHOOT_POSE;
+import static com.example.meepmeeptestin.Constants.LOADING_SHOOT_POSE_2;
 import static com.example.meepmeeptestin.Constants.PARK_POSE;
 import static com.example.meepmeeptestin.Constants.SLOW_SLOW_VEL;
 import static com.example.meepmeeptestin.Constants.SLOW_VEL;
 import static com.example.meepmeeptestin.Constants.TO_BOTTOM;
 import static com.example.meepmeeptestin.Constants.TO_BOTTOM_LEFT;
+import static com.example.meepmeeptestin.Constants.TO_LEFT;
 import static com.example.meepmeeptestin.Constants.TO_RIGHT;
 import static com.example.meepmeeptestin.Constants.TO_TOP;
+import static com.example.meepmeeptestin.Constants.TO_TOP_LEFT;
 import static com.example.meepmeeptestin.Constants.TO_TOP_RIGHT;
 
+import com.acmerobotics.roadrunner.Pose2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
@@ -39,45 +47,38 @@ public class MeepMeepLoadingSideAuto {
         myBot.runAction(myBot.getDrive().actionBuilder(LOADING_BEGIN_POSE)
 
                 // region block 1
+
                 .waitSeconds(2) // Shoot
-                .strafeToLinearHeading(INTAKE_GARDEN_APPROACH_VECTOR, INTAKE_GARDEN_APPROACH_HEADING)
-                .strafeToSplineHeading(INTAKE_GARDEN_VECTOR, INTAKE_GARDEN_HEADING, SLOW_SLOW_VEL) // Intake
+                .setTangent(TO_TOP)
+                .splineToLinearHeading(LOADING_FLOWER_APPROACH_POSE, TO_BOTTOM)
+                .splineToLinearHeading(LOADING_FLOWER_POSE, TO_BOTTOM) // Depollinater down
                 .waitSeconds(0.5)
-                .setTangent(TO_BOTTOM_LEFT)
+
                 // endregion
 
-                //  region block 2 (off)
-//                .setTangent(180)
-//                .splineToLinearHeading(GARDEN_SHOOT_POSE, Math.toRadians(180))
-//                .waitSeconds(2) //shoot
-//                .waitSeconds(1) //camera check
-                //  endregion
 
                 // region block 3
 
-                .setTangent(TO_BOTTOM_LEFT)
-                .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) //move to loading side
-                .waitSeconds(2) // shoot
+                .setTangent(TO_TOP)
+                .splineToLinearHeading(LOADING_FLOWER_APPROACH_POSE, TO_BOTTOM)
 
                 // endregion
+
+                .setTangent(TO_LEFT)
+                .splineToLinearHeading(LOADING_SHOOT_POSE_2, TO_BOTTOM)
+                .waitSeconds(2) // shoot
 
                 // region block 4
-                .setTangent(TO_TOP)
-                .splineToLinearHeading(GARDEN_FLOWER_POSE, TO_TOP_RIGHT, SLOW_VEL)
-                .waitSeconds(1)
-                // endregion
+
 
                 // region block 5
-                .setTangent(TO_BOTTOM_LEFT)
-                .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) //move to loading side
-                .waitSeconds(2) // shoot
 
-                // endregion
-
-                // region block park
                 .setTangent(TO_TOP)
-                .splineToLinearHeading(PARK_POSE, TO_RIGHT) //park
+                .splineToLinearHeading(LOADING_PARK_POSE,TO_RIGHT)
+
                 // endregion
+
+
 
                 .build());
 

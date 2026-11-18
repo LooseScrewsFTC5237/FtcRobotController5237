@@ -6,15 +6,21 @@ import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_APPROACH_HE
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_APPROACH_VECTOR;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_HEADING;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_VECTOR;
+import static org.firstinspires.ftc.teamcode.Constants.LOADING_BEGIN_POSE;
+import static org.firstinspires.ftc.teamcode.Constants.LOADING_FLOWER_APPROACH_POSE;
+import static org.firstinspires.ftc.teamcode.Constants.LOADING_PARK_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.LOADING_SHOOT_POSE;
+import static org.firstinspires.ftc.teamcode.Constants.LOADING_SHOOT_POSE_2;
 import static org.firstinspires.ftc.teamcode.Constants.PARK_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.SLOW_SLOW_VEL;
 import static org.firstinspires.ftc.teamcode.Constants.SLOW_VEL;
 import static org.firstinspires.ftc.teamcode.Constants.TO_BOTTOM;
 import static org.firstinspires.ftc.teamcode.Constants.TO_BOTTOM_LEFT;
+import static org.firstinspires.ftc.teamcode.Constants.TO_LEFT;
 import static org.firstinspires.ftc.teamcode.Constants.TO_RIGHT;
 import static org.firstinspires.ftc.teamcode.Constants.TO_TOP;
 import static org.firstinspires.ftc.teamcode.Constants.TO_TOP_RIGHT;
+import static org.firstinspires.ftc.teamcode.Constants.LOADING_FLOWER_POSE;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -76,7 +82,7 @@ public class LoadingSideAuto extends LinearOpMode {
 
         waitForStart();
 
-        drive.localizer.setPose(GARDEN_BEGIN_POSE);
+        drive.localizer.setPose(LOADING_BEGIN_POSE);
 
         Actions.runBlocking(
             drive.actionBuilder(beginPose)
@@ -88,29 +94,29 @@ public class LoadingSideAuto extends LinearOpMode {
                 .waitSeconds(feederOnTime)
                 .stopAndAdd(() -> intakeSubsystem.stopIntake())
                 .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooting
-                .stopAndAdd(() -> intakeSubsystem.runIntakeLeft()) // turn on intake
-                .strafeToLinearHeading(INTAKE_GARDEN_APPROACH_VECTOR, INTAKE_GARDEN_APPROACH_HEADING, SLOW_VEL)
-                .strafeToSplineHeading(INTAKE_GARDEN_VECTOR, INTAKE_GARDEN_HEADING, SLOW_SLOW_VEL) // intake
+                .splineToLinearHeading(LOADING_FLOWER_APPROACH_POSE, TO_BOTTOM)
+                .splineToLinearHeading(LOADING_FLOWER_POSE, TO_BOTTOM) // Depollinater down
                 .waitSeconds(0.5)
                 .stopAndAdd(() -> intakeSubsystem.stopIntake()) // turn off intake
 
                 // endregion
 
                 // region block 2
-                    .setTangent(TO_BOTTOM_LEFT)
-                    .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) //move to loading side
+                    .setTangent(TO_TOP)
+                    .splineToLinearHeading(LOADING_FLOWER_APPROACH_POSE, TO_BOTTOM)
+                    .setTangent(TO_LEFT)
+                    .splineToLinearHeading(LOADING_SHOOT_POSE_2, TO_BOTTOM) // depolinator up
+
                     .stopAndAdd(() -> intakeSubsystem.runIntakeRight())
-                    .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // pew pew
+                    .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shooter
                     .waitSeconds(feederOnTime)
                     .stopAndAdd(() -> intakeSubsystem.stopIntake())
                     .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooter
-                    .waitSeconds(1) // camera check
                 // endregion
 
                     // region block 3
                     .setTangent(TO_TOP)
-                    .stopAndAdd(() -> depollenaterSubsystem.DepollenaterDown())
-                    .splineToLinearHeading(GARDEN_FLOWER_POSE, TO_TOP_RIGHT, SLOW_VEL)
+                    .splineToLinearHeading(LOADING_PARK_POSE,TO_RIGHT)
                     .waitSeconds(1)
                     // endregion
 
