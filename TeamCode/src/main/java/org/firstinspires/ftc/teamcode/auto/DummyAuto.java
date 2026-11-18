@@ -43,9 +43,10 @@ public class DummyAuto extends LinearOpMode {
 
         drive = new MecanumDrive(hardwareMap, GARDEN_BEGIN_POSE);
         intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry);
-        shooterSubsystem = new ShooterSubsystemTeleop(hardwareMap, telemetry);
-        feederSubsystem = new FeederSubsystem(hardwareMap, telemetry);
         cameraTrackingSubsystems = new CameraTrackingSubsystems(hardwareMap, telemetry);
+
+        shooterSubsystem = new ShooterSubsystemTeleop(hardwareMap, telemetry, cameraTrackingSubsystems);
+        feederSubsystem = new FeederSubsystem(hardwareMap, telemetry);
         depollenaterSubsystem = new DepollenaterSubsystem(hardwareMap, telemetry);
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());

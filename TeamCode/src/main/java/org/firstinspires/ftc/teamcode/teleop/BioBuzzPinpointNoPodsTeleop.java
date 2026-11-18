@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.Lights;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystemTeleop;
 
+
 @Config
 @TeleOp(name = "BioBuzz No Pods", group = "Competition")
 public class BioBuzzPinpointNoPodsTeleop extends OpMode {
@@ -42,7 +43,7 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
 
     public static double autoAimMultuplyer = 0.05;
 
-    public static double autoAimThreshold = 1;
+    public static double autoAimThreshold = 4;
 
     public static double autoAimK = .1;
 
@@ -58,17 +59,20 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
     private GoBildaPinpointDriver pinpoint;
 
     private double headingOffset = 0;
+
+    private String alliance = "RED";
     // endregion
+
 
     @Override
     public void init() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         lights = new Lights(hardwareMap);
         intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry);
-        shooterSubsystem = new ShooterSubsystemTeleop(hardwareMap, telemetry);
+        cameraTrackingSubsystems =new CameraTrackingSubsystems(hardwareMap,telemetry);
+        shooterSubsystem = new ShooterSubsystemTeleop(hardwareMap, telemetry, cameraTrackingSubsystems);
         feederSubsystem = new FeederSubsystem(hardwareMap, telemetry);
         beamBrakeSubsystem = new BeamBrakeSubsystem(hardwareMap, telemetry);
-        cameraTrackingSubsystems =new CameraTrackingSubsystems(hardwareMap,telemetry);
         depollenaterSubsystem = new DepollenaterSubsystem(hardwareMap,telemetry);
         imu = hardwareMap.get(IMU.class, "imu");
 
@@ -110,13 +114,13 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
         // endregion
 
         //region light code
-          if (Math.abs(cameraTrackingSubsystems.autoAim()) < autoAimThreshold) {
+          if (Math.abs(cameraTrackingSubsystems.autoAim()) < autoAimThreshold && (Math.abs(cameraTrackingSubsystems.autoAim()) > 0.01)) {
             lights.turnRightLockedOnLightOn(0.416);
             lights.turnLeftLockedOnLightOn(0.416);
-          } else if (cameraTrackingSubsystems.autoAim() > autoAimThreshold){
-            lights.turnRightLockedOnLightOn(0.277);
-            lights.turnLeftLockedOnLightOn(0.277);
-          } else if(gamepad1.right_trigger == 0){
+          } else if (Math.abs(cameraTrackingSubsystems.autoAim()) > autoAimThreshold){
+            lights.turnRightLockedOnLightOn(0.28);
+            lights.turnLeftLockedOnLightOn(0.28);
+          } else  {
             lights.turnRightLockedOnLightOn(0);
             lights.turnLeftLockedOnLightOn(0);
           }
@@ -125,7 +129,7 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
 
         // region Drive code
 
-        if (gamepad1.x){
+        if (gamepad1.y){
             pinpoint.resetPosAndIMU();
         }
 
@@ -199,6 +203,15 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
             depollenaterSubsystem.DepollenaterDown();
         } else {
             depollenaterSubsystem.depollenaterUp();
+        }
+        // endregion
+
+        // region switch Alliance; default is "RED"
+        if (gamepad1.xWasPressed()){
+            alliance = "blue";
+        }
+        if (gamepad1.bWasPressed()){
+            alliance = "red";
         }
         // endregion
 

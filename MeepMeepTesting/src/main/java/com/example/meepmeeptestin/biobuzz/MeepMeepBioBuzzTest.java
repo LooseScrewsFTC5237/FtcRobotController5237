@@ -4,6 +4,7 @@ import static com.example.meepmeeptestin.Constants.GARDEN_BEGIN_POSE;
 import static com.example.meepmeeptestin.Constants.GARDEN_CAMERA_CHECK_HEADING;
 import static com.example.meepmeeptestin.Constants.GARDEN_CAMERA_CHECK_POSE;
 import static com.example.meepmeeptestin.Constants.GARDEN_CAMERA_CHECK_VECTOR;
+import static com.example.meepmeeptestin.Constants.GARDEN_FLOWER_APPROACH_POSE;
 import static com.example.meepmeeptestin.Constants.GARDEN_FLOWER_POSE;
 import static com.example.meepmeeptestin.Constants.GARDEN_SHOOT_POSE;
 import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_APPROACH_HEADING;
@@ -75,12 +76,9 @@ public class            MeepMeepBioBuzzTest {
 
                 // region block 4
                 .setTangent(TO_TOP)
-                .splineToLinearHeading(GARDEN_FLOWER_POSE, TO_TOP_RIGHT, SLOW_VEL)
-                .waitSeconds(1)
-                // endregion
-
-                // region block 5
-                .setTangent(TO_BOTTOM_LEFT)
+                .splineToLinearHeading(GARDEN_FLOWER_APPROACH_POSE, TO_TOP)
+                .setTangent(TO_LEFT)
+                .splineToLinearHeading(GARDEN_FLOWER_POSE, TO_LEFT, SLOW_SLOW_VEL)
                 .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) //move to loading side
                 .waitSeconds(2) // shoot
 
