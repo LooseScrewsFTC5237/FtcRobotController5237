@@ -27,7 +27,7 @@ public class Constants {
 
     public static final Pose2d INTAKE_LOADING_POSE = new Pose2d(60.0, -34, Math.toRadians(0));
 
-    public static final Pose2d GARDEN_FLOWER_POSE = new Pose2d(52,23, Math.toRadians(0));
+    public static final Pose2d GARDEN_FLOWER_POSE = new Pose2d(57,23, Math.toRadians(0));
     public static final Pose2d GARDEN_FLOWER_APPROACH_POSE = new Pose2d(40,23, Math.toRadians(0));
 
     public static final Vector2d INTAKE_GARDEN_APPROACH_VECTOR = new Vector2d(55,55.5);
