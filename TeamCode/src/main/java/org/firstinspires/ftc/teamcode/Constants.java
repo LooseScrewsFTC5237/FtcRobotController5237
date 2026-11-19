@@ -50,7 +50,7 @@ public class Constants {
     //Loading side variables
     public static final Pose2d LOADING_BEGIN_POSE = new Pose2d(9,-60.5, Math.toRadians(0));
     public static final Pose2d LOADING_FLOWER_APPROACH_POSE = new Pose2d(23,-43, Math.toRadians(270));
-    public static final Pose2d LOADING_FLOWER_POSE = new Pose2d(23,-53, Math.toRadians(270));
+    public static final Pose2d LOADING_FLOWER_POSE = new Pose2d(23,-54, Math.toRadians(270));
     public static final Pose2d LOADING_SHOOT_POSE_2 = new Pose2d(9,-60.5, Math.toRadians(0));
     public static final Pose2d LOADING_PARK_POSE = new Pose2d(60.5,-45, Math.toRadians(0));
 

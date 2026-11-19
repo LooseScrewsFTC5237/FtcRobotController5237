@@ -99,6 +99,7 @@ public class LoadingSideAuto extends LinearOpMode {
                 .stopAndAdd(() -> depollenaterSubsystem.DepollenaterDown())
                 .waitSeconds(1.5)
                 .splineToLinearHeading(LOADING_FLOWER_POSE, TO_BOTTOM) // Depollinater down
+                .stopAndAdd(() -> intakeSubsystem.runIntakeRight()) // turn on right intake
                 .waitSeconds(0.5)
                 .stopAndAdd(() -> intakeSubsystem.stopIntake()) // turn off intake
 
@@ -107,9 +108,10 @@ public class LoadingSideAuto extends LinearOpMode {
                 // region block 2
                     .setTangent(TO_TOP)
                     .splineToLinearHeading(LOADING_FLOWER_APPROACH_POSE, TO_BOTTOM)
+                    .stopAndAdd(() -> depollenaterSubsystem.depollenaterUp())
+                    .waitSeconds(1.5)
                     .setTangent(TO_LEFT)
                     .splineToLinearHeading(LOADING_SHOOT_POSE_2, TO_BOTTOM) // depolinator up
-                    .stopAndAdd(() -> depollenaterSubsystem.depollenaterUp())
                     .stopAndAdd(() -> intakeSubsystem.runIntakeRight())
                     .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shooter
                     .waitSeconds(feederOnTime)
