@@ -87,6 +87,7 @@ public class LoadingSideAuto extends LinearOpMode {
         Actions.runBlocking(
             drive.actionBuilder(beginPose)
                 // region block 1
+                .waitSeconds(10)
                 .stopAndAdd(() -> shooterSubsystem.runShooter()) // turn on shooter
                 .waitSeconds(feederOnTime)
                 .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
