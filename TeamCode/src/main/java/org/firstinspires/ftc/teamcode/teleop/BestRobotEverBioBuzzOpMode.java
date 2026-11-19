@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.teamcode.Alliance;
 import org.firstinspires.ftc.teamcode.FieldCentric;
 import org.firstinspires.ftc.teamcode.subsystems.BeamBrakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.CameraTrackingSubsystems;
@@ -93,7 +94,7 @@ public class BestRobotEverBioBuzzOpMode extends OpMode {
          forward = gamepad1.left_stick_y * driveSpeed; // Forward/Backward
          strafe = -gamepad1.left_stick_x * driveSpeed;  // Strafing left/right
         if (gamepad1.a){
-            rotate = cameraTrackingSubsystems.autoAim() * autoAimMultuplyer * driveSpeed;// Rotation
+        rotate = cameraTrackingSubsystems.autoAim(Alliance.BLUE) * autoAimMultuplyer * driveSpeed;// Rotation
         } else {
             rotate = -gamepad1.right_stick_x * turnSpeed;// Rotation
         }

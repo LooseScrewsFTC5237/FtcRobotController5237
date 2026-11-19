@@ -24,6 +24,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.Alliance;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.CameraTrackingSubsystems;
@@ -124,7 +125,7 @@ public class GardenSideAutoWithCamera extends LinearOpMode {
                                     .waitSeconds(1)
                                     .build()
                     );
-                    currentBlock = cameraTrackingSubsystems.seeApirltag()
+                    currentBlock = cameraTrackingSubsystems.seeApirltag(Alliance.BLUE)
                             ? AutoBlock.BLOCK_2
                             : AutoBlock.BLOCK_3;
                     break;
@@ -142,7 +143,7 @@ public class GardenSideAutoWithCamera extends LinearOpMode {
                                     .waitSeconds(1) // camera check
                                     .build()
                     );
-                    currentBlock = cameraTrackingSubsystems.seeApirltag()
+                    currentBlock = cameraTrackingSubsystems.seeApirltag(Alliance.BLUE)
                             ? AutoBlock.BLOCK_4
                             : AutoBlock.BLOCK_5;
                     break;
@@ -164,7 +165,7 @@ public class GardenSideAutoWithCamera extends LinearOpMode {
                                     .waitSeconds(1) // camera check
                                     .build()
                     );
-                    currentBlock = cameraTrackingSubsystems.seeApirltag()
+                    currentBlock = cameraTrackingSubsystems.seeApirltag(Alliance.RED)
                             ? AutoBlock.BLOCK_6
                             : AutoBlock.BLOCK_7;
                     break;

@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.teamcode.Alliance;
 import org.firstinspires.ftc.teamcode.archive.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.subsystems.BeamBrakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.CameraTrackingSubsystems;
@@ -60,7 +61,7 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
 
     private double headingOffset = 0;
 
-    private String alliance = "RED";
+    private Alliance alliance = Alliance.RED;
     // endregion
 
 
@@ -114,15 +115,18 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
         // endregion
 
         //region light code
-          if (Math.abs(cameraTrackingSubsystems.autoAim()) < autoAimThreshold && (Math.abs(cameraTrackingSubsystems.autoAim()) > 0.01)) {
+        double bearing = cameraTrackingSubsystems.autoAim(alliance);
+          if (Math.abs(bearing) < autoAimThreshold && (Math.abs(bearing) > 0.01)) {
             lights.turnRightLockedOnLightOn(0.416);
             lights.turnLeftLockedOnLightOn(0.416);
-          } else if (Math.abs(cameraTrackingSubsystems.autoAim()) > autoAimThreshold){
+          } else if (Math.abs(bearing) > autoAimThreshold){
             lights.turnRightLockedOnLightOn(0.28);
             lights.turnLeftLockedOnLightOn(0.28);
           } else  {
             lights.turnRightLockedOnLightOn(0);
             lights.turnLeftLockedOnLightOn(0);
+
+            lights.fadeLight();
           }
 
         // endregion
@@ -146,13 +150,13 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
         double y = gamepad1.left_stick_y;
         double x = gamepad1.left_stick_x * 1.1;
 
-        if (gamepad1.right_trigger > 0 && cameraTrackingSubsystems.seeApirltag() && Math.abs(cameraTrackingSubsystems.autoAim()) > autoAimThreshold){
-            rx = (-cameraTrackingSubsystems.autoAim() * autoAimMultuplyer) + autoAimK * (cameraTrackingSubsystems.autoAim() / Math.abs(cameraTrackingSubsystems.autoAim()));
+        if (gamepad1.right_trigger > 0 && cameraTrackingSubsystems.seeApirltag(alliance) && Math.abs(bearing) > autoAimThreshold){
+            rx = (-bearing * autoAimMultuplyer) + autoAimK * bearing / Math.abs(bearing);
 
         } else {
             rx = gamepad1.right_stick_x;
         }
-        telemetry.addData("Camera P", -cameraTrackingSubsystems.autoAim());
+        telemetry.addData("Camera P", -bearing);
 
         double rawHeading = pinpoint.getHeading();
         double robotHeading = rawHeading - headingOffset;
@@ -208,12 +212,12 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
 
         // region switch Alliance; default is "RED"
         if (gamepad1.xWasPressed()){
-            alliance = "blue";
+            alliance = Alliance.BLUE;
         }
         if (gamepad1.bWasPressed()){
-            alliance = "red";
+            alliance = Alliance.RED;
         }
         // endregion
-
+        telemetry.addData("alliance", alliance);
     }
 }

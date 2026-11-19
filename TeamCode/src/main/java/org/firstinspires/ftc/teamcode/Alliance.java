@@ -11,7 +11,7 @@ public enum Alliance {
     private Set<String> shortNames = new HashSet<>();
     Alliance(String... shortNames){this.shortNames.addAll(Arrays.asList(shortNames));}
 
-    public boolean isTarget(String shortNames){
-        return shortNames.contains(shortNames);
+    public boolean isTarget(String shortName){
+        return shortNames.contains(shortName);
     }
 }

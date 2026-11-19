@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.teamcode.Alliance;
 import org.firstinspires.ftc.teamcode.archive.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.subsystems.BeamBrakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.CameraTrackingSubsystems;
@@ -93,7 +94,7 @@ public class Camera extends OpMode {
     @Override
     public void loop() {
 
-        boolean seeTag = cameraTrackingSubsystems.seeApirltag();
+        boolean seeTag = cameraTrackingSubsystems.seeApirltag(Alliance.RED);
 
         telemetry.addData("See Apriltag", seeTag);
         telemetry.update();

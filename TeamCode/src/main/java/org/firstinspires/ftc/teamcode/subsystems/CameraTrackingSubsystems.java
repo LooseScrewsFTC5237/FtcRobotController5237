@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.Alliance;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagClusterDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -40,7 +41,7 @@ public class CameraTrackingSubsystems {
                 .build();
     }
 
-    public double autoAim(){
+    public double autoAim(Alliance alliance){
         FtcDashboard.getInstance().startCameraStream(visionPortal,0);
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
 
@@ -53,12 +54,12 @@ public class CameraTrackingSubsystems {
 
                 // Clusters don't have a single ID, but you can target them based on metadata name or presence
                 if (clusterDet.metadata != null) {
-                    telemetry.addData("Target Cluster Found", clusterDet.metadata.name);
-                    telemetry.addData("Percent Found", "%d%%", clusterDet.percentClusterFound);
-                    telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inc, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
-                    if (clusterDet.ftcPose != null) {
+                    if (alliance.isTarget(clusterDet.metadata.shortName) ) {
+                        telemetry.addData("Target Cluster Found", clusterDet.metadata.name);
+                        telemetry.addData("Percent Found", "%d%%", clusterDet.percentClusterFound);
+                        telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inc, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
                         telemetry.addData("Yaw (Error)", "%5.2f degrees", clusterDet.ftcPose.bearing);
-                       target = clusterDet;
+                        target = clusterDet;
                         return clusterDet.ftcPose.bearing;
 
                     }
@@ -80,11 +81,11 @@ public class CameraTrackingSubsystems {
         }
     }
 
-    public boolean seeApirltag() {
+    public boolean seeApirltag(Alliance alliance) {
         FtcDashboard.getInstance().startCameraStream(visionPortal,0);
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         for (AprilTagDetection detection : currentDetections) {
-            if (detection instanceof AprilTagClusterDetection) {
+            if (detection instanceof AprilTagClusterDetection && alliance.isTarget(((AprilTagClusterDetection) detection).metadata.shortName)) {
                 return true;
             }
 

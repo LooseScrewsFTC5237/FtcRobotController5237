@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Alliance;
 import org.firstinspires.ftc.teamcode.subsystems.BeamBrakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.CameraTrackingSubsystems;
 import org.firstinspires.ftc.teamcode.subsystems.DepollenaterSubsystem;
@@ -110,7 +111,7 @@ public class BioBuzzTeleOp extends OpMode {
          forward = gamepad1.left_stick_y * driveSpeed; // Forward/Backward
          strafe = -gamepad1.left_stick_x * driveSpeed;  // Strafing left/right
         if (gamepad1.a){
-            rotate = cameraTrackingSubsystems.autoAim() * autoAimMultuplyer * driveSpeed;// Rotation
+            rotate = cameraTrackingSubsystems.autoAim(Alliance.BLUE) * autoAimMultuplyer * driveSpeed;// Rotation
         } else {
             rotate = -gamepad1.right_stick_x * turnSpeed;// Rotation
         }
