@@ -41,11 +41,11 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
     private double driveSpeedNormal = 0.8;
     public static double turnSpeed = 0.5;
 
-    public static double autoAimMultuplyer = 0.05;
+    public static double autoAimMultuplyer = 0.1;
 
-    public static double autoAimThreshold = 4;
+    public static double autoAimThreshold = 3;
 
-    public static double autoAimK = .1;
+    public static double autoAimK = .2;
 
     private double forward;
     private double strafe;

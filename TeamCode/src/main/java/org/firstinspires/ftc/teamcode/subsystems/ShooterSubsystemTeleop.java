@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class ShooterSubsystemTeleop {
 
     public static double shooterSpeed = 1340;
-    public static double shooterSpeeddefault = 1340;
+    public static double shooterSpeedDefault = 1340;
 
     public static double realShooterSpeed = 0;
 
@@ -55,15 +55,15 @@ public class ShooterSubsystemTeleop {
         if(vision!=null){
             Double range = vision.gettargetrange();
             if (range != null) {
-                shooterSpeed = (7.27854 * range) + 992.83133;
+                shooterSpeed = (7.27854 * range) + 942.83133;
             } else {
-                shooterSpeed = shooterSpeeddefault;
+                shooterSpeed = shooterSpeedDefault;
             }
         } else {
-            shooterSpeed = shooterSpeeddefault;
+            shooterSpeed = shooterSpeed;
         }
 
-       shooter.setVelocity(shooterSpeed);
+        shooter.setVelocity(shooterSpeed);
         telemetry.addData("shooter speed",shooter.getVelocity());
         telemetry.addData("shooter target",shooterSpeed);
         PIDFCoefficients currentPIDF = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -84,4 +84,5 @@ public class ShooterSubsystemTeleop {
         }
         realShooterSpeed = shooter.getVelocity();
     }
+
 }

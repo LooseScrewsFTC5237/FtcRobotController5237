@@ -4,6 +4,7 @@ import static com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.BLUE;
 import static com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE;
 import static com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_LAVA_PALETTE;
 import static com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_OCEAN_PALETTE;
+import static com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_PARTY_PALETTE;
 import static com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.GREEN;
 import static com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.RED;
 import static com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.YELLOW;
@@ -17,13 +18,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Lights {
     private Servo leftLockedOnLight; // not a servo it's a light
     private Servo rightLockedOnLight; // also not a servo it's a light
-   // private RevBlinkinLedDriver LightStrip;
+//    private RevBlinkinLedDriver LightStrip;
 
 
     public Lights(HardwareMap hwMap) {
         leftLockedOnLight = hwMap.get(Servo.class,"LeftLockedOnLight");
         rightLockedOnLight = hwMap.get(Servo.class,"RightLockedOnLight");
-       // LightStrip = hwMap.get(RevBlinkinLedDriver.class, "test light strip");
+//        LightStrip = hwMap.get(RevBlinkinLedDriver.class, "test light strip");
     }
 
     public void
@@ -42,6 +43,8 @@ public class Lights {
 //            LightStrip.setPattern(COLOR_WAVES_FOREST_PALETTE);
 //        } else if (color == 3) {
 //            LightStrip.setPattern(COLOR_WAVES_LAVA_PALETTE);
+//        } else if (color == 4){
+//            LightStrip.setPattern(COLOR_WAVES_PARTY_PALETTE);
 //        }
 //    }
 
