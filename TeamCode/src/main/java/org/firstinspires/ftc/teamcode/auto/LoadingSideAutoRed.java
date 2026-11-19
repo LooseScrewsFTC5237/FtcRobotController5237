@@ -8,28 +8,27 @@ import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_HEADING;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_VECTOR;
 import static org.firstinspires.ftc.teamcode.Constants.LOADING_BEGIN_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.LOADING_FLOWER_APPROACH_POSE;
+import static org.firstinspires.ftc.teamcode.Constants.LOADING_FLOWER_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.LOADING_PARK_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.LOADING_SHOOT_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.LOADING_SHOOT_POSE_2;
 import static org.firstinspires.ftc.teamcode.Constants.PARK_POSE;
-import static org.firstinspires.ftc.teamcode.Constants.SLOW_SLOW_VEL;
-import static org.firstinspires.ftc.teamcode.Constants.SLOW_VEL;
 import static org.firstinspires.ftc.teamcode.Constants.TO_BOTTOM;
 import static org.firstinspires.ftc.teamcode.Constants.TO_BOTTOM_LEFT;
 import static org.firstinspires.ftc.teamcode.Constants.TO_LEFT;
 import static org.firstinspires.ftc.teamcode.Constants.TO_RIGHT;
 import static org.firstinspires.ftc.teamcode.Constants.TO_TOP;
-import static org.firstinspires.ftc.teamcode.Constants.TO_TOP_RIGHT;
-import static org.firstinspires.ftc.teamcode.Constants.LOADING_FLOWER_POSE;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.RaceAction;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.Alliance;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.CameraTrackingSubsystems;
@@ -40,7 +39,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystemTeleop;
 
 @Config
 @Autonomous
-public class LoadingSideAuto extends LinearOpMode {
+public class LoadingSideAutoRed extends LinearOpMode {
 
     protected MecanumDrive drive;
     // TODO: create instances of subsystems
@@ -84,14 +83,26 @@ public class LoadingSideAuto extends LinearOpMode {
 
         drive.localizer.setPose(LOADING_BEGIN_POSE);
 
+        // 1. Setup shooter & intake
+        Actions.runBlocking(
+                drive.actionBuilder(beginPose)
+                        .stopAndAdd(() -> shooterSubsystem.runShooter())
+                        .waitSeconds(feederOnTime)
+                        .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
+                        .build()
+        );
+
+// 2. Exit as soon as tag is seen OR 5s passes
+        Actions.runBlocking(
+                new RaceAction(
+                        drive.actionBuilder(beginPose).waitSeconds(10).build(),
+                        new WaitForAprilTagAction(cameraTrackingSubsystems, Alliance.RED)
+                )
+        );
         Actions.runBlocking(
             drive.actionBuilder(beginPose)
                 // region block 1
 
-                .waitSeconds(10)
-                .stopAndAdd(() -> shooterSubsystem.runShooter()) // turn on shooter
-                .waitSeconds(feederOnTime)
-                .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
                 .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shoot
                 .waitSeconds(feederOnTime)
                 .stopAndAdd(() -> intakeSubsystem.stopIntake())
