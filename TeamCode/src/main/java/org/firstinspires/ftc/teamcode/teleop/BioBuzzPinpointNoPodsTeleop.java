@@ -126,9 +126,9 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
             lights.turnRightLockedOnLightOn(0);
             lights.turnLeftLockedOnLightOn(0);
 
-            lights.fadeLight();
-          }
 
+          }
+        lights.fadeLight();
         // endregion
 
         // region Drive code

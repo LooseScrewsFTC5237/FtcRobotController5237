@@ -30,9 +30,20 @@ public class Lights {
     }
 
     public void fadeLight(){
-        if (lightChange < 0.055){
-            
-        }
+//        if (lightChange < 0.055){
+//            if (fadingUp){
+//                lightChange = lightChange + 0.001;
+//            } else {
+//                lightChange = lightChange - 0.001;
+//                if (lightChange < 0){
+//                    fadingUp = true;
+//                    lightChange = lightChange = 1;
+//                }
+//            }
+//        } else {
+//            fadingUp = false;
+//            lightChange = lightChange - 0.001;
+//        }
     }
 
     public void turnLeftLockedOnLightOn(double color) {
