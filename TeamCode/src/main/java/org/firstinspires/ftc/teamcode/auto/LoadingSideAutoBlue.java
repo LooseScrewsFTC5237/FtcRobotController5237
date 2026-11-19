@@ -1,7 +1,14 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+import static org.firstinspires.ftc.teamcode.Constants.GARDEN_BEGIN_POSE;
+import static org.firstinspires.ftc.teamcode.Constants.GARDEN_FLOWER_POSE;
+import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_APPROACH_HEADING;
+import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_APPROACH_VECTOR;
+import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_HEADING;
+import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_VECTOR;
 import static org.firstinspires.ftc.teamcode.Constants.LOADING_BEGIN_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.LOADING_FLOWER_APPROACH_POSE;
+import static org.firstinspires.ftc.teamcode.Constants.LOADING_FLOWER_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.LOADING_PARK_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.LOADING_SHOOT_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.LOADING_SHOOT_POSE_2;
@@ -77,22 +84,21 @@ public class LoadingSideAutoBlue extends LinearOpMode {
 
         drive.localizer.setPose(LOADING_BEGIN_POSE);
 
+        // 1. Setup shooter & intake
+        Actions.runBlocking(
+                drive.actionBuilder(beginPose)
+                        .stopAndAdd(() -> shooterSubsystem.runShooter())
+                        .waitSeconds(feederOnTime)
+                        .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
+                        .build()
+        );
+
+// 2. Exit as soon as tag is seen OR 5s passes
         Actions.runBlocking(
                 new RaceAction(
-                        drive.actionBuilder(beginPose)
-                                .stopAndAdd(() -> shooterSubsystem.runShooter()) // turn on shooter
-                                .waitSeconds(feederOnTime)
-                                .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
-                                .waitSeconds(5)
-                                .build(),
-                        drive.actionBuilder(beginPose)
-                                .stopAndAdd(() -> shooterSubsystem.runShooter()) // turn on shooter
-                                .waitSeconds(feederOnTime)
-                                .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
-                                .stopAndAdd(() -> cameraTrackingSubsystems.seeApirltag(Alliance.BLUE))
-                                .build()
+                        drive.actionBuilder(beginPose).waitSeconds(10).build(),
+                        new WaitForAprilTagAction(cameraTrackingSubsystems, Alliance.RED)
                 )
-
         );
         Actions.runBlocking(
             drive.actionBuilder(beginPose)
