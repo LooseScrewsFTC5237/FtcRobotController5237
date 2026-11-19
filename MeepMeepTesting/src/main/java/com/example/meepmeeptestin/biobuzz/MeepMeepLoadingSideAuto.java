@@ -48,6 +48,7 @@ public class MeepMeepLoadingSideAuto {
 
                 // region block 1
 
+                .waitSeconds(10) // this is a placeholder for camera
                 .waitSeconds(2) // Shoot
                 .setTangent(TO_TOP)
                 .splineToLinearHeading(LOADING_FLOWER_APPROACH_POSE, TO_BOTTOM)

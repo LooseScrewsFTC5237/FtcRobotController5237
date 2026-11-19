@@ -58,7 +58,7 @@ public class LoadingSideAuto extends LinearOpMode {
         telemetry.addData("Status", "Initializing");
         telemetry.update();
 
-        drive = new MecanumDrive(hardwareMap, GARDEN_BEGIN_POSE);
+        drive = new MecanumDrive(hardwareMap, LOADING_BEGIN_POSE);
         intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry);
         shooterSubsystem = new ShooterSubsystemTeleop(hardwareMap, telemetry);
         feederSubsystem = new FeederSubsystem(hardwareMap, telemetry);
@@ -67,7 +67,7 @@ public class LoadingSideAuto extends LinearOpMode {
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        Pose2d beginPose = Constants.GARDEN_BEGIN_POSE;
+        Pose2d beginPose = Constants.LOADING_BEGIN_POSE;
 
         // Put depollenater up before starting
         Actions.runBlocking(
