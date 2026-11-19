@@ -37,6 +37,7 @@ public class Constants {
     public static final Vector2d INTAKE_GARDEN_APPROACH_VECTOR = new Vector2d(55,57.5);
     public static final double INTAKE_GARDEN_APPROACH_HEADING = Math.toRadians(225);
 
+    public static final TranslationalVelConstraint FAST_VEL = new TranslationalVelConstraint(500);
     public static final TranslationalVelConstraint SLOW_VEL = new TranslationalVelConstraint(25);
     public static final TranslationalVelConstraint SLOW_SLOW_VEL = new TranslationalVelConstraint(7.5);
 

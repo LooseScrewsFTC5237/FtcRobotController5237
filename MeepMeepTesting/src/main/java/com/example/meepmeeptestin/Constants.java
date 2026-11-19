@@ -26,7 +26,8 @@ public class Constants {
 
     public static final Vector2d INTAKE_GARDEN_VECTOR = new Vector2d(61,60.5);
     public static final double INTAKE_GARDEN_HEADING = Math.toRadians(180);
-    
+
+
     public static final Pose2d INTAKE_LOADING_POSE = new Pose2d(60.0, -34, Math.toRadians(0));
 
     public static final Pose2d GARDEN_FLOWER_POSE = new Pose2d(60,23, Math.toRadians(0));
@@ -36,6 +37,7 @@ public class Constants {
     public static final Vector2d INTAKE_GARDEN_APPROACH_VECTOR = new Vector2d(55,57.5);
     public static final double INTAKE_GARDEN_APPROACH_HEADING = Math.toRadians(225);
 
+    public static final TranslationalVelConstraint FAST_VEL = new TranslationalVelConstraint(500);
     public static final TranslationalVelConstraint SLOW_VEL = new TranslationalVelConstraint(25);
     public static final TranslationalVelConstraint SLOW_SLOW_VEL = new TranslationalVelConstraint(7.5);
 

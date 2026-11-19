@@ -20,6 +20,8 @@ public class Lights {
     private Servo rightLockedOnLight; // also not a servo it's a light
 //    private RevBlinkinLedDriver LightStrip;
 
+    private double lightChange = 0;
+    private boolean fadingUp = true;
 
     public Lights(HardwareMap hwMap) {
         leftLockedOnLight = hwMap.get(Servo.class,"LeftLockedOnLight");
@@ -27,15 +29,20 @@ public class Lights {
 //        LightStrip = hwMap.get(RevBlinkinLedDriver.class, "test light strip");
     }
 
-    public void
-    turnLeftLockedOnLightOn(double color) {
-        leftLockedOnLight.setPosition(color);
+    public void fadeLight(){
+        if (lightChange < 0.055){
+            
+        }
     }
 
-    public void
-    turnRightLockedOnLightOn(double color) {
-        rightLockedOnLight.setPosition(color);
+    public void turnLeftLockedOnLightOn(double color) {
+        leftLockedOnLight.setPosition(color + lightChange);
     }
+
+    public void turnRightLockedOnLightOn(double color) {
+        rightLockedOnLight.setPosition(color + lightChange);
+    }
+
 //    public void turnLightStripOn(int color) {
 //        if (color == 1) {
 //            LightStrip.setPattern(COLOR_WAVES_OCEAN_PALETTE);

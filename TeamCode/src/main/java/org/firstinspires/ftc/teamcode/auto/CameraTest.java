@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.teamcode.Alliance;
 import org.firstinspires.ftc.teamcode.subsystems.CameraTrackingSubsystems;
 import org.firstinspires.ftc.teamcode.subsystems.FeederSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
@@ -62,7 +63,7 @@ public class CameraTest extends LinearOpMode {
 
         waitForStart();
 
-        boolean seeTag = cameraTrackingSubsystems.seeApirltag();
+        boolean seeTag = cameraTrackingSubsystems.seeApirltag(Alliance.BLUE );
 
         telemetry.addData("See Apriltag", seeTag);
         telemetry.update();

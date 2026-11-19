@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime; // <-- 1. Add this import
 
+import org.firstinspires.ftc.teamcode.Alliance;
 import org.firstinspires.ftc.teamcode.subsystems.CameraTrackingSubsystems;
 import org.firstinspires.ftc.teamcode.subsystems.FeederSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
@@ -61,7 +62,7 @@ public class LoadingSideShootAndParkWithCamera extends LinearOpMode {
 
         searchTimer.reset();
         while (opModeIsActive() && searchTimer.seconds() < 15.0) {
-            if (cameraTrackingSubsystems.seeApirltag()) {
+            if (cameraTrackingSubsystems.seeApirltag(Alliance.RED)) {
                 tagFound = true;
                 break; // Exit loop early as soon as tag is detected
             }

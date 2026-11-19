@@ -1,5 +1,6 @@
 package com.example.meepmeeptestin.biobuzz;
 
+import static com.example.meepmeeptestin.Constants.FAST_VEL;
 import static com.example.meepmeeptestin.Constants.GARDEN_BEGIN_POSE;
 import static com.example.meepmeeptestin.Constants.GARDEN_CAMERA_CHECK_HEADING;
 import static com.example.meepmeeptestin.Constants.GARDEN_CAMERA_CHECK_POSE;
