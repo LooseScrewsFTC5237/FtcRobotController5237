@@ -18,6 +18,7 @@ import static org.firstinspires.ftc.teamcode.Constants.TO_BOTTOM_LEFT;
 import static org.firstinspires.ftc.teamcode.Constants.TO_LEFT;
 import static org.firstinspires.ftc.teamcode.Constants.TO_RIGHT;
 import static org.firstinspires.ftc.teamcode.Constants.TO_TOP;
+import static org.firstinspires.ftc.teamcode.Constants.LOADING_FLOWER_POSE;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -35,6 +36,7 @@ import org.firstinspires.ftc.teamcode.subsystems.CameraTrackingSubsystems;
 import org.firstinspires.ftc.teamcode.subsystems.DepollenaterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.FeederSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.Lights;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystemTeleop;
 
 @Config
@@ -48,6 +50,7 @@ public class LoadingSideAutoRed extends LinearOpMode {
     private FeederSubsystem feederSubsystem;
     private DepollenaterSubsystem depollenaterSubsystem;
     private CameraTrackingSubsystems cameraTrackingSubsystems;
+    private Lights lights;
 
     private double feederOnTime = 4;
 
@@ -63,6 +66,7 @@ public class LoadingSideAutoRed extends LinearOpMode {
         feederSubsystem = new FeederSubsystem(hardwareMap, telemetry);
         cameraTrackingSubsystems = new CameraTrackingSubsystems(hardwareMap, telemetry);
         depollenaterSubsystem = new DepollenaterSubsystem(hardwareMap, telemetry);
+        lights = new Lights(hardwareMap);
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
@@ -123,7 +127,7 @@ public class LoadingSideAutoRed extends LinearOpMode {
                     .stopAndAdd(() -> depollenaterSubsystem.depollenaterUp())
                     .waitSeconds(1.5)
                     .setTangent(TO_LEFT)
-                    .splineToLinearHeading(LOADING_SHOOT_POSE_2, TO_BOTTOM) // depolinator up
+                    .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) // depolinator up
                     .stopAndAdd(() -> intakeSubsystem.runIntakeRight())
                     .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shooter
                     .waitSeconds(feederOnTime)
@@ -137,15 +141,7 @@ public class LoadingSideAutoRed extends LinearOpMode {
                     .waitSeconds(1)
                     // endregion
 
-                    // region block 4
-                    .setTangent(TO_BOTTOM_LEFT)
-                    .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) //move to loading side
-                    .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shoot
-                    .waitSeconds(feederOnTime)
-                    .stopAndAdd(() -> intakeSubsystem.stopIntake())
-                    .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooting
 
-                    // endregion
 
                     // region block park
                     .setTangent(TO_TOP)

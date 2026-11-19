@@ -34,6 +34,7 @@ package org.firstinspires.ftc.teamcode.archive;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -46,7 +47,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  * 2026-2027 FIRST® Tech Challenge. It leverages a differential/Skid-Steer system for robot mobility,
  * one motor driving an intake roller, and two servos which pull elements out of corners.
  */
-
+@Disabled
 @TeleOp(name = "StarterBot Chassis Teleop", group = "StarterBot")
 //@Disabled
 public class StarterBotChassisTeleop extends OpMode {

@@ -31,6 +31,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 public class RedFarAuto extends LinearOpMode {
 
     boolean isRed = false;
+    @Disabled
     @Autonomous()
     public static class RedFar extends RedFarAuto {
         public RedFar() {

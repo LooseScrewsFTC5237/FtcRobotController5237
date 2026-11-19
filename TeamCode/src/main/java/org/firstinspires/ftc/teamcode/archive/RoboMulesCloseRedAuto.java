@@ -36,6 +36,7 @@ import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -60,6 +61,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * main robot "loop," continuously checking for conditions that allow us to move to the next step.
  */
 @Config
+@Disabled
 @Autonomous(name="Robo Mules Red Close", group="StarterBot")
 //@Disabled
 public class RoboMulesCloseRedAuto extends OpMode {

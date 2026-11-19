@@ -66,13 +66,12 @@ public class MeepMeepLoadingSideAuto {
                 // endregion
 
                 .setTangent(TO_LEFT)
-                .splineToLinearHeading(LOADING_SHOOT_POSE_2, TO_BOTTOM)
+                .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM)
                 .waitSeconds(2) // shoot
 
+
+
                 // region block 4
-
-
-                // region block 5
 
                 .setTangent(TO_TOP)
                 .splineToLinearHeading(LOADING_PARK_POSE,TO_RIGHT)
