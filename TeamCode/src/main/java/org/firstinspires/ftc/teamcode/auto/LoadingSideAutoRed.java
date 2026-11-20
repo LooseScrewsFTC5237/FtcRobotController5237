@@ -97,17 +97,18 @@ public class LoadingSideAutoRed extends LinearOpMode {
                         .build()
         );
 
-// 2. Exit as soon as tag is seen OR 5s passes
-        Actions.runBlocking(
-                new RaceAction(
-                        drive.actionBuilder(beginPose).waitSeconds(10).build()
-                    //    new WaitForAprilTagAction(cameraTrackingSubsystems, Alliance.RED)
-                )
-        );
+//// 2. Exit as soon as tag is seen OR 5s passes
+//        Actions.runBlocking(
+//                new RaceAction(
+//                        drive.actionBuilder(beginPose).waitSeconds(10).build()
+//                    //    new WaitForAprilTagAction(cameraTrackingSubsystems, Alliance.RED)
+//                )
+//        );
         Actions.runBlocking(
             drive.actionBuilder(beginPose)
                 // region block 1
 
+                .waitSeconds(5)
                 .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shoot
                 .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
                 .waitSeconds(feederOnTime)
