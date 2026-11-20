@@ -93,7 +93,6 @@ public class LoadingSideAutoRed extends LinearOpMode {
                 drive.actionBuilder(beginPose)
                         .stopAndAdd(() -> shooterSubsystem.runShooter())
                         .waitSeconds(feederOnTime)
-                        .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
                         .build()
         );
 
@@ -129,8 +128,8 @@ public class LoadingSideAutoRed extends LinearOpMode {
                     .splineToLinearHeading(LOADING_FLOWER_APPROACH_POSE, TO_BOTTOM)
                     .stopAndAdd(() -> depollenaterSubsystem.depollenaterUp())
                     .waitSeconds(0.3)
-                    .setTangent(TO_LEFT)
-                    .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) // depolinator up
+                    .setTangent(TO_RIGHT)
+                    .splineToLinearHeading(LOADING_SHOOT_POSE_2, TO_BOTTOM) // depolinator up
                     .stopAndAdd(() -> intakeSubsystem.runIntakeRight())
                     .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shooter
                     .waitSeconds(feederOnTime_2)
