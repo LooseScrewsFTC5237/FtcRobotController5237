@@ -52,7 +52,8 @@ public class LoadingSideAutoRed extends LinearOpMode {
     private CameraTrackingSubsystems cameraTrackingSubsystems;
     private Lights lights;
 
-    private double feederOnTime = 4;
+    private double feederOnTime = 3;
+    private double feederOnTime_2 = 4;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -99,8 +100,8 @@ public class LoadingSideAutoRed extends LinearOpMode {
 // 2. Exit as soon as tag is seen OR 5s passes
         Actions.runBlocking(
                 new RaceAction(
-                        drive.actionBuilder(beginPose).waitSeconds(10).build(),
-                        new WaitForAprilTagAction(cameraTrackingSubsystems, Alliance.RED)
+                        drive.actionBuilder(beginPose).waitSeconds(10).build()
+                    //    new WaitForAprilTagAction(cameraTrackingSubsystems, Alliance.RED)
                 )
         );
         Actions.runBlocking(
@@ -108,15 +109,16 @@ public class LoadingSideAutoRed extends LinearOpMode {
                 // region block 1
 
                 .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shoot
+                .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
                 .waitSeconds(feederOnTime)
                 .stopAndAdd(() -> intakeSubsystem.stopIntake())
                 .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooting
                 .splineToLinearHeading(LOADING_FLOWER_APPROACH_POSE, TO_BOTTOM)
                 .stopAndAdd(() -> depollenaterSubsystem.DepollenaterDown())
-                .waitSeconds(1.5)
-                .splineToLinearHeading(LOADING_FLOWER_POSE, TO_BOTTOM) // Depollinater down
+                .waitSeconds(0.3)
                 .stopAndAdd(() -> intakeSubsystem.runIntakeRight()) // turn on right intake
-                .waitSeconds(0.5)
+                .splineToLinearHeading(LOADING_FLOWER_POSE, TO_BOTTOM) // Depollinater down
+                .waitSeconds(2)
                 .stopAndAdd(() -> intakeSubsystem.stopIntake()) // turn off intake
 
                 // endregion
@@ -125,12 +127,12 @@ public class LoadingSideAutoRed extends LinearOpMode {
                     .setTangent(TO_TOP)
                     .splineToLinearHeading(LOADING_FLOWER_APPROACH_POSE, TO_BOTTOM)
                     .stopAndAdd(() -> depollenaterSubsystem.depollenaterUp())
-                    .waitSeconds(1.5)
+                    .waitSeconds(0.3)
                     .setTangent(TO_LEFT)
                     .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) // depolinator up
                     .stopAndAdd(() -> intakeSubsystem.runIntakeRight())
                     .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shooter
-                    .waitSeconds(feederOnTime)
+                    .waitSeconds(feederOnTime_2)
                     .stopAndAdd(() -> intakeSubsystem.stopIntake())
                     .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooter
                 // endregion
@@ -141,12 +143,6 @@ public class LoadingSideAutoRed extends LinearOpMode {
                     .waitSeconds(1)
                     // endregion
 
-
-
-                    // region block park
-                    .setTangent(TO_TOP)
-                    .splineToLinearHeading(PARK_POSE, TO_RIGHT) //park
-                    // endregion
         .build()
         );
     }
