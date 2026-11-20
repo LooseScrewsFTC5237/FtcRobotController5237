@@ -10,6 +10,7 @@ import static org.firstinspires.ftc.teamcode.Constants.GARDEN_FLOWER_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_SHOOT_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_APPROACH_HEADING;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_APPROACH_VECTOR;
+import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_APPROACH_VECTOR_2;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_HEADING;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_VECTOR;
 import static org.firstinspires.ftc.teamcode.Constants.LOADING_SHOOT_POSE;
@@ -53,7 +54,7 @@ public class GardenSideAuto extends LinearOpMode {
     private DepollenaterSubsystem depollenaterSubsystem;
     private CameraTrackingSubsystems cameraTrackingSubsystems;
 
-    private double feederOnTime = 4;
+    private double feederOnTime = 3.5;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -91,40 +92,37 @@ public class GardenSideAuto extends LinearOpMode {
             drive.actionBuilder(beginPose)
                     //region block 1
                     .stopAndAdd(() -> shooterSubsystem.runShooter()) // turn on shooter
-                    .waitSeconds(2)
-                    .splineToLinearHeading(GARDEN_FIRST_SHOOT_POSE, TO_TOP)
+                    .waitSeconds(1)
                     .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
                     .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shoot
                     .waitSeconds(feederOnTime)
                     .stopAndAdd(() -> intakeSubsystem.stopIntake())
                     .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooting
                     .stopAndAdd(() -> intakeSubsystem.runIntakeLeft()) // turn on intake
-                    .strafeToLinearHeading(INTAKE_GARDEN_APPROACH_VECTOR, INTAKE_GARDEN_APPROACH_HEADING, SLOW_VEL)
-                    .strafeToSplineHeading(INTAKE_GARDEN_VECTOR, INTAKE_GARDEN_HEADING, SLOW_SLOW_VEL) // intake
+                    .strafeToSplineHeading(INTAKE_GARDEN_APPROACH_VECTOR_2, INTAKE_GARDEN_HEADING) // intake
+                    .strafeToSplineHeading(INTAKE_GARDEN_VECTOR, INTAKE_GARDEN_HEADING, SLOW_VEL) // intake
                     .waitSeconds(0.5)
                     .stopAndAdd(() -> intakeSubsystem.stopIntake()) // turn off intake
                     // endregion
 
                     // region block 2
                     .setTangent(TO_BOTTOM_LEFT)
-                    .stopAndAdd(() -> shooterSubsystem.changeShooterSpeedTo(1300))
-                    .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) //move to loading side
-                    .stopAndAdd(() -> intakeSubsystem.runIntakeRight())
+                    .stopAndAdd(() -> shooterSubsystem.changeShooterSpeedTo(1240))
+                    .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM_LEFT) //move to loading side
+                    .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
                     .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // pew pew
                     .waitSeconds(feederOnTime)
                     .stopAndAdd(() -> intakeSubsystem.stopIntake())
                     .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooter
-                    .waitSeconds(1) // camera check
                     // endregion
 
                     // region block 3
-                    .setTangent(TO_TOP_RIGHT)
+                    .setTangent(TO_RIGHT)
                     .stopAndAdd(() -> depollenaterSubsystem.DepollenaterDown())
                     .splineToLinearHeading(GARDEN_FLOWER_APPROACH_POSE, TO_TOP)
-                    .stopAndAdd(() -> intakeSubsystem.runIntakeRight())
-                    .setTangent(TO_LEFT)
+                    .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
+                    .setTangent(TO_RIGHT)
                     .splineToLinearHeading(GARDEN_FLOWER_POSE, TO_TOP_RIGHT, SLOW_VEL)
-                    .waitSeconds(1)
                     // endregion
 
                     // region block 4
