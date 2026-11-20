@@ -6,6 +6,7 @@ import static com.example.meepmeeptestin.Constants.GARDEN_FLOWER_APPROACH_POSE;
 import static com.example.meepmeeptestin.Constants.GARDEN_FLOWER_POSE;
 import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_APPROACH_HEADING;
 import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_APPROACH_VECTOR;
+import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_APPROACH_VECTOR_2;
 import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_HEADING;
 import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_VECTOR;
 import static com.example.meepmeeptestin.Constants.LOADING_SHOOT_POSE;
@@ -45,8 +46,10 @@ public class MeepMeepGardenSideShootAndPark {
                 .waitSeconds(2)
                 .splineToLinearHeading(GARDEN_FIRST_SHOOT_POSE, TO_TOP)
                 .waitSeconds(4)// shoot
-                .strafeToLinearHeading(INTAKE_GARDEN_APPROACH_VECTOR, INTAKE_GARDEN_APPROACH_HEADING, SLOW_VEL)
-                .strafeToSplineHeading(INTAKE_GARDEN_VECTOR, INTAKE_GARDEN_HEADING, SLOW_SLOW_VEL) // intake
+                //.strafeToLinearHeading(INTAKE_GARDEN_APPROACH_VECTOR, INTAKE_GARDEN_APPROACH_HEADING, SLOW_VEL)
+                .strafeToSplineHeading(INTAKE_GARDEN_APPROACH_VECTOR_2, INTAKE_GARDEN_HEADING) // intake
+
+                .strafeToSplineHeading(INTAKE_GARDEN_VECTOR, INTAKE_GARDEN_HEADING, SLOW_VEL) // intake
                 // endregion
 
 

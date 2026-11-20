@@ -9,7 +9,7 @@ public class Constants {
     public static final int EXAMPLE = 1;
     public static final Pose2d GARDEN_BEGIN_POSE = new Pose2d(14,60.5,Math.toRadians(180));
     public static final Pose2d GARDEN_SHOOT_POSE = new Pose2d(14,60.5,Math.toRadians(180));
-    public static final Pose2d GARDEN_FIRST_SHOOT_POSE = new Pose2d(14,58.5,Math.toRadians(180));
+    public static final Pose2d GARDEN_FIRST_SHOOT_POSE = new Pose2d(14,55,Math.toRadians(180));
 
 
     public static final Pose2d LOADING_SHOOT_POSE = new Pose2d(40,-45,Math.toRadians(40));
@@ -24,7 +24,7 @@ public class Constants {
     public static final double TO_TOP_LEFT = Math.toRadians(135);
     public static final double TO_TOP_RIGHT = Math.toRadians(45);
 
-    public static final Vector2d INTAKE_GARDEN_VECTOR = new Vector2d(61,60.5);
+    public static final Vector2d INTAKE_GARDEN_VECTOR = new Vector2d(63,62.5);
     public static final double INTAKE_GARDEN_HEADING = Math.toRadians(180);
 
 
@@ -36,6 +36,8 @@ public class Constants {
 
     public static final Vector2d INTAKE_GARDEN_APPROACH_VECTOR = new Vector2d(55,57.5);
     public static final double INTAKE_GARDEN_APPROACH_HEADING = Math.toRadians(225);
+    public static final Vector2d INTAKE_GARDEN_APPROACH_VECTOR_2 = new Vector2d(45,62.5);
+
 
     public static final TranslationalVelConstraint FAST_VEL = new TranslationalVelConstraint(500);
     public static final TranslationalVelConstraint SLOW_VEL = new TranslationalVelConstraint(25);

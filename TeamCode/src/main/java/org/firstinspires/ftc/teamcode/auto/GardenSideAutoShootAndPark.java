@@ -6,6 +6,8 @@ import static org.firstinspires.ftc.teamcode.Constants.GARDEN_FLOWER_APPROACH_PO
 import static org.firstinspires.ftc.teamcode.Constants.GARDEN_FLOWER_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_APPROACH_HEADING;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_APPROACH_VECTOR;
+import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_APPROACH_VECTOR_2;
+import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_APPROACH_VECTOR_2;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_HEADING;
 import static org.firstinspires.ftc.teamcode.Constants.INTAKE_GARDEN_VECTOR;
 import static org.firstinspires.ftc.teamcode.Constants.LOADING_SHOOT_POSE;
@@ -94,8 +96,11 @@ public class GardenSideAutoShootAndPark extends LinearOpMode {
                     .stopAndAdd(() -> intakeSubsystem.stopIntake())
                     .stopAndAdd(() -> feederSubsystem.stopIndexer()) // stop shooting
                     .stopAndAdd(() -> intakeSubsystem.runIntakeLeft()) // turn on intake
-                    .strafeToLinearHeading(INTAKE_GARDEN_APPROACH_VECTOR, INTAKE_GARDEN_APPROACH_HEADING, SLOW_VEL)
-                    .strafeToSplineHeading(INTAKE_GARDEN_VECTOR, INTAKE_GARDEN_HEADING, SLOW_SLOW_VEL) // intake
+                    //.strafeToLinearHeading(INTAKE_GARDEN_APPROACH_VECTOR, INTAKE_GARDEN_APPROACH_HEADING, SLOW_VEL)
+                    .strafeToSplineHeading(INTAKE_GARDEN_APPROACH_VECTOR_2, INTAKE_GARDEN_HEADING) // intake
+                    .strafeToSplineHeading(INTAKE_GARDEN_VECTOR, INTAKE_GARDEN_HEADING, SLOW_VEL) // intake
+
+
                     .waitSeconds(0.5)
                     .stopAndAdd(() -> intakeSubsystem.stopIntake()) // turn off intake
                     // endregion

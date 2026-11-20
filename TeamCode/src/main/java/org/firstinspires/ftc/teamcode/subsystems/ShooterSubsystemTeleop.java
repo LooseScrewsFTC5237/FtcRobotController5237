@@ -55,7 +55,7 @@ public class ShooterSubsystemTeleop {
         if(vision!=null){
             Double range = vision.gettargetrange();
             if (range != null) {
-                shooterSpeed = (13.46978 * range) + 561.12854;
+                shooterSpeed = (13.46978 * range) + 581.12854;
             } else {
                 shooterSpeed = shooterSpeedDefault;
             }

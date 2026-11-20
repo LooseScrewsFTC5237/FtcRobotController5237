@@ -5,6 +5,7 @@ import static com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.COLOR
 import static com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_LAVA_PALETTE;
 import static com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_OCEAN_PALETTE;
 import static com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_PARTY_PALETTE;
+import static com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_RAINBOW_PALETTE;
 import static com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.GREEN;
 import static com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.RED;
 import static com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.YELLOW;
@@ -62,6 +63,8 @@ public class Lights {
 //            LightStrip.setPattern(COLOR_WAVES_LAVA_PALETTE);
 //        } else if (color == 4){
 //            LightStrip.setPattern(COLOR_WAVES_PARTY_PALETTE);
+//        } else if (color == 5) {
+//            LightStrip.setPattern(COLOR_WAVES_RAINBOW_PALETTE);
 //        }
 //    }
 
