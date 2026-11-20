@@ -56,18 +56,11 @@ public class            MeepMeepBioBuzzTest {
                 // region block 1
                 .splineToLinearHeading(GARDEN_FIRST_SHOOT_POSE, TO_TOP)
                 .waitSeconds(2) // Shoot
-                .strafeToLinearHeading(INTAKE_GARDEN_APPROACH_VECTOR, INTAKE_GARDEN_APPROACH_HEADING)
+                .strafeToLinearHeading(INTAKE_GARDEN_APPROACH_VECTOR, INTAKE_GARDEN_APPROACH_HEADING, SLOW_VEL)
                 .strafeToSplineHeading(INTAKE_GARDEN_VECTOR, INTAKE_GARDEN_HEADING, SLOW_SLOW_VEL) // Intake
                 .waitSeconds(0.5)
-                .setTangent(TO_BOTTOM_LEFT)
                 // endregion
 
-                //  region block 2 (off)
-//                .setTangent(180)
-//                .splineToLinearHeading(GARDEN_SHOOT_POSE, Math.toRadians(180))
-//                .waitSeconds(2) //shoot
-//                .waitSeconds(1) //camera check
-                //  endregion
 
                 // region block 3
 
