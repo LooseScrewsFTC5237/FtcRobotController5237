@@ -18,6 +18,7 @@ import static org.firstinspires.ftc.teamcode.Constants.PARK_POSE;
 import static org.firstinspires.ftc.teamcode.Constants.SLOW_SLOW_VEL;
 import static org.firstinspires.ftc.teamcode.Constants.SLOW_VEL;
 import static org.firstinspires.ftc.teamcode.Constants.TO_BOTTOM;
+import static org.firstinspires.ftc.teamcode.Constants.TO_BOTTOM_BOTTOM_LEFT;
 import static org.firstinspires.ftc.teamcode.Constants.TO_BOTTOM_LEFT;
 import static org.firstinspires.ftc.teamcode.Constants.TO_BOTTOM_RIGHT;
 import static org.firstinspires.ftc.teamcode.Constants.TO_LEFT;
@@ -91,6 +92,8 @@ public class GardenSideAuto extends LinearOpMode {
         Actions.runBlocking(
             drive.actionBuilder(beginPose)
                     //region block 1
+                    .waitSeconds(1)
+                    .splineToLinearHeading(GARDEN_FIRST_SHOOT_POSE, TO_BOTTOM)
                     .stopAndAdd(() -> shooterSubsystem.runShooter()) // turn on shooter
                     .waitSeconds(1)
                     .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
@@ -108,7 +111,7 @@ public class GardenSideAuto extends LinearOpMode {
                     // region block 2
                     .setTangent(TO_BOTTOM_LEFT)
                     .stopAndAdd(() -> shooterSubsystem.changeShooterSpeedTo(1240))
-                    .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM_LEFT) //move to loading side
+                    .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM_BOTTOM_LEFT) //move to loading side
                     .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
                     .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // pew pew
                     .waitSeconds(feederOnTime)
@@ -117,9 +120,9 @@ public class GardenSideAuto extends LinearOpMode {
                     // endregion
 
                     // region block 3
-                    .setTangent(TO_RIGHT)
-                    .stopAndAdd(() -> depollenaterSubsystem.DepollenaterDown())
+                    .setTangent(TO_TOP_RIGHT)
                     .splineToLinearHeading(GARDEN_FLOWER_APPROACH_POSE, TO_TOP)
+                    .stopAndAdd(() -> depollenaterSubsystem.DepollenaterDown())
                     .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
                     .setTangent(TO_RIGHT)
                     .splineToLinearHeading(GARDEN_FLOWER_POSE, TO_TOP_RIGHT, SLOW_VEL)
@@ -127,7 +130,7 @@ public class GardenSideAuto extends LinearOpMode {
 
                     // region block 4
                     .setTangent(TO_BOTTOM_LEFT)
-                    .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) //move to loading side
+                    .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM_BOTTOM_LEFT ) //move to loading side
                     .stopAndAdd(() -> depollenaterSubsystem.depollenaterUp())
                     .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shoot
                     .waitSeconds(feederOnTime)

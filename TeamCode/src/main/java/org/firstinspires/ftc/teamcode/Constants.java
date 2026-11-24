@@ -24,7 +24,9 @@ public class Constants {
     public static final double TO_TOP_LEFT = Math.toRadians(135);
     public static final double TO_TOP_RIGHT = Math.toRadians(45);
 
-    public static final Vector2d INTAKE_GARDEN_VECTOR = new Vector2d(63,62.5);
+    public static final double TO_BOTTOM_BOTTOM_LEFT = Math.toRadians(247.5);
+
+    public static final Vector2d INTAKE_GARDEN_VECTOR = new Vector2d(65,62.5);
     public static final double INTAKE_GARDEN_HEADING = Math.toRadians(180);
 
 
