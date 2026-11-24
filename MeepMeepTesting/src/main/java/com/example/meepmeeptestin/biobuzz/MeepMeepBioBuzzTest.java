@@ -11,11 +11,13 @@ import static com.example.meepmeeptestin.Constants.GARDEN_FLOWER_POSE;
 import static com.example.meepmeeptestin.Constants.GARDEN_SHOOT_POSE;
 import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_APPROACH_HEADING;
 import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_APPROACH_VECTOR;
+import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_APPROACH_VECTOR_2;
 import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_HEADING;
 import static com.example.meepmeeptestin.Constants.INTAKE_GARDEN_VECTOR;
 import static com.example.meepmeeptestin.Constants.SLOW_SLOW_VEL;
 import static com.example.meepmeeptestin.Constants.SLOW_VEL;
 import static com.example.meepmeeptestin.Constants.TO_BOTTOM;
+import static com.example.meepmeeptestin.Constants.TO_BOTTOM_BOTTOM_LEFT;
 import static com.example.meepmeeptestin.Constants.TO_RIGHT;
 import static com.example.meepmeeptestin.Constants.TO_TOP;
 import static com.example.meepmeeptestin.Constants.TO_LEFT;
@@ -56,8 +58,8 @@ public class            MeepMeepBioBuzzTest {
                 // region block 1
                 .splineToLinearHeading(GARDEN_FIRST_SHOOT_POSE, TO_TOP)
                 .waitSeconds(2) // Shoot
-                .strafeToLinearHeading(INTAKE_GARDEN_APPROACH_VECTOR, INTAKE_GARDEN_APPROACH_HEADING, SLOW_VEL)
-                .strafeToSplineHeading(INTAKE_GARDEN_VECTOR, INTAKE_GARDEN_HEADING, SLOW_SLOW_VEL) // Intake
+                .strafeToSplineHeading(INTAKE_GARDEN_APPROACH_VECTOR_2, INTAKE_GARDEN_HEADING) // intake
+                .strafeToSplineHeading(INTAKE_GARDEN_VECTOR, INTAKE_GARDEN_HEADING, SLOW_VEL) // intake
                 .waitSeconds(0.5)
                 // endregion
 
@@ -65,7 +67,7 @@ public class            MeepMeepBioBuzzTest {
                 // region block 3
 
                 .setTangent(TO_BOTTOM_LEFT)
-                .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) //move to loading side
+                .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM_BOTTOM_LEFT) //move to loading side
                 .waitSeconds(2) // shoot
 
                 // endregion
@@ -73,9 +75,9 @@ public class            MeepMeepBioBuzzTest {
                 // region block 4
                 .setTangent(TO_TOP_RIGHT)
                 .splineToLinearHeading(GARDEN_FLOWER_APPROACH_POSE, TO_TOP)
-                .setTangent(TO_LEFT)
+                .setTangent(TO_RIGHT)
                 .splineToLinearHeading(GARDEN_FLOWER_POSE, TO_LEFT, SLOW_SLOW_VEL)
-                .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) //move to loading side
+                .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM_BOTTOM_LEFT) //move to loading side
                 .waitSeconds(2) // shoot
 
                 // endregion

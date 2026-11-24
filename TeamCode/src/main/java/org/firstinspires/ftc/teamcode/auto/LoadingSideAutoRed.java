@@ -108,7 +108,7 @@ public class LoadingSideAutoRed extends LinearOpMode {
             drive.actionBuilder(beginPose)
                 // region block 1
 
-                .waitSeconds(5)
+                .waitSeconds(9)
                 .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shoot
                 .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
                 .waitSeconds(feederOnTime)
@@ -117,7 +117,7 @@ public class LoadingSideAutoRed extends LinearOpMode {
                 .splineToLinearHeading(LOADING_FLOWER_APPROACH_POSE, TO_BOTTOM)
                 .stopAndAdd(() -> depollenaterSubsystem.DepollenaterDown())
                 .waitSeconds(0.3)
-                .stopAndAdd(() -> intakeSubsystem.runIntakeRight()) // turn on right intake
+                .stopAndAdd(() -> intakeSubsystem.runIntakeForward()) // turn on right intake
                 .splineToLinearHeading(LOADING_FLOWER_POSE, TO_BOTTOM) // Depollinater down
                 .waitSeconds(2)
                 .stopAndAdd(() -> intakeSubsystem.stopIntake()) // turn off intake
@@ -130,8 +130,8 @@ public class LoadingSideAutoRed extends LinearOpMode {
                     .stopAndAdd(() -> depollenaterSubsystem.depollenaterUp())
                     .waitSeconds(0.3)
                     .setTangent(TO_RIGHT)
-                    .splineToLinearHeading(LOADING_SHOOT_POSE_2, TO_BOTTOM) // depolinator up
-                    .stopAndAdd(() -> intakeSubsystem.runIntakeRight())
+                    .splineToLinearHeading(LOADING_SHOOT_POSE, TO_BOTTOM) // depolinator up
+                    .stopAndAdd(() -> intakeSubsystem.runIntakeForward())
                     .stopAndAdd(() -> feederSubsystem.runIndexerForward()) // shooter
                     .waitSeconds(feederOnTime_2)
                     .stopAndAdd(() -> intakeSubsystem.stopIntake())

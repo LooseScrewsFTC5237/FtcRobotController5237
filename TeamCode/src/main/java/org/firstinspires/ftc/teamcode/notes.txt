@@ -1,0 +1,68 @@
+surgival
+
+
+control hub portal
+    control hub
+        motors
+            port 0 (GoBILDA 5202/3/4 series)
+            "FRDrive"
+            port 1 (GoBILDA 5202/3/4 series)
+            "TowerIndexer"
+            port 2 (GoBILDA 5202/3/4 series)
+            "IntakeRIGHT"
+            port 3 (GoBILDA 5202/3/4 series)
+            "BRDrive"
+
+        Servos
+            port: 0 (Servo)
+            "RightLockedOnLight"
+            Port:1-3 (Nothing)
+
+        Digital Devices
+            Port 0 (Digital Device)
+            "rightBeamBreak"
+
+        Analog Input Devices
+            Port: 0-3 (Nothing)
+
+        I2C Bus 0
+            Port 0 (REV internal IMU (BHI260AP))
+            "imu"
+
+        I2C Bus 1
+            Port: 0 (goBILDA Pinpoint Odometry Computer)
+            "pinpoint"
+
+        12c Bus 2-3
+        Port: No Port
+
+    Expansion Hub 2
+        Motors
+            Port 0 (GoBILDa 5202/3/4 series)
+            "FLDrive"
+            Port 1 (GoBILDa 5202/3/4 series)
+            "BLDrive"
+            Port 2 (GoBILDa 5202/3/4 series)
+            "Shooter"
+            Port 3 (GoBILDa 5202/3/4 series)
+            "IntakeLEFT"
+
+        Servos
+            Port: 0 (servo)
+            "LeftLockedOnLight"
+            Port: 1-5 (Nothing)
+
+        Digital Devices
+            Port: 0 (Digital Device)
+            "leftBeamBreak"
+            Port: 1-7 (Nothing)
+
+        Analog Input Devices
+            Port: 0 (Digital Device)
+            "LeftBeamBreak"
+            Port: 1-7 (Nothing)
+
+        I2C Bus 0-3
+            Port: No Port
+
+

@@ -55,7 +55,7 @@ public class MeepMeepGardenSideShootAndPark {
 
                 // region block park
                 .setTangent(TO_BOTTOM_LEFT)
-                .splineToLinearHeading(PARK_POSE, TO_BOTTOM) //park
+                .splineToLinearHeading(PARK_POSE, TO_BOTTOM_RIGHT) //park
                 // endregion
                 .build());
 
