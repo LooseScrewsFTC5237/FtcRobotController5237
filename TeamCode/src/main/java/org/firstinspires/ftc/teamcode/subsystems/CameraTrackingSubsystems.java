@@ -86,10 +86,12 @@ public class CameraTrackingSubsystems {
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         for (AprilTagDetection detection : currentDetections) {
             if (detection instanceof AprilTagClusterDetection && alliance.isTarget(((AprilTagClusterDetection) detection).metadata.shortName)) {
+                telemetry.addData("see april tag", "true");
                 return true;
             }
 
         }
+        telemetry.addData("see april tag", "false");
         return false;
     }
 }
