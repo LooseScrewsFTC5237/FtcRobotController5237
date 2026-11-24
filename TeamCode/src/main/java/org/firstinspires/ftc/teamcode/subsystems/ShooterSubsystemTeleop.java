@@ -28,6 +28,7 @@ public class ShooterSubsystemTeleop {
 
     private DcMotorEx shooter;
 
+
     private CameraTrackingSubsystems vision;
 
     private Telemetry telemetry;

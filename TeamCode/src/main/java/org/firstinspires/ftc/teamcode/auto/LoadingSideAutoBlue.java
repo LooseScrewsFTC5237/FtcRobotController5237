@@ -37,6 +37,7 @@ import org.firstinspires.ftc.teamcode.subsystems.DepollenaterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.FeederSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.Lights;
+import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystemAuto;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystemTeleop;
 
 @Config
@@ -46,7 +47,7 @@ public class LoadingSideAutoBlue extends LinearOpMode {
     protected MecanumDrive drive;
     // TODO: create instances of subsystems
     private IntakeSubsystem intakeSubsystem;
-    private ShooterSubsystemTeleop shooterSubsystem;
+    private ShooterSubsystemAuto shooterSubsystem;
     private FeederSubsystem feederSubsystem;
     private DepollenaterSubsystem depollenaterSubsystem;
     private CameraTrackingSubsystems cameraTrackingSubsystems;
@@ -63,7 +64,7 @@ public class LoadingSideAutoBlue extends LinearOpMode {
 
         drive = new MecanumDrive(hardwareMap, LOADING_BEGIN_POSE);
         intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry);
-        shooterSubsystem = new ShooterSubsystemTeleop(hardwareMap, telemetry);
+        shooterSubsystem = new ShooterSubsystemAuto(hardwareMap, telemetry);
         feederSubsystem = new FeederSubsystem(hardwareMap, telemetry);
         cameraTrackingSubsystems = new CameraTrackingSubsystems(hardwareMap, telemetry);
         depollenaterSubsystem = new DepollenaterSubsystem(hardwareMap, telemetry);
