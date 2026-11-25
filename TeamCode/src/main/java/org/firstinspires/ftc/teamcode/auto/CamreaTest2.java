@@ -35,7 +35,7 @@ public class CamreaTest2 extends LinearOpMode {
     private CameraTrackingSubsystems cameraTrackingSubsystems;
 
     private double feederOnTime = 3;
-    private double i = 200;
+    private double i = 2000;
 
 
     public void runOpMode() throws InterruptedException {
@@ -71,14 +71,13 @@ public class CamreaTest2 extends LinearOpMode {
 
         // region block 1
         while (i >= 0) {
-            Actions.runBlocking(
-                    drive.actionBuilder(new Pose2d(0, 0, Math.toRadians(0)))
-                            .stopAndAdd(() -> cameraTrackingSubsystems.seeApirltag(Alliance.BLUE))
-                            .waitSeconds(0.1)
-                    .build()
 
-            );
             // endregion
+
+           cameraTrackingSubsystems.seeApirltag(Alliance.BLUE);
+
+            telemetry.update();
+            sleep(10);
             i--;
         }
 

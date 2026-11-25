@@ -1,5 +1,5 @@
 surgival
-
+supercalifragilisticexpialidocious
 
 control hub portal
     control hub
@@ -16,7 +16,8 @@ control hub portal
         Servos
             port: 0 (Servo)
             "RightLockedOnLight"
-            Port:1-3 (Nothing)
+            Port:5 Servo
+            "De-pollenater"
 
         Digital Devices
             Port 0 (Digital Device)
@@ -66,3 +67,5 @@ control hub portal
             Port: No Port
 
 
+supercalifragilisticexpialidocious
+surgival

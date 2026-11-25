@@ -3,12 +3,14 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Alliance;
 import org.firstinspires.ftc.teamcode.archive.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.subsystems.BeamBrakeSubsystem;
@@ -22,7 +24,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystemTeleop;
 
 @Config
 @TeleOp(name = "BioBuzz No Pods", group = "Competition")
-public class BioBuzzPinpointNoPodsTeleop extends OpMode {
+public class BioBuzzNoPodsTeleop extends OpMode {
     // region non magic numbers▲■●★👽
     private ShooterSubsystemTeleop shooterSubsystem;
     private IntakeSubsystem intakeSubsystem;
@@ -57,7 +59,6 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
     private DcMotor backLeftDrive;
     private DcMotor backRightDrive;
 
-    private GoBildaPinpointDriver pinpoint;
 
     private double headingOffset = 0;
 
@@ -93,14 +94,21 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
         backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
-        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
-        pinpoint.setOffsets(0,0);
-
-        pinpoint.resetPosAndIMU();
 
 
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection =
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT;
+        RevHubOrientationOnRobot.UsbFacingDirection usbDirection =
+                RevHubOrientationOnRobot.UsbFacingDirection.UP;
 
-    }
+        RevHubOrientationOnRobot orientationOnRobot = new
+                RevHubOrientationOnRobot(logoDirection, usbDirection);
+        imu.initialize(new IMU.Parameters(orientationOnRobot));
+
+
+
+
+}
 
     @Override
     public void loop() {
@@ -134,7 +142,7 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
         // region Drive code
 
         if (gamepad1.y){
-            pinpoint.resetPosAndIMU();
+            imu.resetYaw();
         }
 
         if (gamepad1.left_bumper) {
@@ -145,7 +153,6 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
             driveSpeed = driveSpeedNormal;
         }
 
-        pinpoint.update();
 
         double y = gamepad1.left_stick_y;
         double x = gamepad1.left_stick_x * 1.1;
@@ -158,7 +165,8 @@ public class BioBuzzPinpointNoPodsTeleop extends OpMode {
         }
         telemetry.addData("Camera P", -bearing);
 
-        double rawHeading = pinpoint.getHeading();
+        double rawHeading = AngleUnit.normalizeRadians(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+
         double robotHeading = rawHeading - headingOffset;
 
         double rotX = x * Math.cos(robotHeading) - y * Math.sin(robotHeading);
